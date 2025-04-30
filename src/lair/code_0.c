@@ -4,6 +4,8 @@
 #include "prop.h"
 #include "actor.h"
 
+#include "config.h"
+
 extern void func_8028F918(s32);
 extern void func_802D2FB0(Actor *, s32, s32, s32, f32, s32, s32, s32);
 extern void func_802D3CE8(Actor *);
@@ -196,7 +198,17 @@ s16 D_80393468[] = {
 
 s16 D_8039347C[] = {50, 180, 260, 350, 450, 640, 765, 810, 828, 846, 864, 882}; //notedoor_notes_required_to_open
 
+#ifdef ADDITIONAL_CHEATS
+s16 D_80393494[]  = {VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO,
+                     VOLATILE_FLAG_67_SANDCASTLE_OPEN_DOOR_THREE,
+                     VOLATILE_FLAG_68_SANDCASTLE_OPEN_DOOR_FOUR,
+                     VOLATILE_FLAG_69_SANDCASTLE_OPEN_DOOR_FIVE,
+                     VOLATILE_FLAG_6A_SANDCASTLE_OPEN_DOOR_SIX,
+                     VOLATILE_FLAG_6B_SANDCASTLE_OPEN_DOOR_SEVEN,
+                     VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT}; 
+#else
 s16 D_80393494[]  = {0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B}; 
+#endif
 s32 D_803934A0[3] = {0x00, 0xFF, 0x00};
 ParticleScaleAndLifetimeRanges D_803934AC = {
     {1.0f, 2.0f},
@@ -666,7 +678,11 @@ void func_80387730(Actor *this) {
             marker_despawn(this->marker);
             return;
         }
+#ifdef ADDITIONAL_CHEATS
+        if ((this->unkF4_8 >= 2U) && (this->unkF4_8 <= 8U) && volatileFlag_get(D_80393494[this->unkF4_8 - 2])) {
+#else
         if ((this->unkF4_8 >= 2U) && (this->unkF4_8 < 8U) && volatileFlag_get(D_80393494[this->unkF4_8 - 2])) {
+#endif
             marker_despawn(this->marker);
             return;
         }

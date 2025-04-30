@@ -4,6 +4,8 @@
 
 #include "save.h"
 
+#include "config.h"
+
 /* .bss */
 SaveData gameFile_saveData[4]; //save_data
 s8 gameFile_GameIdToFileIdMap[4]; //gamenum to filenum
@@ -81,7 +83,11 @@ s32 gameFile_8033CFD4(s32 gamenum){
     filenum = D_80383F04;
     next = gameFile_GameIdToFileIdMap[gamenum];
     gameFile_GameIdToFileIdMap[gamenum] = D_80383F04;
+#ifdef EEPROM_16K
+    bcopy(&gameFile_saveData[next], &gameFile_saveData[filenum], 0x1F*8);
+#else
     bcopy(&gameFile_saveData[next], &gameFile_saveData[filenum], 0xF*8);
+#endif
     save_data = gameFile_saveData + filenum;
     save_data->slotIndex = gamenum + 1;
     savedata_update_crc(save_data, sizeof(SaveData));

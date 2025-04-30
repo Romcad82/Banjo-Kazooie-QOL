@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_8028E668(f32 [3], f32, f32, f32);
 extern void func_8028F9DC(s32);
 extern void func_803272D0(f32 arg0[3], f32 arg1, s32 arg2, int (*arg3)(Actor *));
@@ -39,6 +41,14 @@ static void __chLeaky_updateFunc(Actor *this) {
     if (!this->volatile_initialized) {
         this->volatile_initialized = TRUE;
         this->marker->propPtr->unk8_3 = FALSE;
+
+#ifdef SAND_CASTLE_PERMANENTLY_DRAINED
+        if (jiggyscore_isCollected(JIGGY_10_TTC_SANDCASTLE) && !levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN)) {
+            levelSpecificFlags_set(2, TRUE);
+            this->has_met_before = TRUE;
+            marker_despawn(actorArray_findClosestActorFromActorId(this->position, 0x56, -1, NULL)->marker);
+        }
+#endif
 
         if (levelSpecificFlags_get(LEVEL_FLAG_5_TTC_UNKNOWN) != FALSE) {
             levelSpecificFlags_set(LEVEL_FLAG_5_TTC_UNKNOWN, FALSE);

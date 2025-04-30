@@ -5,6 +5,8 @@
 
 #include "zoombox.h"
 
+#include "config.h"
+
 #ifndef MIN
 #define MIN(s, t) (((s) < t)?(s):(t))
 #endif
@@ -89,7 +91,7 @@ enum gcpausemenu_menu_e {
 /* .data */
 struct1As D_8036C4E0[4] = {
     {0.0f, 0.0f, "RETURN TO GAME",         55, ZOOMBOX_SPRITE_4_BANJO_1, 0},
-    {0.3f, 0.0f, "EXIT TO WITCH'S LAIR", -100, ZOOMBOX_SPRITE_4_BANJO_1, 0},
+    {0.3f, 0.0f, "EXIT TO WITCH'S LAIR", -100, ZOOMBOX_SPRITE_4_BANJO_1, 1},
     {0.1f, 0.0f, "VIEW TOTALS",            90, ZOOMBOX_SPRITE_6_JIGGY_1, 0},
     {0.2f, 0.0f, "SAVE AND QUIT",         125, ZOOMBOX_SPRITE_7_TOOTY_1, 0},
 };
@@ -732,7 +734,31 @@ s32 gcpausemenu_initLargestPageIndex(void) {
 }
 
 bool gcpausemenu_initReturnToLair(void) {
+#ifdef REIMPLEMENT_EXIT_TO_WITCHS_LAIR
+    if ((level_get() == LEVEL_6_LAIR) || (level_get() == LEVEL_B_SPIRAL_MOUNTAIN) || (level_get() == LEVEL_C_BOSS)) {
+        D_8036C4E0[1].delay = 0.3f;
+        D_8036C4E0[2].delay = 0.1f;
+        D_8036C4E0[3].delay = 0.2f;
+        D_8036C4E0[0].y = 55;
+        D_8036C4E0[1].y = -100;
+        D_8036C4E0[2].y = 90;
+        D_8036C4E0[3].y = 125;
+        D_8036C4E0[1].portrait = ZOOMBOX_SPRITE_4_BANJO_1;
+        return TRUE;
+    } else {
+        D_8036C4E0[1].delay = 0.1f;
+        D_8036C4E0[2].delay = 0.2f;
+        D_8036C4E0[3].delay = 0.3f;
+        D_8036C4E0[0].y = 45;
+        D_8036C4E0[1].y = 75;
+        D_8036C4E0[2].y = 105;
+        D_8036C4E0[3].y = 135;
+        D_8036C4E0[1].portrait = ZOOMBOX_SPRITE_5_GRUNTILDA_2;
+        return FALSE;
+    }
+#else
     return TRUE;
+#endif
 }
 
 void gcpausemenu_init(void) {

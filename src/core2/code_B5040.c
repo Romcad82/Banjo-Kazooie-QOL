@@ -5,6 +5,8 @@
 
 #include "save.h"
 
+#include "config.h"
+
 
 typedef struct {
     s16 unk0; // enum volatile_flags_e
@@ -52,6 +54,12 @@ Struct_B5040 D_80370A20[] = {
     {VOLATILE_FLAG_91_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY, FILEPROG_120_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY},
     {VOLATILE_FLAG_92_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY, FILEPROG_121_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY},
     {VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW, FILEPROG_122_SANDCASTLE_OPEN_CCW},
+#ifdef ADDITIONAL_CHEATS
+    {VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL, FILEPROG_124_SANDCASTLE_UNLOCK_ALL},
+    {VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL, FILEPROG_125_SANDCASTLE_RAISE_WATER_LEVEL},
+    {VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT, FILEPROG_126_SANDCASTLE_OPEN_DOOR_EIGHT},
+    {VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG, FILEPROG_127_SANDCASTLE_PUZZLE_COMPLETE_DOG},
+#endif
     {VOLATILE_FLAG_65_CHEAT_ENTERED, FILEPROG_123_CHEAT_ENTERED},
     {-1, 0x000}
 };
@@ -66,6 +74,13 @@ s32 timescoresOffset;
 s32 progressflagsOffset;
 s32 savedItemsOffset;
 s32 abilitiesOffset;
+#ifdef NOTE_SAVING
+s32 notesavingOffset;
+#endif
+#ifdef JINJO_SAVING
+s32 jinjosavingOffset;
+s32 jinjojiggyrespawnOffset;
+#endif
 s32 endOffset;
 u8 D_80383D18[8];
 
@@ -101,6 +116,13 @@ void savedata_init(void){ //savedata_init
     s32 progressflags_size;
     s32 saved_item_size;
     s32 abilities_size;
+#ifdef NOTE_SAVING
+    s32 notesaving_size;
+#endif
+#ifdef JINJO_SAVING
+    s32 jinjosaving_size;
+    s32 jinjojiggyrespawn_size;
+#endif
     u8 *jiggy_addr;
     u8 *honeycomb_addr;
     u8 *mumbotoken_addr;
@@ -109,6 +131,16 @@ void savedata_init(void){ //savedata_init
     u8 *timescores_addr;
     u8 *saved_item_addr;
     u8 *abilities_addr;
+#ifdef NOTE_SAVING
+    u8 *notesaving_addr;
+#endif
+#ifdef JINJO_SAVING
+    u8 *jinjosaving_addr;
+    u8 *jinjojiggyrespawn_addr;
+#endif
+
+    s32 prevOffset;
+    s32 prevSize;
     
     jiggyscore_getSizeAndPtr(&jiggy_size, &jiggy_addr);
     honeycombscore_getSizeAndPtr(&honeycomb_size, &honeycomb_addr);
@@ -118,6 +150,13 @@ void savedata_init(void){ //savedata_init
     timeScores_getSizeAndPtr(&timescores_size, &timescores_addr);
     saveditem_getSizeAndPtr(&saved_item_size, &saved_item_addr);
     ability_getSizeAndPtr(&abilities_size, &abilities_addr);
+#ifdef NOTE_SAVING
+    notesaving_getSizeAndPtr(&notesaving_size, &notesaving_addr);
+#endif
+#ifdef JINJO_SAVING
+    jinjosaving_getSizeAndPtr(&jinjosaving_size, &jinjosaving_addr);
+    jinjojiggyrespawn_getSizeAndPtr(&jinjojiggyrespawn_size, &jinjojiggyrespawn_addr);
+#endif
     baseOffset = 0;
     jiggyOffset = baseOffset + 2;
     honeycombOffset = jiggyOffset + jiggy_size;
@@ -127,7 +166,22 @@ void savedata_init(void){ //savedata_init
     progressflagsOffset = timescoresOffset + timescores_size;
     savedItemsOffset = progressflagsOffset + progressflags_size;
     abilitiesOffset = savedItemsOffset + saved_item_size;
-    endOffset = abilitiesOffset + abilities_size;
+
+    prevOffset = abilitiesOffset;
+    prevSize = abilities_size;
+
+#ifdef NOTE_SAVING
+    notesavingOffset = prevOffset + prevSize;
+    prevOffset = notesavingOffset;
+    prevSize = notesaving_size;
+#endif
+#ifdef JINJO_SAVING
+    jinjosavingOffset = prevOffset + prevSize;
+    jinjojiggyrespawnOffset = jinjosavingOffset + jinjosaving_size;
+    prevOffset = jinjojiggyrespawnOffset;
+    prevSize = jinjojiggyrespawn_size;
+#endif
+    endOffset = prevOffset + prevSize;
 }
 
 void __savedata_load_jiggyScore(u8 *savedata){
@@ -224,6 +278,43 @@ void __savedata_load_abilities(u8 *savedata){ //savedata_load_abilities
     }
 }
 
+#ifdef NOTE_SAVING
+void __savedata_load_notesavings(u8 *savedata){
+    s32 notesaving_size;
+    u8 *notesaving_addr;
+    int i;
+    
+    notesaving_getSizeAndPtr(&notesaving_size, &notesaving_addr);
+    for(i = notesavingOffset; i < notesavingOffset + notesaving_size; i++){
+        notesaving_addr[i - notesavingOffset] = savedata[i];
+    }
+}
+#endif
+
+#ifdef JINJO_SAVING
+void __savedata_load_jinjosavings(u8 *savedata){
+    s32 jinjosaving_size;
+    u8 *jinjosaving_addr;
+    int i;
+    
+    jinjosaving_getSizeAndPtr(&jinjosaving_size, &jinjosaving_addr);
+    for(i = jinjosavingOffset; i < jinjosavingOffset + jinjosaving_size; i++){
+        jinjosaving_addr[i - jinjosavingOffset] = savedata[i];
+    }
+}
+
+void __savedata_load_jinjojiggyrespawns(u8 *savedata){
+    s32 jinjojiggyrespawn_size;
+    u8 *jinjojiggyrespawn_addr;
+    int i;
+    
+    jinjojiggyrespawn_getSizeAndPtr(&jinjojiggyrespawn_size, &jinjojiggyrespawn_addr);
+    for(i = jinjojiggyrespawnOffset; i < jinjojiggyrespawnOffset + jinjojiggyrespawn_size; i++){
+        jinjojiggyrespawn_addr[i - jinjojiggyrespawnOffset] = savedata[i];
+    }
+}
+#endif
+
 void __savedata_save_magic(u8 *savedata){
     savedata[baseOffset] = 0x11;
 }
@@ -316,12 +407,57 @@ void __savedata_save_abilities(u8 *savedata){ //savedata_save_abilities
     }
 }
 
+#ifdef NOTE_SAVING
+void __savedata_save_notesavings(u8 *savedata){
+    s32 notesaving_size;
+    u8 *notesaving_addr;
+    int i;
+    
+    notesaving_getSizeAndPtr(&notesaving_size, &notesaving_addr);
+    for(i = notesavingOffset; i < notesavingOffset + notesaving_size; i++){
+        savedata[i] = notesaving_addr[i - notesavingOffset];
+    }
+}
+#endif
+
+#ifdef JINJO_SAVING
+void __savedata_save_jinjosavings(u8 *savedata){
+    s32 jinjosaving_size;
+    u8 *jinjosaving_addr;
+    int i;
+    
+    jinjosaving_getSizeAndPtr(&jinjosaving_size, &jinjosaving_addr);
+    for(i = jinjosavingOffset; i < jinjosavingOffset + jinjosaving_size; i++){
+        savedata[i] = jinjosaving_addr[i - jinjosavingOffset];
+    }
+}
+
+void __savedata_save_jinjojiggyrespawns(u8 *savedata){
+    s32 jinjojiggyrespawn_size;
+    u8 *jinjojiggyrespawn_addr;
+    int i;
+    
+    jinjojiggyrespawn_getSizeAndPtr(&jinjojiggyrespawn_size, &jinjojiggyrespawn_addr);
+    for(i = jinjojiggyrespawnOffset; i < jinjojiggyrespawnOffset + jinjojiggyrespawn_size; i++){
+        savedata[i] = jinjojiggyrespawn_addr[i - jinjojiggyrespawnOffset];
+    }
+}
+#endif
+
 s32 savedata_8033CA2C(s32 filenum, SaveData *save_data){
     s32 sp1C;
     
+#ifdef EEPROM_16K
+    sp1C = eeprom_readBlocks(filenum, 0, save_data, 0x1F); // Reads data from game file
+#else
     sp1C = eeprom_readBlocks(filenum, 0, save_data, 0xF);
+#endif
     if( sp1C 
+#ifdef EEPROM_16K
+        || savedata_verify(0xF8, save_data) 
+#else
         || savedata_verify(0x78, save_data) 
+#endif
         || ((u8*)save_data)[baseOffset] != 0x11
     ){
         sp1C = 2;
@@ -332,7 +468,11 @@ s32 savedata_8033CA2C(s32 filenum, SaveData *save_data){
 s32 savedata_8033CA9C(SaveData *savedata){
     s32 sp1C;
     
+#ifdef EEPROM_16K
+    sp1C = eeprom_readBlocks(0, 0xFC, savedata, 0x4); // Reads Stop n' Swop data
+#else
     sp1C = eeprom_readBlocks(0, 0x3C, savedata, 0x4);
+#endif
     if( sp1C 
         || savedata_verify(0x20, savedata) 
     ){
@@ -360,6 +500,13 @@ void saveData_load(SaveData *savedata){
     __savedata_load_timeScores(savedata);
     func_8033C4E4(savedata);
     __savedata_load_abilities(savedata);
+#ifdef NOTE_SAVING
+    __savedata_load_notesavings(savedata);
+#endif
+#ifdef JINJO_SAVING
+    __savedata_load_jinjosavings(savedata);
+    __savedata_load_jinjojiggyrespawns(savedata);
+#endif
     for(i = 0; D_80370A20[i].unk0 != -1; i++){
         volatileFlag_set(D_80370A20[i].unk0, fileProgressFlag_get(D_80370A20[i].unk2));
     }
@@ -380,12 +527,23 @@ void saveData_create(SaveData *savedata){
     __savedata_8033C8A0(savedata);
     __savedata_8033CA2C(savedata);
     __savedata_save_abilities(savedata);
+#ifdef NOTE_SAVING
+    __savedata_save_notesavings(savedata);
+#endif
+#ifdef JINJO_SAVING
+    __savedata_save_jinjosavings(savedata);
+    __savedata_save_jinjojiggyrespawns(savedata);
+#endif
     savedata_update_crc(savedata, sizeof(SaveData));
 }
 
 int savedata_8033CC98(s32 filenum, u8 *buffer){
     int out;
+#ifdef EEPROM_16K
+    out = eeprom_writeBlocks(filenum, 0, buffer, 0x1F); // Writes data to game file
+#else
     out = eeprom_writeBlocks(filenum, 0, buffer, 0xF);
+#endif
     if(out){
         out = 1;
     }
@@ -404,7 +562,11 @@ int savedata_8033CCD0(s32 filenum){
 int savedata_8033CE40(u8 *buffer){
     int out;
     savedata_update_crc(buffer, sizeof(GlobalData));
+#ifdef EEPROM_16K
+    out = eeprom_writeBlocks(0, 0xFC, buffer, 4); // Writes Stop n' Swop data to the very end of 16k-EEPROM
+#else
     out = eeprom_writeBlocks(0, 0x3C, buffer, 4);
+#endif
     if(out){
         out = 1;
     }

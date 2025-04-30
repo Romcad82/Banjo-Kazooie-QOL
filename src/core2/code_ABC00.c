@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_80347B54(Struct81s *);
 extern void func_80347B80(Struct81s *);
 extern void func_80347C5C(Struct81s *, Gfx **, Mtx **, Vtx **);
@@ -262,6 +264,28 @@ void codeABC00_spawnJiggyAtLocation(enum jiggy_e jiggy_id, f32 location[3]) {
     jiggylist_list[jiggy_id - 1].init(&jiggylist_list[jiggy_id - 1].unk10);
     jiggyscore_setSpawned(jiggy_id, TRUE);
 }
+
+/*
+ * This isn't a perfect solution, but it works.
+ * Essentially, there are certain jiggies that don't respawn properly with Jinjo Saving enabled.
+ * The RBB Yellow Jinjo Jiggy and CCW Green Jinjo Jiggy clip through the objects they're supposed to spawn on,
+ * and it makes them much harder to collect them (so does TTC Purple Jinjo Jiggy, but it's more of a visual issue).
+ * Funnily enough, these are issues in the XBLA version as well.
+ * What's weird is that there are other objects in the game that do let jiggies respawn on them properly, but I can't seem to figure out why exactly they do.
+ * For now, whenever jiggies are respawned from very specific jinjos, just use this function which is hardcoded to call the init function that
+ * "JIGGY_17_CC_CLANKER_RAISED" uses which makes jiggies float in the air.
+ */
+#ifdef JINJO_SAVING
+void spawnStaticJiggyAtLocation(enum jiggy_e jiggy_id, f32 location[3]) {
+    jiggy_id = ((jiggy_id <= 0) || (jiggy_id >= (s_jiggyList_level_jiggy_count * 10))) ? JIGGY_A_MM_CONGA : jiggy_id;
+
+    jiggylist_list[jiggy_id - 1].unk10.position[0] = location[0];
+    jiggylist_list[jiggy_id - 1].unk10.position[1] = location[1];
+    jiggylist_list[jiggy_id - 1].unk10.position[2] = location[2];
+    jiggylist_list[0x17 - 1].init(&jiggylist_list[jiggy_id - 1].unk10);
+    jiggyscore_setSpawned(jiggy_id, TRUE);
+}
+#endif
 
 void func_80333270(enum jiggy_e jiggy_id, f32 position[3], void (*method)(Actor *, ActorMarker *), ActorMarker *other_marker) {
     Struct_core2_ABC00_0 *ptr;

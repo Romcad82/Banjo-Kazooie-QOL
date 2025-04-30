@@ -6,6 +6,8 @@
 
 #include <core2/file.h>
 
+#include "config.h"
+
 #define AssetCacheSize 0x3D5
 
 extern int func_802E74A0(f32[3], f32, s32, s32);
@@ -89,6 +91,12 @@ vector(ActorMarker *) *D_80383550;
 vector(ActorMarker *) *D_80383554;
 Method_Core2_A5BC0 D_80383558;
 s32 D_8038355C;
+
+#ifdef NOTE_SAVING
+s16 currNotePositions[100][3];
+u8 addressCount;
+u8 noteCount;
+#endif
 
 /* .code */
 // This function sorts a cube's props based on distance
@@ -932,6 +940,109 @@ void code7AF80_initCubeFromFile(File *file_ptr, Cube *cube) {
         cube->unk0_4 = 0;
     }
 }
+
+#ifdef NOTE_SAVING
+void reset_note_positions(void) { // Resets on every map load
+    u8 i;
+    u8 j;
+
+    addressCount = 0;
+    noteCount = 0;
+    for (i = 0; i < 100; i++) {
+        for (j = 0; j < 3; j++) {
+            currNotePositions[i][j] = 0;
+        }
+    }
+}
+
+void reset_addressCount(void) {
+    addressCount = 0;
+}
+
+void check_and_save_note_positions(u8 byte) { // Reads data from asset file to find and save note positions. Also counts how many notes are in a map. Does this one byte at a time
+    switch (addressCount) {
+        case 0:
+            if (byte == 0x16) {
+                addressCount++;
+            }
+            break;
+        case 1:
+            if (byte == 0x40) {
+                addressCount++;
+            } else {
+                addressCount = 0;
+            }
+            break;
+        case 2:
+            if (byte == 0x00) {
+                addressCount++;
+            } else {
+                addressCount = 0;
+            }
+            break;
+        case 3:
+            if ((byte >> 4) == 0xB) {
+                addressCount++;
+            } else {
+                addressCount = 0;
+            }
+            break;
+        case 4:
+        case 6:
+        case 8:
+            currNotePositions[noteCount][(addressCount / 2) - 2] |= (byte << 8);
+            addressCount++;
+            break;
+        case 5:
+        case 7:
+        case 9:
+            currNotePositions[noteCount][(addressCount / 2) - 2] |= byte;
+            addressCount++;
+            break;
+        case 10:
+            noteCount++;
+            addressCount = 0;
+            break;
+    }
+}
+
+s16 remove_or_return_noteIndex(Prop *other_prop, bool remove) { // Compares positions found from check_and_save_note_positions with input. If there is a match, then either remove the note or just return its index value
+    s16 i;
+
+    for (i = 0; i < noteCount; i++) {
+        if ((other_prop->unk4[0] == currNotePositions[i][0]) && 
+            (other_prop->unk4[1] == currNotePositions[i][1]) && 
+            (other_prop->unk4[2] == currNotePositions[i][2])) {
+            if (remove) {
+                remove_collected_notes(other_prop, i);
+            } else {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+bool check_if_note(Prop *other_prop){
+    s32 temp_v0_5;
+
+    temp_v0_5 = other_prop->spriteProp.unk0_31 + 0x572;
+    return (temp_v0_5 == 0x6D6);
+}
+
+void search_for_notes_through_cube(Cube *cube) { // Called when you load into a map. Removes any note that's been collected
+    Prop *var_v1;
+    s32 i;
+
+    var_v1 = cube->prop2Ptr;
+    for(i = 0; i < cube->prop2Cnt; var_v1++, i++){
+        if (check_if_note(var_v1)) {
+            remove_or_return_noteIndex(var_v1, TRUE);
+        }
+    }
+}
+#endif
 
 void func_8032EE0C(Method_Core2_A5BC0 arg0, s32 arg1){
     D_80383558 = arg0;

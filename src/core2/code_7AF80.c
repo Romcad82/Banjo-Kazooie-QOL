@@ -7,6 +7,8 @@
 #include <math.h>
 #include "prop.h"
 
+#include "config.h"
+
 extern void mapModel_getCubeBounds(s32 min[3], s32 max[3]);
 extern f32 func_803243D0(struct56s *arg0, f32 arg1[3]);
 extern void bitfield_setBit(u32*, s32, bool);
@@ -896,6 +898,9 @@ static void __code7AF80_initCubeFromFile(Cube *cube, File* file_ptr) {
         } else if (!file_getNWords_ifExpected(file_ptr, 2, &pad, 3) && file_isNextByteExpected(file_ptr, 3) 
         ) {
             code7AF80_initCubeFromFile(file_ptr, cube);
+#ifdef NOTE_SAVING
+            search_for_notes_through_cube(cube);
+#endif
         }
     }
 }
@@ -906,6 +911,10 @@ void cubeList_fromFile(File *file_ptr) {
     s32 cube_position_to[3];
     Cube *cube;
     NodeProp *iPtr;
+
+#ifdef NOTE_SAVING
+    reset_note_positions();
+#endif
 
     file_getNWords_ifExpected(file_ptr, 1, cube_position_from, 3);
     file_getNWords(file_ptr, cube_position_to, 3);
@@ -1813,7 +1822,14 @@ s32 func_80307164(s32 arg0[3]) {
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
             if ((SQ(arg0[0] - phi_a0->position[0]) + SQ(arg0[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
+// Mumbo Tokens with similar x and z positions would mistakenly be assigned the same id. Accounting for y position fixes it
+#ifdef BUG_FIXES
+                if (((phi_a0->position[1] - phi_a0->radius) < arg0[1]) && (arg0[1] < (phi_a0->position[1] + phi_a0->radius))) {
+                    return phi_v1 - D_8036A9D4;
+                }
+#else
                 return phi_v1 - D_8036A9D4;
+#endif
             }
         }
     }

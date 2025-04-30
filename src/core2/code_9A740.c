@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void rbb_propellorCtrl_stop(void); //rbb
 
 typedef struct {
@@ -52,6 +54,9 @@ void func_803216D0(enum map_e map){
         switch(map){
             case MAP_2_MM_MUMBOS_MOUNTAIN:
                 mm_resetHuts();
+#ifdef NOTE_SAVING
+                reset_hut_note_count();
+#endif
                 break;
             case MAP_7_TTC_TREASURE_TROVE_COVE:
                 chTreasurehunt_resetProgress();
@@ -59,6 +64,11 @@ void func_803216D0(enum map_e map){
             case MAP_1B_MMM_MAD_MONSTER_MANSION:
                 chFlowerpot_reset();
                 break;
+#ifdef NOTE_SAVING
+            case MAP_D_BGS_BUBBLEGLOOP_SWAMP:
+                reset_hut_note_count();
+                break;
+#endif
         }
     }
 }

@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 typedef struct {
     u8 pad0[2];
     s16 unk2;
@@ -101,7 +103,9 @@ void func_803222BC(Struct_core2_9B180_0 * ag0){
 void func_803222F4(Struct_core2_9B180_0 *arg0){
     if(D_8036DE78){
         D_8036DE78 = 0;
-        arg0 ->unk4 = 0;
+#ifndef SKIPPABLE_CUTSCENES
+        arg0 ->unk4 = 0; // Rareware cutscene
+#endif
     }
 }
 

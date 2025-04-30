@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void subaddie_set_state_with_direction(Actor *, s32, f32 , s32);
 extern f32 func_80309B24(f32*);
 extern void func_80329904(ActorMarker*, s32, f32*);
@@ -79,6 +81,29 @@ void __chJinjo_802CDD3C(Actor * this){
     }
 }
 
+#ifdef JINJO_SAVING
+bool specific_jinjoJiggyRespawn_check(enum marker_e marker_id) {
+    switch (level_get()) {
+        case LEVEL_2_TREASURE_TROVE_COVE:
+            if (marker_id == MARKER_5D_JINJO_PINK) {
+                return TRUE;
+            }
+            break;
+        case LEVEL_9_RUSTY_BUCKET_BAY:
+            if (marker_id == MARKER_5E_JINJO_YELLOW) {
+                return TRUE;
+            }
+            break;
+        case LEVEL_8_CLICK_CLOCK_WOOD:
+            if (marker_id == MARKER_5B_JINJO_GREEN) {
+                return TRUE;
+            }
+            break;
+    }
+    return FALSE;
+}
+#endif
+
 void chJinjo_update(Actor * this){
     f32 sp7C[3];
     f32 sp70[3];
@@ -113,6 +138,20 @@ void chJinjo_update(Actor * this){
         if(volatileFlag_get(VOLATILE_FLAG_C1_IN_FINAL_CHARACTER_PARADE)){
             marker_despawn(this->marker);
         }
+#ifdef JINJO_SAVING
+        if (respawn_jinjo_jiggy(this->marker->id) && !jiggyscore_isCollected(10*level_get()-9)) {
+            sp40[0] = this->position_x;
+            sp40[1] = this->position_y;
+            sp40[2] = this->position_z;
+            if (specific_jinjoJiggyRespawn_check(this->marker->id)) {
+                spawnStaticJiggyAtLocation(10*level_get()-9, sp40);
+            } else {
+                sp40[1] += 50.0f;
+                codeABC00_spawnJiggyAtLocation(10*level_get()-9, sp40);
+            }
+        }
+        remove_collected_jinjos(this, this->marker->id);
+#endif
     }//L802CDE24
     sp30 = this->position;
     func_8028E964(sp7C);
@@ -172,6 +211,9 @@ void chJinjo_update(Actor * this){
                     sp40[2] = this->position_z;
                     sp40[1] += 50.0f;
                     jiggy_spawn(10*level_get()-9, sp40);
+#ifdef JINJO_SAVING
+                    set_jinjo_jiggy_respawn(this->marker->id);
+#endif
                 }//L802CE0CC
                 core1_ce60_incOrDecCounter(FALSE);
                 func_8032BB88(this, 0, 4000);
@@ -180,6 +222,9 @@ void chJinjo_update(Actor * this){
                 }else{
                     func_8025A6EC(COMUSIC_A_JINJO_COLLECTED, 28000);
                 }
+#ifdef JINJO_SAVING
+                set_jinjo_collected(this->marker->id);
+#endif
             }//L802CE114
             break;
 

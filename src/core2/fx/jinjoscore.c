@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 extern f32 func_802FB0E4(struct8s *);
 
@@ -45,6 +47,15 @@ f32   D_80381E60[5];
 f32   D_80381E78[5];
 struct7s D_80381E90;
 
+#ifdef JINJO_SAVING
+struct {
+    u8 flags[0x6];
+}jinjosaving;
+
+struct {
+    u8 flags[0x4];
+}jinjojiggyrespawn;
+#endif
 
 /* .code */
 struct7s *fxjinjoscore_new(enum item_e arg0){
@@ -293,3 +304,117 @@ void fxjinjoscore_update(enum item_e item_id, struct8s *arg1) {
     }
 }
 
+#ifdef JINJO_SAVING
+enum marker_e return_jinjo_marker_id(s16 jinjoIndex) {
+    switch(jinjoIndex % 5){
+        case 0: return MARKER_5A_JINJO_BLUE;
+        case 1: return MARKER_5B_JINJO_GREEN;
+        case 2: return MARKER_5C_JINJO_ORANGE;
+        case 3: return MARKER_5D_JINJO_PINK;
+        case 4: return MARKER_5E_JINJO_YELLOW;
+    }
+}
+
+void setup_hud_with_collected_jinjos() {
+    s16 jinjoIndex;
+    s16 worldOffset = (return_worldOffset() / 20);
+    
+    for (jinjoIndex = (worldOffset + 1); jinjoIndex <= (worldOffset + 5); jinjoIndex++) {
+        if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
+            if ((jinjosaving.flags[(jinjoIndex - 1) / 8] & (1 << (jinjoIndex & 7))) != 0) {
+                enum marker_e marker_id = return_jinjo_marker_id(jinjoIndex - 1);
+                item_adjustByDiffWithoutHud(ITEM_12_JINJOS, 1 << (marker_id + 6));
+                D_80381E58[(jinjoIndex - 1) % 5] = 3;
+            }
+        }
+    }
+}
+
+s16 return_jinjoIndex(enum marker_e marker_id) {
+    s16 jinjoIndex;
+
+    switch(marker_id){
+        case MARKER_5A_JINJO_BLUE:
+            jinjoIndex = 1;
+            break;
+        case MARKER_5B_JINJO_GREEN:
+            jinjoIndex = 2;
+            break;
+        case MARKER_5C_JINJO_ORANGE:
+            jinjoIndex = 3;
+            break;
+        case MARKER_5D_JINJO_PINK:
+            jinjoIndex = 4;
+            break;
+        case MARKER_5E_JINJO_YELLOW:
+            jinjoIndex = 5;
+            break;
+        default:
+            jinjoIndex = -1;
+            break;
+    }
+
+    return jinjoIndex += (return_worldOffset() / 20);
+}
+
+void remove_collected_jinjos(Actor *this, enum marker_e marker_id){
+    s16 jinjoIndex = return_jinjoIndex(marker_id);
+    
+    if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
+        if ((jinjosaving.flags[(jinjoIndex - 1) / 8] & (1 << (jinjoIndex & 7))) != 0) {
+            marker_despawn(this->marker);
+        }
+    }
+}
+
+void set_jinjo_collected(enum marker_e marker_id) {
+    s16 jinjoIndex = return_jinjoIndex(marker_id);
+    
+    if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
+        jinjosaving.flags[(jinjoIndex - 1) / 8] |= (1 << (jinjoIndex & 7));
+    }
+}
+
+bool respawn_jinjo_jiggy(enum marker_e marker_id){ // Needed to respawn jiggies if you leave a level
+    s16 jinjoIndex = return_jinjoIndex(marker_id);
+    
+    if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
+        if (bitfield_get_n_bits(jinjojiggyrespawn.flags, ((return_worldOffset() / 100) * 3), 3) == (((jinjoIndex - 1) % 5) + 1)) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+void set_jinjo_jiggy_respawn(enum marker_e marker_id) { // Sets jiggy to respawn at last collected jinjo
+    s16 jinjoIndex = return_jinjoIndex(marker_id);
+    
+    if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
+        bitfield_set_n_bits(jinjojiggyrespawn.flags, ((return_worldOffset() / 100) * 3), (((jinjoIndex - 1) % 5) + 1), 3);
+    }
+}
+
+void jinjosaving_getSizeAndPtr(s32 *size, u8 **addr) {
+    *size = 0x6;
+    *addr = jinjosaving.flags; 
+}
+
+void jinjosaving_clearAllFlags(void) { // Resets jinjo saving flags when you change files
+    s32 i;
+    for(i = 0; i < 0x6; i++){
+        jinjosaving.flags[i] = 0;
+    }
+}
+
+void jinjojiggyrespawn_getSizeAndPtr(s32 *size, u8 **addr) {
+    *size = 0x4;
+    *addr = jinjojiggyrespawn.flags; 
+}
+
+void jinjojiggyrespawn_clearAllFlags(void) { // Resets jinjo jiggy respawn flags when you change files
+    s32 i;
+    for(i = 0; i < 0x4; i++){
+        jinjojiggyrespawn.flags[i] = 0;
+    }
+}
+#endif

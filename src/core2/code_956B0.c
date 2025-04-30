@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_8028F3D8(f32 *, f32,  void(*)(ActorMarker *), ActorMarker *);
 extern void func_8028F760(s32, f32, f32);
 extern void func_8031CE70(f32 *arg0, enum map_e arg1, s32 arg2);
@@ -31,7 +33,11 @@ u8 D_80383190;
 /* .code */
 // func_8031C640
 bool cutscene_skipIntroCutsceneCheck(void) {
+#ifdef SKIPPABLE_CUTSCENES
+    if (func_8024E698(0) == 1) {
+#else
     if ((func_8024E698(0) == 1) && (gameFile_anyNonEmpty() != 0)) {
+#endif
         return TRUE;
     }
     return FALSE;
@@ -40,9 +46,13 @@ bool cutscene_skipIntroCutsceneCheck(void) {
 // func_8031C688
 bool cutscene_skipEnterLairCutsceneCheck(void) {
     if ((func_8024E698(0) == 1) 
+#ifdef SKIPPABLE_CUTSCENES
+        ) {
+#else
         && ((D_8037DCCE[0] != 0) 
             || (D_8037DCCE[1] != 0) 
             || (D_8037DCCE[2] != 0))) {
+#endif
         return TRUE;
     }
     return FALSE;
@@ -56,7 +66,11 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
     if (mapSpecificFlags_get(0) != 0) {
         fileProgressFlag_set(FILEPROG_E1_UNKNOWN, 1);
     }
+#ifdef SKIPPABLE_CUTSCENES
+    if ((sp24 == 1) && !gctransition_8030BDC0()) {
+#else
     if ((sp24 == 1) && fileProgressFlag_get(FILEPROG_E1_UNKNOWN) && !gctransition_8030BDC0()) {
+#endif
         if (!mapSpecificFlags_get(0xC)) {
             mapSpecificFlags_set(0xC, TRUE);
             func_802DC528(0, 0);
@@ -1497,6 +1511,13 @@ void func_8031FBA0(void) {
     mumboscore_clear();
     volatileFlag_clear();
     func_802D6344();
+#ifdef NOTE_SAVING
+    notesaving_clearAllFlags();
+#endif
+#ifdef JINJO_SAVING
+    jinjosaving_clearAllFlags();
+    jinjojiggyrespawn_clearAllFlags();
+#endif
 }
 
 void func_8031FBF8(void) {

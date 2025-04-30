@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 void func_802C9C30(Actor* this);
 
 /* .data */
@@ -14,4 +16,8 @@ ActorInfo D_80366C50 = {
 /* .code */
 void func_802C9C30(Actor* this){
     this->scale = 0.42857143f;
+
+#ifdef NOTE_SAVING
+    remove_collected_hut_note(this);
+#endif
 }

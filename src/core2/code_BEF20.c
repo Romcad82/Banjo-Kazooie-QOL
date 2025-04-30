@@ -5,6 +5,8 @@
 
 #include "time.h"
 
+#include "config.h"
+
 void func_80346DB4(s32);
 
 s32  item_adjustByDiffWithHud(enum item_e item, s32 diff);
@@ -18,6 +20,14 @@ f32 D_80385FEC;
 u8  D_80385FF0[0xB];
 f32 D_80386000[0xE]; //timescores
 s32 D_80386038;
+
+#ifdef NOTE_SAVING
+struct {
+    u8 flags[0x71];
+}notesaving;
+
+u8 hutNotesRemaining;
+#endif
 
 /* .code */
 void func_80345EB0(enum item_e item){
@@ -78,7 +88,11 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
    // sp20;
 
     sp34 = ((fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH))? 2 : 1);
+#ifdef HEALTH_SYSTEM_REWORK
+    D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*D_80385F30[ITEM_15_HEALTH_TOTAL], D_80385F30[ITEM_15_HEALTH_TOTAL]);
+#else
     D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*8, D_80385F30[ITEM_15_HEALTH_TOTAL]);
+#endif
     D_80385F30[ITEM_14_HEALTH]= MIN(D_80385F30[ITEM_15_HEALTH_TOTAL], D_80385F30[ITEM_14_HEALTH]);
     D_80385F30[ITEM_17_AIR] = MIN(3600, D_80385F30[ITEM_17_AIR]);
     D_80385F30[ITEM_25_MUMBO_TOKEN_TOTAL] = D_80385F30[ITEM_1C_MUMBO_TOKEN];
@@ -196,6 +210,252 @@ void item_setItemsStartCounts(void){
     D_80385FE4 = FALSE;
 }
 
+#if defined(NOTE_SAVING) || defined(JINJO_SAVING)
+s16 return_worldOffset(void) {
+    s16 worldOffset;
+
+    switch (level_get()) {
+        case LEVEL_1_MUMBOS_MOUNTAIN:
+            worldOffset = 0;
+            break;
+        case LEVEL_2_TREASURE_TROVE_COVE:
+            worldOffset = 100;
+            break;
+        case LEVEL_3_CLANKERS_CAVERN:
+            worldOffset = 200;
+            break;
+        case LEVEL_4_BUBBLEGLOOP_SWAMP:
+            worldOffset = 300;
+            break;
+        case LEVEL_5_FREEZEEZY_PEAK:
+            worldOffset = 400;
+            break;
+        case LEVEL_7_GOBIS_VALLEY:
+            worldOffset = 500;
+            break;
+        case LEVEL_A_MAD_MONSTER_MANSION:
+            worldOffset = 600;
+            break;
+        case LEVEL_9_RUSTY_BUCKET_BAY:
+            worldOffset = 700;
+            break;
+        case LEVEL_8_CLICK_CLOCK_WOOD:
+            worldOffset = 800;
+            break;
+        default:
+            worldOffset = -100;
+            break;
+    }
+
+    return worldOffset;
+}
+#endif
+
+#ifdef NOTE_SAVING
+s16 return_mapOffset(void) {
+    s16 mapOffset;
+
+    switch (map_get()) {
+        case MAP_C_MM_TICKERS_TOWER:
+            mapOffset = 85;
+            break;
+        case MAP_E_MM_MUMBOS_SKULL:
+            mapOffset = 91;
+            break;
+        case MAP_5_TTC_BLUBBERS_SHIP:
+            mapOffset = 82;
+            break;
+        case MAP_6_TTC_NIPPERS_SHELL:
+            mapOffset = 90;
+            break;
+        case MAP_A_TTC_SANDCASTLE:
+            mapOffset = 96;
+            break;
+        case MAP_22_CC_INSIDE_CLANKER:
+            mapOffset = 72;
+            break;
+        case MAP_21_CC_WITCH_SWITCH_ROOM:
+            mapOffset = 88;
+            break;
+        case MAP_23_CC_GOLDFEATHER_ROOM:
+            mapOffset = 94;
+            break;
+        case MAP_10_BGS_MR_VILE:
+            mapOffset = 83;
+            break;
+        case MAP_11_BGS_TIPTUP:
+            mapOffset = 89;
+            break;
+        case MAP_48_FP_MUMBOS_SKULL:
+            mapOffset = 82;
+            break;
+        case MAP_53_FP_CHRISTMAS_TREE:
+            mapOffset = 88;
+            break;
+        case MAP_13_GV_MEMORY_GAME:
+            mapOffset = 70;
+            break;
+        case MAP_14_GV_SANDYBUTTS_MAZE:
+            mapOffset = 74;
+            break;
+        case MAP_15_GV_WATER_PYRAMID:
+            mapOffset = 81;
+            break;
+        case MAP_16_GV_RUBEES_CHAMBER:
+            mapOffset = 85;
+            break;
+        case MAP_1A_GV_INSIDE_JINXY:
+            mapOffset = 93;
+            break;
+        case MAP_1C_MMM_CHURCH:
+            mapOffset = 47;
+            break;
+        case MAP_1D_MMM_CELLAR:
+            mapOffset = 57;
+            break;
+        case MAP_24_MMM_TUMBLARS_SHED:
+            mapOffset = 61;
+            break;
+        case MAP_25_MMM_WELL:
+            mapOffset = 65;
+            break;
+        case MAP_26_MMM_NAPPERS_ROOM:
+            mapOffset = 72;
+            break;
+        case MAP_29_MMM_NOTE_ROOM:
+            mapOffset = 80;
+            break;
+        case MAP_2D_MMM_BEDROOM:
+            mapOffset = 89;
+            break;
+        case MAP_2F_MMM_WATERDRAIN_BARREL:
+            mapOffset = 93;
+            break;
+        case MAP_30_MMM_MUMBOS_SKULL:
+            mapOffset = 98;
+            break;
+        case MAP_8B_RBB_ANCHOR_ROOM:
+            mapOffset = 43;
+            break;
+        case MAP_34_RBB_ENGINE_ROOM:
+            mapOffset = 47;
+            break;
+        case MAP_35_RBB_WAREHOUSE:
+            mapOffset = 63;
+            break;
+        case MAP_37_RBB_CONTAINER_1:
+            mapOffset = 67;
+            break;
+        case MAP_38_RBB_CONTAINER_3:
+            mapOffset = 75;
+            break;
+        case MAP_39_RBB_CREW_CABIN:
+            mapOffset = 79;
+            break;
+        case MAP_3B_RBB_STORAGE_ROOM:
+            mapOffset = 83;
+            break;
+        case MAP_3C_RBB_KITCHEN:
+            mapOffset = 88;
+            break;
+        case MAP_3D_RBB_NAVIGATION_ROOM:
+            mapOffset = 93;
+            break;
+        case MAP_3F_RBB_CAPTAINS_CABIN:
+            mapOffset = 97;
+            break;
+        case MAP_43_CCW_SPRING:
+            mapOffset = 4;
+            break;
+        case MAP_44_CCW_SUMMER:
+            mapOffset = 20;
+            break;
+        case MAP_45_CCW_AUTUMN:
+            mapOffset = 36;
+            break;
+        case MAP_46_CCW_WINTER:
+            mapOffset = 73;
+            break;
+        case MAP_4C_CCW_AUTUMN_MUMBOS_SKULL:
+            mapOffset = 89;
+            break;
+        case MAP_5C_CCW_AUTUMN_ZUBBA_HIVE:
+            mapOffset = 93;
+            break;
+        case MAP_60_CCW_AUTUMN_NABNUTS_HOUSE:
+            mapOffset = 97;
+            break;
+        default:
+            mapOffset = 0;
+            break;
+    }
+
+    return mapOffset;
+}
+
+s16 adjust_noteIndex(s16 noteIndex) { // Adds offsets to note index depending on what map and world you're in
+    s16 worldOffset = return_worldOffset();
+    s16 mapOffset = return_mapOffset();
+
+    return noteIndex = (noteIndex + 1) + worldOffset + mapOffset;
+}
+
+void remove_collected_notes(Prop *other_prop, s16 noteIndex){
+    noteIndex = adjust_noteIndex(noteIndex);
+    
+    if ((0 < noteIndex) && (noteIndex <= 900)) {
+        if ((notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) != 0) {
+            other_prop->spriteProp.unk8_4 = 0;
+        }
+    }
+}
+
+void set_note_collected(Prop *other_prop) {
+    s16 noteIndex = remove_or_return_noteIndex(other_prop, FALSE);
+    noteIndex = adjust_noteIndex(noteIndex);
+    
+    if ((0 < noteIndex) && (noteIndex <= 900)) {
+        notesaving.flags[(noteIndex - 1) / 8] |= (1 << (noteIndex & 7));
+    }
+}
+
+void remove_collected_hut_note(Actor* this){ // Despawns hut notes depending on how many of them have been collected
+    if (hutNotesRemaining) {
+        marker_despawn(this->marker);
+        hutNotesRemaining--;
+    }
+}
+
+void set_hut_note_collected(void) { // When a hut note is collected, set a flag at last 5 flags for MM and BGS
+    u16 noteIndex = 96;
+    u16 worldOffset = return_worldOffset();
+    u8 i;
+    
+    noteIndex += worldOffset;
+    for (i = 0; i < 5; i++) {
+        if ((notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) == 0) {
+            notesaving.flags[((noteIndex + i) - 1) / 8] |= (1 << ((noteIndex + i) & 7));
+            break;
+        }
+    }
+}
+
+void reset_hut_note_count(void) { // Counts how many notes have been collected when you load into MM and BGS
+    u16 noteIndex = 96;
+    u16 worldOffset = return_worldOffset();
+    u8 i;
+    
+    hutNotesRemaining = 0;
+
+    noteIndex += worldOffset;
+    for (i = 0; i < 5; i++) {
+        if ((notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) != 0) {
+            hutNotesRemaining++;
+        }
+    }
+}
+#endif
+
 void itemscore_levelReset(enum level_e level){
     int i;
     
@@ -204,7 +464,11 @@ void itemscore_levelReset(enum level_e level){
         D_80385F30[ITEM_6_HOURGLASS + i] = 0;
     }
     
+#ifdef NOTE_SAVING
+    D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get()); // Instead of reseting to 0, set to level note total
+#else
     D_80385F30[ITEM_C_NOTE] = 0;
+#endif
     D_80385F30[ITEM_E_JIGGY] = jiggyscore_leveltotal(level);
     D_80385F30[ITEM_12_JINJOS] = 0;
     D_80385F30[ITEM_17_AIR] = 3600;
@@ -219,6 +483,9 @@ void itemscore_levelReset(enum level_e level){
     D_80385F30[ITEM_22_CATERPILLAR] = 0;
     itemPrint_reset();
     D_80385FE8 = 1;
+#ifdef JINJO_SAVING
+    setup_hud_with_collected_jinjos();
+#endif
 }
 
 void func_803465BC(void){
@@ -398,12 +665,15 @@ void func_80346DB4(s32 note_count) {
             if (note_count == 100) {
                 gcdialog_showText(0xF78, 4, NULL, NULL, NULL, NULL);
             }
+// Removes dialog that says you've passed you're best note score
+#ifndef NOTE_SAVING
             if (note_count == 1) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
             if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showText(0xF76, 0, NULL, NULL, NULL, NULL))) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
+#endif
             if (volatileFlag_get(VOLATILE_FLAG_17) == 0) {
                 volatileFlag_set(VOLATILE_FLAG_17, 1);
                 volatileFlag_setN(VOLATILE_FLAG_19_CURRENT_LEVEL_ID, level_id, 4);
@@ -424,6 +694,20 @@ s32 itemscore_noteScores_getTotal(void){
 s32 itemscore_noteScores_get(enum level_e lvl_id){
     return D_80385FF0[lvl_id];
 }
+
+#ifdef NOTE_SAVING
+void notesaving_getSizeAndPtr(s32 *size, u8 **addr) {
+    *size = 0x71;
+    *addr = notesaving.flags; 
+}
+
+void notesaving_clearAllFlags(void) { // Resets note saving flags when you change files
+    s32 i;
+    for(i = 0; i < 0x71; i++){
+        notesaving.flags[i] = 0;
+    }
+}
+#endif
 
 void notescore_getSizeAndPtr(s32 *size, void **ptr) {
     static u64 D_80386040;
@@ -531,9 +815,17 @@ void func_8034789C(void) {
     sp1C = honeycombscore_get_total();
     D_80385F30[ITEM_13_EMPTY_HONEYCOMB] = sp1C % 6;
     if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
+#ifdef HEALTH_SYSTEM_REWORK
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = (5 + (sp1C / 6)) * 2;
+#else
         D_80385F30[ITEM_15_HEALTH_TOTAL] = 16;
+#endif
     } else {
+#ifdef HEALTH_SYSTEM_REWORK
+        D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + (sp1C / 6);
+#else
         D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + MIN(3, (sp1C / 6));
+#endif
     }
     if (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH)) {
         temp_v0 = D_80385F30[ITEM_15_HEALTH_TOTAL];

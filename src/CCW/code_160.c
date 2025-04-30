@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 
 typedef struct{
@@ -143,7 +145,17 @@ void func_8038687C(Actor *this) {
         return;
     }
     if ((s32)local->unk0 == 1) {
+// Fixes bug where Jiggy spawned from Pink Jinjo gets mistakenly assigned to "other" variable and gets despawned when you leave beehive
+#ifdef BUG_FIXES
+        other = actorArray_findClosestActorFromActorId(this->position, ACTOR_46_JIGGY, -1, NULL); // Use the nearest jiggy to the object instead of the first jiggy found in the actor array
+        if (other != NULL) {
+            if (chjiggy_getJiggyId(other) != JIGGY_4C_CCW_ZUBBAS) { // If nearest jiggy is not Zubba jiggy, reset "other" to NULL
+                other = NULL; 
+            }
+        }
+#else
         other = actorArray_findActorFromActorId(0x46);
+#endif
         if(volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME)) {
             local->unk0 = NULL;
             if (other != NULL) {

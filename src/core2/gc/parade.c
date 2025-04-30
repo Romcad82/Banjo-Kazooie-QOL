@@ -4,6 +4,8 @@
 
 #include "../snackerctl.h"
 
+#include "config.h"
+
 
 extern void func_8028F918(s32);
 extern void func_80311714(int);
@@ -277,6 +279,14 @@ void gcparade_print(s32 index){
     print_bold_overlapping(v0->x, D_803830F0.y_position, -1.2f, v0->str);
 }
 
+#ifdef SKIPPABLE_CUTSCENES
+void skip_parade(void) {
+    if (func_8024E698(0)) {
+        gcparade_setState(PARADE_STATE_8_END);
+    }
+}
+#endif
+
 void gcparade_update(void) {
     s32 sp34;
 
@@ -287,6 +297,9 @@ void gcparade_update(void) {
     }
     if (volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE) != 0) {
         snackerctl_update();
+#ifdef SKIPPABLE_CUTSCENES
+        skip_parade();
+#endif
         switch (D_803830F0.state) {
             case PARADE_STATE_3_WARP:
                 if (D_803830F0.unk5 == 0) {

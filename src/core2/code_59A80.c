@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_8035644C(s32);
 
 typedef struct {
@@ -60,6 +62,11 @@ void func_802E0B10(Actor *this){
     local = (ActorLocal_MumboToken *)&this->local;
     if(!this->initialized){
         this->initialized = TRUE;
+#ifdef VANILLA_SPECIFIC_BUG_FIXES
+        if (map_get() == MAP_1D_MMM_CELLAR) {
+            local->uid = MUMBOTOKEN_74_MMM_INSIDE_BARREL_IN_CELLAR;
+        }
+#endif
         if(local->uid == NULL){
             if(!this->unk44_2){
                 local->uid = D_8037E610;

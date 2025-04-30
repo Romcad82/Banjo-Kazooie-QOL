@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_8025A788(enum comusic_e, f32, f32);
 extern void func_8031CC40(enum map_e, s32);
 extern void fxRipple_802F363C(f32);
@@ -1040,13 +1042,19 @@ void func_802D5628(void){
         func_802D5178(LEVEL_FLAG_3F_LAIR_UNKNOWN, 0xE2, 0x40, MAP_93_GL_DINGPOT,  0x10, 0xA, ACTOR_2E5_DOOR_OF_GRUNTY,   0x28);
         if(volatileFlag_get(VOLATILE_FLAG_18)){
             if(!fileProgressFlag_get(FILEPROG_99_PAST_50_NOTE_DOOR_TEXT)){
+// Removes dialog that explains original note score system
+#ifndef NOTE_SAVING
                 func_80311174(0xF75, 0xE, NULL, NULL, NULL, NULL, func_802D5140);
+#endif
                 fileProgressFlag_set(FILEPROG_99_PAST_50_NOTE_DOOR_TEXT, TRUE);
                 volatileFlag_set(VOLATILE_FLAG_18, 0);
             }
             else{//L802D5DD8
                 if(!volatileFlag_get(VOLATILE_FLAG_16)){
+// Removes dialog that tells you you're best note score
+#ifndef NOTE_SAVING
                     func_80311174(0xF77, 0x4, NULL, NULL, NULL, NULL, func_802D5140);
+#endif
                     volatileFlag_set(VOLATILE_FLAG_18, 0);
                 }
             }

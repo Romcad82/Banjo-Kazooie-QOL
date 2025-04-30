@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 /* extern */
 extern void func_802D6310(f32, enum map_e, s32, s32, enum file_progress_e);
@@ -680,6 +682,150 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     // NOW YOU CAN SEE A NICE ICE KEY WHICH YOU CAN HAVE FOR FREE
     {"i67e6g0ni2jjni40j40j8je7m40me6g0nimnajc69c9jj", 0, 0x07, 00},
 
+#ifdef SHORTER_CHEATS
+    // Go Right On Through Note Door Two
+    {"596dild", 0, VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Note Door Three Get In For Free
+    {"ild54cc", 0, VOLATILE_FLAG_67_SANDCASTLE_OPEN_DOOR_THREE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Take A Tour Through Note Door Four
+    {"dnddilc", 0, VOLATILE_FLAG_68_SANDCASTLE_OPEN_DOOR_FOUR + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Use This Cheat Note Door Five Is Beat
+    {"gd0ilc4k", 0, VOLATILE_FLAG_69_SANDCASTLE_OPEN_DOOR_FIVE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // This Tricks Used To Open Note Door Six
+    {"ddgd6il2", 0, VOLATILE_FLAG_6A_SANDCASTLE_OPEN_DOOR_SIX + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Seventh Note Door Is Now No More
+    {"d2il4ii1", 0, VOLATILE_FLAG_6B_SANDCASTLE_OPEN_DOOR_SEVEN + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // You Can Get Wet Feet Now Clankers Jiggy Is Complete
+    {"e057ci0p40", 0, VOLATILE_FLAG_6C_SANDCASTLE_PUZZLE_COMPLETE_CC + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Jiggys Full Off You Stomp Into Dingy Bubblegloop Swamp
+    {"dpc6e24lk2", 0, VOLATILE_FLAG_6D_SANDCASTLE_PUZZLE_COMPLETE_BGS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Jiggys Done So Off You Go Into Freezeezy Peak And Its Snow
+    {"dpl26e54crn42", 0, VOLATILE_FLAG_6E_SANDCASTLE_PUZZLE_COMPLETE_FP + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Gobis Jiggy Is Now Done Trek On In And Get Some Sun
+    {"5p4ild64n522", 0, VOLATILE_FLAG_6F_SANDCASTLE_PUZZLE_COMPLETE_GV + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Jiggys Now Made Whole Into The Mansion You Can Stroll
+    {"dpi174d1e02", 0, VOLATILE_FLAG_70_SANDCASTLE_PUZZLE_COMPLETE_MMM + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Jiggys Done So Take A Trip On To The Rusty Bucket Ship
+    {"dpl2dnd6dd9k2", 0, VOLATILE_FLAG_71_SANDCASTLE_PUZZLE_COMPLETE_RBB + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Click Clock Wood Is Lots Of Fun Go On In The Jiggys Done
+    {"0074b6c564dpl", 0, VOLATILE_FLAG_72_SANDCASTLE_PUZZLE_COMPLETE_CCC + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Lots Of Goes With Many Banjos
+    {"b6571k", 0, VOLATILE_FLAG_73_SANDCASTLE_INFINITE_LIVES + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Banjo Begs For Plenty Of Eggs
+    {"kkcr6j", 0, VOLATILE_FLAG_74_SANDCASTLE_INFINITE_EGGS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Now You Can Fly High In The Sky
+    {"ie0cm4d2", 0, VOLATILE_FLAG_75_SANDCASTLE_INFINITE_RED_FEATHERS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // A Golden Glow To Protect Banjo
+    {"n55drk", 0, VOLATILE_FLAG_76_SANDCASTLE_INFINITE_GOLD_FEATHERS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Both Pipes Are There To Clankers Lair
+    {"krndd0b", 0, VOLATILE_FLAG_7D_SANDCASTLE_RAISE_PIPES_TO_CC + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Youll Cease To Gripe When Up Goes A Pipe
+    {"e0d57g5nr", 0, VOLATILE_FLAG_7E_SANDCASTLE_RAISE_PIPE_TO_BRENTILDA + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Theres Nowhere Danker Than In With Clanker
+    {"dild470", 0, VOLATILE_FLAG_7F_SANDCASTLE_OPEN_CC + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Youll Be Amazed Now The Swamp Piccy Grille Is Raised
+    {"eknid2r549", 0, VOLATILE_FLAG_80_SANDCASTLE_REMOVE_GRILL_NEAR_BGS_JIGGY + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Dont Despair The Tree Jiggy Podium Is Now There
+    {"llddpr4id", 0, VOLATILE_FLAG_81_SANDCASTLE_CCC_JIGGY_PODIUM + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Shes An Ugly Bat So Lets Remove Her Grille And Hat
+    {"2ngk2b9m5nm", 0, VOLATILE_FLAG_82_SANDCASTLE_REMOVE_GRILL_AND_HAT_FROM_STATUE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Its Your Lucky Day As The Ice Ball Melts Away
+    {"4eblnd4k1n", 0, VOLATILE_FLAG_83_SANDCASTLE_REMOVE_ICE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Now Into The Swamp You Can Stomp
+    {"i4d2e02", 0, VOLATILE_FLAG_84_SANDCASTLE_OPEN_BGS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // They Cause Trouble But Now Theyre Rubble
+    {"d0dkid9", 0, VOLATILE_FLAG_85_SANDCASTLE_REMOVE_BREAKABLE_WALLS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Youll Be Glad To See The Shock Jump Pad
+    {"ek5d2d2pr", 0, VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // Also unlocks the shock jump pad in Grunty's Lair
+
+    // This Comes In Handy To Open Somewhere Sandy
+    {"d04md622", 0, VOLATILE_FLAG_87_SANDCASTLE_OPEN_GV + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Webs Stop Your Play So Take Them Away
+    {"72er2ddn", 0, VOLATILE_FLAG_88_SANDCASTLE_REMOVE_WEBS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Grunty Will Cry Now Youve Smashed Her Eye
+    {"570ie2mj", 0, VOLATILE_FLAG_89_SANDCASTLE_REMOVE_GLASS_EYE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // You Wont Be Sad Now You Can Use The Fly Pad
+    {"e7k2ie0gdcr", 0, VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // For some reason, this cheat permanently unlocks the timed flight pad in Grunty's Lair
+
+    // Now You Can Go And Trudge In The Snow
+    {"ie05nd4d2", 0, VOLATILE_FLAG_8B_SANDCASTLE_OPEN_FP + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Mansion Of Ghosts Are Now Your Hosts
+    {"d165niem", 0, VOLATILE_FLAG_8C_SANDCASTLE_OPEN_MMM + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // You Wont Have To Wait Now Theres No Crypt Gate
+    {"e7md7idi05", 0, VOLATILE_FLAG_8D_SANDCASTLE_REMOVE_CRYPT_GATE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // This Should Get Rid Of The Crypt Coffin Lid
+    {"d2596d00b", 0, VOLATILE_FLAG_8E_SANDCASTLE_REMOVE_CRYPT_COFFIN_LID + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Up You Go Without A Hitch Up To The Water Level Switch
+    {"ge57nmgdd7b2", 0, VOLATILE_FLAG_8F_SANDCASTLE_REMOVE_GRATE_NEAR_WATER_SWITCH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Why Not Take A Trip Inside Gruntys Rusty Ship
+    {"7idnd4592", 0, VOLATILE_FLAG_90_SANDCASTLE_OPEN_RBB + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // The Grille Goes Boom To The Ship Picture Room
+    {"d55kdd2r9", 0, VOLATILE_FLAG_91_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Once It Shone But The Long Tunnel Grille Is Gone
+    {"642kdbd545", 0, VOLATILE_FLAG_92_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // This Ones Good As You Can Enter The Wood
+    {"d65ne0jd7", 0, VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // An Energy Bar To Get You Far
+    {"njkd5ec", 0, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Dont Be A Dumbo Go See Mumbo
+    {"lknl521", 0, VOLATILE_FLAG_95_SANDCASTLE_INFINTE_MUMBO_TOKENS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Give The Bear Lots Of Air
+    {"5dkb6n", 0, VOLATILE_FLAG_96_SANDCASTLE_INFINITE_AIR + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+ #ifdef ADDITIONAL_CHEATS
+    // Theres Too Many Cheats To Name Use Just One To Unlock The Game
+    {"dd10digp6dgd5", 0, VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // This Cheat Is No Lie Raise The Water Level Very High
+    {"d04ib9d7bam", 0, VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // This Ones Such A Chore Get Rid Of The Eighth Note Door
+    {"d62n0596djil", 0, VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Grunty You Will Displease When You Open Her Door With Ease
+    {"5e7l7e6ml7j", 0, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+ #endif
+#else
     // GO RIGHT ON THROUGH NOTE DOOR TWO
     {"56945md6idm96g5mi6djl669d76", 0, VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
@@ -759,7 +905,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     {"dmje0ng2jd96gkbjkgdi67dmje9j9gkkbj", 0, VOLATILE_FLAG_85_SANDCASTLE_REMOVE_BREAKABLE_WALLS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // YOULL BE GLAD TO SEE THE SHOCK JUMP PAD
-    {"e6gbbkj5bnld62jjdmj2m608pg1rrnl", 0, VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+    {"e6gbbkj5bnld62jjdmj2m608pg1rrnl", 0, VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // Also unlocks the shock jump pad in Grunty's Lair
 
     // THIS COMES IN HANDY TO OPEN SOMEWHERE SANDY
     {"dm42061j24imniled66rji261j7mj9j2nile", 0, VOLATILE_FLAG_87_SANDCASTLE_OPEN_GV + VOLATILE_FLAG_CHEAT_OFFSET, 00},
@@ -771,7 +917,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     {"59gide74bb09ei67e6gaj21n2mjlmj9jej", 0, VOLATILE_FLAG_89_SANDCASTLE_REMOVE_GLASS_EYE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // YOU WONT BE SAD NOW YOU CAN USE THE FLY PAD
-    {"e6g76idkj2nli67e6g0nig2jdmjcbernl", 0, VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+    {"e6g76idkj2nli67e6g0nig2jdmjcbernl", 0, VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // For some reason, this cheat permanently unlocks the timed flight pad in Grunty's Lair
 
     // NOW YOU CAN GO AND TRUDGE IN THE SNOW
     {"i67e6g0ni56nild9gl5j4idmj2i67", 0, VOLATILE_FLAG_8B_SANDCASTLE_OPEN_FP + VOLATILE_FLAG_CHEAT_OFFSET, 00},
@@ -809,11 +955,31 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     // GIVE THE BEAR LOTS OF AIR
     {"54ajdmjkjn9b6d26cn49", 0, VOLATILE_FLAG_96_SANDCASTLE_INFINITE_AIR + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
+ #ifdef ADDITIONAL_CHEATS
+    // THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME
+    {"dmj9j2d661nie0mjnd2d6in1jg2jpg2d6ijd6gib608dmj5n1j", 0, VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // THIS CHEAT IS NO LIE RAISE THE WATER LEVEL VERY HIGH
+    {"dm420mjnd42i6b4j9n42jdmj7ndj9bjajbaj9em45m", 0, VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // THIS ONES SUCH A CHORE GET RID OF THE EIGHTH NOTE DOOR
+    {"dm426ij22g0mn0m69j5jd94l6cdmjj45mdmi6djl669", 0, VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // GRUNTY YOU WILL DISPLEASE WHEN YOU OPEN HER DOOR WITH EASE
+    {"59gidee6g74bbl42rbjn2j7mjie6g6rjimj9l66974dmjn2j", 0, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+ #endif
+#endif
+
     NULL
 };
 
 static u8 sLastFloorTileHitCorret = 0; // 0 = "initial", 1 = incorrect, 2 = correct
+#ifdef ADDITIONAL_CHEATS
+static s32 sBackupBannedCheatCodeTotal = 0;
+static BannedCheatCodeRange sBannedCheatCodeRanges[5] = {
+#else
 static BannedCheatCodeRange sBannedCheatCodeRanges[4] = {
+#endif
     {
         VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO + VOLATILE_FLAG_CHEAT_OFFSET,
         VOLATILE_FLAG_6B_SANDCASTLE_OPEN_DOOR_SEVEN + VOLATILE_FLAG_CHEAT_OFFSET
@@ -826,6 +992,12 @@ static BannedCheatCodeRange sBannedCheatCodeRanges[4] = {
         VOLATILE_FLAG_7D_SANDCASTLE_RAISE_PIPES_TO_CC + VOLATILE_FLAG_CHEAT_OFFSET,
         VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW + VOLATILE_FLAG_CHEAT_OFFSET
     },
+#ifdef ADDITIONAL_CHEATS
+    {
+        VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL + VOLATILE_FLAG_CHEAT_OFFSET,
+        VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET
+    },
+#endif
     NULL
 };
 
@@ -834,6 +1006,9 @@ static void __maCastle_showUnlockedSnSCode(s32 secret_cheat_code_index, s32 code
 {
     if (codeId == sSecretsCheatCodes[secret_cheat_code_index].id)
     {
+#ifdef EASIER_CHEATS
+        func_8030E58C(SFX_2B_BULL_MOO_1, 1.5f);
+#endif
         func_802D6310(1.0f, map_id, arg3, arg4, 0);
     }
 }
@@ -927,6 +1102,51 @@ static void __maCastle_setItemForSecretCheatCode(s32 always_0, s32 secret_cheat_
     }
 }
 
+#ifdef ADDITIONAL_CHEATS
+static void unlock_all_cheat_flags(enum volatile_flags_e volaflag_cheat_id) {
+    enum volatile_flags_e i;
+
+    volatileFlag_set(volaflag_cheat_id, 1);
+
+    for (i = VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO; i <= VOLATILE_FLAG_72_SANDCASTLE_PUZZLE_COMPLETE_CCC; i++) {
+        volatileFlag_set(i, 1);
+    }
+    for (i = VOLATILE_FLAG_7D_SANDCASTLE_RAISE_PIPES_TO_CC; i <= VOLATILE_FLAG_85_SANDCASTLE_REMOVE_BREAKABLE_WALLS; i++) {
+        volatileFlag_set(i, 1);
+    }
+    for (i = VOLATILE_FLAG_87_SANDCASTLE_OPEN_GV; i <= VOLATILE_FLAG_89_SANDCASTLE_REMOVE_GLASS_EYE; i++) {
+        volatileFlag_set(i, 1);
+    }
+    for (i = VOLATILE_FLAG_8B_SANDCASTLE_OPEN_FP; i <= VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW; i++) {
+        volatileFlag_set(i, 1);
+    }
+    for (i = VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL; i <= VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG; i++) {
+        volatileFlag_set(i, 1);
+    }
+
+    __maCastle_setFileProgressForSecretCheatCode(0, 14, VOLATILE_FLAG_6C_SANDCASTLE_PUZZLE_COMPLETE_CC, FILEPROG_60_CC_PUZZLE_PIECES_PLACED, 5, 3, FILEPROG_33_CC_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 15, VOLATILE_FLAG_6D_SANDCASTLE_PUZZLE_COMPLETE_BGS, FILEPROG_63_BGS_PUZZLE_PIECES_PLACED, 7, 3, FILEPROG_34_BGS_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 16, VOLATILE_FLAG_6E_SANDCASTLE_PUZZLE_COMPLETE_FP, FILEPROG_66_FP_PUZZLE_PIECES_PLACED, 8, 4, FILEPROG_35_FP_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 17, VOLATILE_FLAG_6F_SANDCASTLE_PUZZLE_COMPLETE_GV, FILEPROG_6A_GV_PUZZLE_PIECES_PLACED, 9, 4, FILEPROG_36_GV_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 18, VOLATILE_FLAG_70_SANDCASTLE_PUZZLE_COMPLETE_MMM, FILEPROG_6E_MMM_PUZZLE_PIECES_PLACED, 10, 4, FILEPROG_37_MMM_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 19, VOLATILE_FLAG_71_SANDCASTLE_PUZZLE_COMPLETE_RBB, FILEPROG_72_RBB_PUZZLE_PIECES_PLACED, 0xC, 4, FILEPROG_38_RBB_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 20, VOLATILE_FLAG_72_SANDCASTLE_PUZZLE_COMPLETE_CCC, FILEPROG_76_CCW_PUZZLE_PIECES_PLACED, 0xF, 4, FILEPROG_39_CCW_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 54, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG, FILEPROG_7A_DOG_PUZZLE_PIECES_PLACED, 0x19, 5, FILEPROG_E2_DOOR_OF_GRUNTY_OPEN);
+
+    fileProgressFlag_set(FILEPROG_53_CCW_PUZZLE_PODIUM_SWITCH_PRESSED, 1);
+    fileProgressFlag_set(FILEPROG_54_CCW_PUZZLE_PODIUM_ACTIVE, 1);
+
+    fileProgressFlag_set(FILEPROG_22_WATER_SWITCH_1_PRESSED, 1);
+    fileProgressFlag_set(FILEPROG_23_LAIR_WATER_LEVEL_1, 1);
+    fileProgressFlag_set(FILEPROG_24_WATER_SWITCH_2_PRESSED, 1);
+    fileProgressFlag_set(FILEPROG_25_LAIR_WATER_LEVEL_2, 1);
+    
+    fileProgressFlag_set(FILEPROG_F6_SEEN_DOOR_OF_GRUNTY_PUZZLE_PODIUM, 1);
+
+    __maCastle_resetSecretCheatCodeProgress();
+}
+#endif
+
 static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
 {
     SecretCheatCode *secret_cheat_code;
@@ -946,7 +1166,16 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
     {
         func_8030E58C(SFX_2B_BULL_MOO_1, 1.5f);
         volatileFlag_set(VOLATILE_FLAG_65_CHEAT_ENTERED, 1);
+#ifdef ADDITIONAL_CHEATS
+        if (volaflag_cheat_id == VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL) {
+            unlock_all_cheat_flags(volaflag_cheat_id);
+            return;
+        } else {
+            volatileFlag_set(volaflag_cheat_id, 1);
+        }
+#else
         volatileFlag_set(volaflag_cheat_id, 1);
+#endif
     }
 
     __maCastle_setFileProgressForSecretCheatCode(
@@ -1012,6 +1241,17 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
         4,
         FILEPROG_39_CCW_OPEN
     );
+#ifdef ADDITIONAL_CHEATS
+    __maCastle_setFileProgressForSecretCheatCode(
+        0,
+        secret_cheat_code_index,
+        VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG,
+        FILEPROG_7A_DOG_PUZZLE_PIECES_PLACED,
+        0x19,
+        5,
+        FILEPROG_E2_DOOR_OF_GRUNTY_OPEN
+    );
+#endif
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, 8);
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_77_SANDCASTLE_SET_HEALTH_TO_MAX, ITEM_14_HEALTH, 0, item_getCount(ITEM_15_HEALTH_TOTAL));
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_95_SANDCASTLE_INFINTE_MUMBO_TOKENS, ITEM_1C_MUMBO_TOKEN, 0, 99);
@@ -1020,6 +1260,20 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
         fileProgressFlag_set(FILEPROG_53_CCW_PUZZLE_PODIUM_SWITCH_PRESSED, 1);
         fileProgressFlag_set(FILEPROG_54_CCW_PUZZLE_PODIUM_ACTIVE, 1);
     }
+#ifdef ADDITIONAL_CHEATS
+    if (volaflag_cheat_id == VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL)
+    {
+        fileProgressFlag_set(FILEPROG_22_WATER_SWITCH_1_PRESSED, 1);
+        fileProgressFlag_set(FILEPROG_23_LAIR_WATER_LEVEL_1, 1);
+        fileProgressFlag_set(FILEPROG_24_WATER_SWITCH_2_PRESSED, 1);
+        fileProgressFlag_set(FILEPROG_25_LAIR_WATER_LEVEL_2, 1);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG)
+    {
+        fileProgressFlag_set(FILEPROG_F6_SEEN_DOOR_OF_GRUNTY_PUZZLE_PODIUM, 1);
+    }
+#endif
+
     __maCastle_resetSecretCheatCodeProgress();
 }
 
@@ -1035,6 +1289,9 @@ static void __maCastle_eraseGameplayDialogCallback(ActorMarker *caller, enum ass
         func_802C5A3C(-1);
         return;
     }
+#ifdef ADDITIONAL_CHEATS
+    __maCastle_setNumberOfBannedCheatcodesEntered(sBackupBannedCheatCodeTotal);
+#endif
     __maCastle_resetSecretCheatCodeProgress();
 }
 
@@ -1053,6 +1310,13 @@ static void __maCastle_checkIfBannedCheatCodeEntered(s32 secret_cheat_code_index
         {
             if ((sSecretsCheatCodes[secret_cheat_code_index].id >= sBannedCheatCodeRanges[i].minId) && (sBannedCheatCodeRanges[i].maxId >= sSecretsCheatCodes[secret_cheat_code_index].id))
             {
+#ifdef ADDITIONAL_CHEATS
+                sBackupBannedCheatCodeTotal = __maCastle_getNumberOfBannedCheatCodesEntered();
+                if (((sSecretsCheatCodes[secret_cheat_code_index].id - VOLATILE_FLAG_CHEAT_OFFSET) == VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL) && (__maCastle_getNumberOfBannedCheatCodesEntered() != 3)) {
+                    __maCastle_setNumberOfBannedCheatcodesEntered(2);
+                }
+#endif
+
                 switch (__maCastle_getNumberOfBannedCheatCodesEntered())
                 {
                     case 0:
@@ -1070,6 +1334,12 @@ static void __maCastle_checkIfBannedCheatCodeEntered(s32 secret_cheat_code_index
                         sThirdForbiddenSecretCheatCodeIndex = secret_cheat_code_index;
                         gcdialog_showText(ASSET_E38_DIALOG_CHEATING_ERASE_SAVE_CONFIRMATION, 0xC, NULL, NULL, __maCastle_eraseGameplayDialogCallback, NULL);
                         return;
+#ifdef ENTER_MORE_THAN_3_BANNED_CHEATS
+                    case 3:
+                        __maCastle_checkSecretCheatCodeIndex(secret_cheat_code_index);
+                        __maCastle_resetSecretCheatCodeProgress();
+                        return;
+#endif
                 }
                 return;
             }
@@ -1087,11 +1357,27 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
     s32 secret_cheat_code_index;
     s32 matched_secret_cheat_code_2;
     s32 var_v1;
+#ifdef EASIER_CHEATS
+    bool playedSFX = FALSE;
+#endif
 
-    if ((sLastFloorTileHitCorret == 2) || (__maCastle_getNumberOfBannedCheatCodesEntered() == 3))
+#ifdef EASIER_CHEATS
+    if (sLastFloorTileHitCorret == 2) {
+        __maCastle_resetSecretCheatCodeProgress();
+    }
+#else
+    if (sLastFloorTileHitCorret == 2)
     {
         return FALSE;
     }
+#endif
+
+#ifndef ENTER_MORE_THAN_3_BANNED_CHEATS
+    if (__maCastle_getNumberOfBannedCheatCodesEntered() == 3)
+    {
+        return FALSE;
+    }
+#endif
 
     if (sLastFloorTileHitCorret == 0)
     {
@@ -1113,6 +1399,9 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
             // did the letter occur in any secret cheat code?
             if (matched_secret_cheat_codes != 0)
             {
+#ifdef EASIER_CHEATS
+                func_8030E58C(SFX_2B_BULL_MOO_1, randf2(0.6f, 0.7f));
+#endif
                 sLastFloorTileHitCorret = 1;
                 __maCastle_setsecretCheatCodeRelatedValue();
                 return TRUE;
@@ -1126,7 +1415,15 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
         // is entering "CHEAT"?
         if (floor_tile->letter == sSecretsCheatCodes[0].code[sSecretsCheatCodes[0].codeCharacterIdx])
         {
+#ifdef EASIER_CHEATS
+            if (floor_tile->letter == FLOOR_LETTER_T) {
+                func_8030E58C(SFX_2B_BULL_MOO_1, 1.5f);
+            } else {
+                func_8030E58C(SFX_2B_BULL_MOO_1, randf2(0.6f, 0.7f));
+            }
+#else
             func_8030E58C(SFX_2B_BULL_MOO_1, randf2(0.6f, 0.7f));
+#endif
             sSecretsCheatCodes[0].codeCharacterIdx++;
             __maCastle_setsecretCheatCodeRelatedValue();
             return TRUE;
@@ -1162,6 +1459,12 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
                     }
                     return TRUE;
                 }
+#ifdef EASIER_CHEATS
+                if (!playedSFX) {
+                    func_8030E58C(SFX_2B_BULL_MOO_1, randf2(0.6f, 0.7f));
+                    playedSFX = TRUE;
+                }
+#endif
             }
             else
             {

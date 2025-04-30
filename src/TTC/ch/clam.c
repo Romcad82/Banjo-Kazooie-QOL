@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern Actor *spawnQueue_bundle_f32(s32, s32, s32, s32);
 extern ActorProp * func_80320EB0(ActorMarker *, f32, s32);
 
@@ -248,11 +250,20 @@ static void __chClam_attackOther(ActorMarker *this_marker, ActorMarker *other_ma
         mapSpecificFlags_set(TTC_SPECIFIC_FLAG_5_CLAM_FIRST_MEET_TEXT_SHOWN, TRUE);
     }
 
+// Fixes Yum Yum crash when too many eggs and feathers spawn
+#ifdef BUG_FIXES
+    if ((item_getCount(ITEM_D_EGGS) != 0) && (actorArray_actorCount(ACTOR_52_BLUE_EGG) < 9)) { // Note: For some reason, the 3 eggs floating above the shock jump pad are actors, not props like they usually are. This means that if you collect them, you can spawn 3 more eggs from Yum Yums than if you didn't.
+#else
     if (item_getCount(ITEM_D_EGGS) != 0) {
+#endif
         __chClam_playerDropsItem(BUNDLE_E_YUMYUM_BLUE_EGG, ITEM_D_EGGS);
     }
 
+#ifdef BUG_FIXES
+    if ((item_getCount(ITEM_F_RED_FEATHER) != 0) && (actorArray_actorCount(ACTOR_129_RED_FEATHER) < 6)) {
+#else
     if (item_getCount(ITEM_F_RED_FEATHER) != 0) {
+#endif
         __chClam_playerDropsItem(BUNDLE_F_YUMYUM_RED_FEATHER, ITEM_F_RED_FEATHER);
     }
 }

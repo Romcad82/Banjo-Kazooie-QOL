@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_8033A45C(s32, s32);
 
 typedef struct{
@@ -90,10 +92,18 @@ void func_80357264(Actor *this, s32 next_state){
     }
 
     if(next_state == 5){
+#ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+        if(!volatileFlag_get(VOLATILE_FLAG_11_CLUCKER_CUTSCENE)
+#else
         if(!levelSpecificFlags_get(LEVEL_FLAG_14_TTC_UNKNOWN)
+#endif
             && !( actorArray_findClosestActorFromActorId(this->position, 0x318, -1, &sp38) && ( sp38 < 250.0f))
         ){
+#ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+            volatileFlag_set(VOLATILE_FLAG_11_CLUCKER_CUTSCENE, 1);
+#else
             levelSpecificFlags_set(LEVEL_FLAG_14_TTC_UNKNOWN, TRUE);
+#endif
             func_80324E38(0.0f, 3);
             __clucker_setDeathCutsceneCamera(this);
             timed_exitStaticCamera(2.0f);

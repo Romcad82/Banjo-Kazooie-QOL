@@ -5,6 +5,8 @@
 
 #include "zoombox.h"
 
+#include "config.h"
+
 extern void func_803114D0(void );
 extern int func_803114B0(void);
 extern char *dialogBin_get(enum asset_e text_id);
@@ -581,7 +583,11 @@ void gcdialog_update(void) {
             break;
         }
 
+#ifdef ONLY_B_BUTTON_SKIPS_DIALOG
+        if (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u) {
+#else
         if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? func_8024E5E8(0, 4) : func_8024E5E8(0, 3))) {
+#endif
             break;
         }
 

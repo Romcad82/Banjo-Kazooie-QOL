@@ -6,6 +6,8 @@
 #include "version.h"
 #include "prop.h"
 
+#include "config.h"
+
 extern void func_803012F8(void);
 extern void __baMarker_8028BA00(s32);
 extern void spawnQueue_actor_s16(void);
@@ -687,6 +689,9 @@ void __baMarker_resolveCollision(Prop *other_prop){
                     return;
 
                 __baMarker_resolveMusicNoteCollision(other_prop);
+#ifdef NOTE_SAVING
+                set_hut_note_collected(); // Notes spawned from MM and BGS huts
+#endif
                 marker_despawn(marker);
                 break;
 
@@ -843,6 +848,9 @@ void __baMarker_resolveCollision(Prop *other_prop){
             if(!__baMarker_8028BC60()){
                 other_prop->spriteProp.unk8_4 = 0;
                 __baMarker_resolveMusicNoteCollision(other_prop);
+#ifdef NOTE_SAVING
+                set_note_collected(other_prop); // Default notes
+#endif
             }
             break;
         case 0x6D7: //L8028D16C

@@ -27,7 +27,11 @@ f32 D_80381EF8;
 f32 D_80381EFC;
 s32 gTotalHealth;
 f32 gHealth;
+#ifdef HEALTH_SYSTEM_REWORK
+f32 D_80381F08[9];
+#else
 f32 D_80381F08[8];
+#endif
 f32 D_80381F28;
 f32 D_80381F2C;
 struct7s D_80381F30;
@@ -39,7 +43,11 @@ void func_80300C10(void) {
     D_80381EF8 = -272.0f;
     D_80381EF4 = 1.0f;
     D_80381EF0 = 0;
+#ifdef HEALTH_SYSTEM_REWORK
+    for(i = 0; i < 9; i++){
+#else
     for(i = 0; i < 8; i++){
+#endif
         D_80381F08[i] = -64.0f;
     }
 }
@@ -76,6 +84,28 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
     s32 is_red_health_initialized = FALSE;
     s32 s6;
 
+#ifdef HEALTH_SYSTEM_REWORK
+    s32 honeycombTotalHealth = ((honeycombscore_get_total() / 6) + 5);
+    s8 hasDoubleHealth = fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH);
+    bool pauseHud = (honeycombTotalHealth != (item_getCount(ITEM_15_HEALTH_TOTAL) / (hasDoubleHealth + 1)));
+
+    /*
+     * In the vanilla game, "gTotalHealth" would update after the Hud reappears on screen to give you a new Honeycomb. However, "honeycombTotalHealth" is updated when you collect an Empty Honeycomb,
+     * which causes a visual bug where the last even Honeycomb is pushed to the right before the new Honeycomb appears from the top. "pauseHud" checks if "honeycombTotalHealth" and your health total are the same.
+     * If they aren't (which means you collected an Empty Honeycomb and you're waiting for the animation to play and give you a health upgrade) then subtract one from "honeycombTotalHealth" so your hud won't
+     * update until health total is updated and is the same as "honeycombTotalHealth".
+     */
+    if (pauseHud) {
+        honeycombTotalHealth -= 1;
+
+        /*
+         * New Red Honeycombs don't update their y position properly when you upgrade your health, so this resets it before it appears.
+         * New Yellow Honeycombs don't have this issue, but this shouldn't affect them anyways.
+         */
+        D_80381F08[honeycombTotalHealth] = -64.0f; 
+    }
+#endif
+
     if (gSpriteHealth == NULL) {
         return;
     }
@@ -85,8 +115,13 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
     viewport_setRenderViewportAndOrthoMatrix(gfx, mtx);
 
     //loop over each honeycomb piece
+#ifdef HEALTH_SYSTEM_REWORK
+    for (i = honeycombTotalHealth - 1; i >= 0; i--) {//L80300E40
+        if (i != 0 && (i + 1 != honeycombTotalHealth || honeycombTotalHealth & 1)) {
+#else
     for (i = gTotalHealth - 1; i >= 0; i--) {//L80300E40
         if (i != 0 && (i + 1 != gTotalHealth || gTotalHealth & 1)) {
+#endif
             s6 = (i & 1) ? i + 1 : i - 1;
         }
         else {//L80300E84
@@ -96,7 +131,11 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
         gDPPipeSync((*gfx)++);
 
         if (gHealth > i) {
+#ifdef HEALTH_SYSTEM_REWORK
+            if ((0 < (gHealth - (f32)(honeycombTotalHealth)) && (gHealth - (f32)(honeycombTotalHealth)) > i) && (hasDoubleHealth)) {
+#else
             if (0 < (gHealth - 8.0f) && (gHealth - 8.0f) > i) {
+#endif
                 if (!is_red_health_initialized) {
                     func_80347FC0(gfx, gSpriteRedHealth, 0, 0, 0, 0, 0, 2, 2, &honeycomb_width, &honeycomb_height);
                     is_red_health_initialized = TRUE;
@@ -159,9 +198,17 @@ void fxhealthscore_update(enum item_e item_id, struct8s *arg1) {
 
     temp_f20 = time_getDelta();
     sp2C = func_802FB0D4(arg1);
+
+#ifdef HEALTH_SYSTEM_REWORK
+    if (item_getCount(ITEM_15_HEALTH_TOTAL) >= 10) {
+        gTotalHealth = 9;
+    }
+#else
     if (item_getCount(ITEM_15_HEALTH_TOTAL) >= 9) {
         gTotalHealth = 8;
-    } else {
+    }
+#endif
+    else {
         gTotalHealth = item_getCount(ITEM_15_HEALTH_TOTAL);
     }
 

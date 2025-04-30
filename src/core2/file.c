@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 #define FILE_DEFAULT_SIZE 0x20
 
 void file_read(File *file, void *arg1, s32 arg2);
@@ -87,8 +89,14 @@ void file_getByte(File *file, u8 *dst) {
 }
 
 void file_getNBytes(File *file, u8 *dst, s32 cnt) {
+#ifdef NOTE_SAVING
+    reset_addressCount();
+#endif
     while (cnt > 0) {
         file_getByte(file, dst);
+#ifdef NOTE_SAVING
+        check_and_save_note_positions(*dst);
+#endif
         cnt--;
         dst++;
     }

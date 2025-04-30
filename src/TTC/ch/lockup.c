@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_802EE6CC(f32[3], s32[4], s32[4], s32, f32, f32, s32, s32, s32);
 
 typedef struct {
@@ -70,7 +72,9 @@ static void __chLockup_close(Actor *this){
 }
 
 static void __chLockup_open(Actor *this){
+#ifndef REMOVE_ANTI_PIRACY_CHECK
     code3040_func_80389468();
+#endif
     subaddie_set_state_with_direction(this, CH_LOCKUP_STATE_OPENING, 0.2f, 1);
     this->unk38_31 = 1;
     FUNC_8030E8B4(SFX_6B_LOCKUP_OPENING, 1.0f, 32000, this->position, 1250, 2500);
