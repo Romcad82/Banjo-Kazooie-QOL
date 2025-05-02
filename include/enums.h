@@ -297,14 +297,14 @@ enum volatile_flags_e {
     VOLATILE_FLAG_E, // related to chxmastree, GV waterctrl and RBB anchorswitch
     VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES,
     VOLATILE_FLAG_10_HAS_MEET_WADING_BOOTS,
-#ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
-    VOLATILE_FLAG_11_CLUCKER_CUTSCENE,
-#else
     VOLATILE_FLAG_11, // unused
-#endif
     VOLATILE_FLAG_12, // unused
     VOLATILE_FLAG_13_HAS_TRIGGERED_MUMBO_VACATION_TEXT,
+#ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+    VOLATILE_FLAG_14_CLUCKER_CUTSCENE,
+#else
     VOLATILE_FLAG_14, // unused
+#endif
     VOLATILE_FLAG_15, // unused
     VOLATILE_FLAG_16, // related to beta function "return to lair"
     VOLATILE_FLAG_17, // 17 and 18: related to 50 note door and demo mode (?)
