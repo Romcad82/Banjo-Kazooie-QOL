@@ -49,6 +49,7 @@ ASM_PROCESSOR     := $(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py
 SPLAT_INPUTS      := $(PYTHON) tools/splat_inputs.py
 PROGRESS          := $(PYTHON) tools/progress.py
 PROGRESS_READ     := $(PYTHON) tools/progress_read.py
+REWRITE_HEADER    := $(PYTHON) tools/rewrite_header.py
 
 ### Files and Directories ###
 
@@ -283,6 +284,8 @@ $(BOOT_MIPS3_OBJS) : $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
 $(BUILD_DIR)/SPLAT_TIMESTAMP: decompressed.$(VERSION).yaml $(SYMBOL_ADDRS) $(DECOMPRESSED_BASEROM) | $(BUILD_DIR)
 	$(call print1,Splitting rom:,$<)
 	@$(SPLAT) decompressed.$(VERSION).yaml
+	$(call print1,Rewriting Header...)
+	@$(REWRITE_HEADER)
 	@touch $@
 	@touch $(LD_SCRIPT)
 
