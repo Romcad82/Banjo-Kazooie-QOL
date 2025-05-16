@@ -45,7 +45,7 @@
 /**
  * Fixes the following bugs:
  * -Yum-Yum Crash
- * -Mumbo Token Radius Bug
+ * -Collectible Flag Radius Bug
  * -CCW Pink Jinjo Jiggy Despawn (Note: In vanilla, you can respawn the Jiggy by recollecting the Jinjos again, but with JINJO_SAVING enabled, the Jiggy can become permanently uncollectable)
  * -Incorrect BK Health Sprites
  */
@@ -54,6 +54,7 @@
 /**
  * Fixes the following vanilla specific bugs:
  * -MMM Loggo & Cellar Token ID
+ * -"Collectible Flag Radius Bug" Fix for Mumbo Tokens only (Note: Due to the way some flags and items are positioned in the vanilla game, this bug is necessary for some flags to set properly)
  *
  * Note: These fixes are hardcoded with the vanilla game in mind.
  */

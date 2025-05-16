@@ -46,7 +46,11 @@ enum mumbotoken_e func_802E0A90(Actor *this){
     pos[0] = (s32)this->position[0];
     pos[1] = (s32)this->position[1];
     pos[2] = (s32)this->position[2];
+#ifdef VANILLA_SPECIFIC_BUG_FIXES
+    id = find_mumbo_token_id(pos);
+#else
     id = func_80307164(pos);
+#endif
     if(id < 0){
         return 0;
     }

@@ -1822,8 +1822,8 @@ s32 func_80307164(s32 arg0[3]) {
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
             if ((SQ(arg0[0] - phi_a0->position[0]) + SQ(arg0[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
-// Mumbo Tokens with similar x and z positions would mistakenly be assigned the same id. Accounting for y position fixes it
-#ifdef BUG_FIXES
+// Collectibles with similar x and z positions would mistakenly be assigned the same id. Accounting for y position fixes it.
+#if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_FIXES)
                 if (((phi_a0->position[1] - phi_a0->radius) < arg0[1]) && (arg0[1] < (phi_a0->position[1] + phi_a0->radius))) {
                     return phi_v1 - D_8036A9D4;
                 }
@@ -1835,6 +1835,32 @@ s32 func_80307164(s32 arg0[3]) {
     }
     return -1;
 }
+
+/*
+ * There is a bug in the code that checks if the position of an item is within its flag's radius. The problem is that it doesn't check if the Y position of the item is withing its radius. This can cause issues
+ * such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they have similar X and Z positions. However, fixing this bug can cause other issues in the vanilla game. For example,
+ * some jiggies are placed outside of their flag's radius on the Y axis, which causes them to not set their flags if they are collected.
+ * 
+ * To fix this, if "BUG_FIXES" is enabled, then fix the radius bug for all collectibles. However, if "VANILLA_SPECIFIC_BUG_FIXES" is also enabled, then undo the fix, and create a second function that
+ * fixes the bug exclusively for Mumbo Tokens.
+ */
+#ifdef VANILLA_SPECIFIC_BUG_FIXES
+s32 find_mumbo_token_id(s32 arg0[3]) {
+    Struct_core2_7AF80_1 *phi_v1;
+    Struct_core2_7AF80_2 *phi_a0;
+
+    for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
+        for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
+            if ((SQ(arg0[0] - phi_a0->position[0]) + SQ(arg0[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
+                if (((phi_a0->position[1] - phi_a0->radius) < arg0[1]) && (arg0[1] < (phi_a0->position[1] + phi_a0->radius))) {
+                    return phi_v1 - D_8036A9D4;
+                }
+            }
+        }
+    }
+    return -1;
+}
+#endif
 
 s32 func_80307258(f32 arg0[3], s32 arg1, s32 arg2) {
     f32 temp_f14;
