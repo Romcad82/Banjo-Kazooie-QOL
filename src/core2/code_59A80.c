@@ -91,11 +91,6 @@ void func_802E0B10(Actor *this){
 
     if(!func_8032BBE8(this)){
         marker_setCollisionScripts(this->marker, chMumboToken_collect, NULL, NULL);
-#ifdef LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
-        if ((local->uid == MUMBOTOKEN_30_GV_INSIDE_WATER_PYRAMID) && (jiggyscore_isCollected(JIGGY_42_GV_WATER_PYRAMID))) {
-            this->position[1] = 175.0f;
-        }
-#endif
     }
 
     if(this->marker->unk14_21 && randf() < 0.1){
