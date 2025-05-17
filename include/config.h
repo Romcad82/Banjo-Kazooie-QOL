@@ -90,6 +90,11 @@
 #define SAND_CASTLE_PERMANENTLY_DRAINED
 
 /**
+ * Lowers the Mumbo Token Inside the Water Pyramid in Gobi's Valley when you collect the Jiggy and lower the water level.
+ */
+#define LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
+
+/**
  * Adds a volatile flag to the Clucker Cutscene so you don't have to rewatch it when you leave the level.
  * Resets when you "Save and Quit" or reset the game.
  */
