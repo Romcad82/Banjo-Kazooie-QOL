@@ -54,7 +54,7 @@
 /**
  * Fixes the following vanilla specific bugs:
  * -MMM Loggo & Cellar Token ID
- * -"Collectible Flag Radius Bug" Fix for Mumbo Tokens only (Note: Due to the way some flags and items are positioned in the vanilla game, this bug is necessary for some flags to set properly)
+ * -Revert "Collectible Flag Radius Bug" Fix for all collectibles except Mumbo Tokens (Note: Due to the way some flags and items are positioned in the vanilla game, this bug is necessary for some flags to set properly)
  *
  * Note: These fixes are hardcoded with the vanilla game in mind.
  */
@@ -88,6 +88,11 @@
  * The Sand Castle becomes permanently drained when you collect the Sand Castle Jiggy.
  */
 #define SAND_CASTLE_PERMANENTLY_DRAINED
+
+/**
+ * Lowers the Mumbo Token Inside the Water Pyramid in Gobi's Valley when you collect the Jiggy and lower the water level.
+ */
+#define LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
 
 /**
  * Adds a volatile flag to the Clucker Cutscene so you don't have to rewatch it when you leave the level.
