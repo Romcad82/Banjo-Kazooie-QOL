@@ -61,6 +61,11 @@
 #define VANILLA_SPECIFIC_BUG_FIXES
 
 /**
+ * Camera is slightly better. Doesn't drastically change angles when rotating around level geometry.
+ */
+#define BETTER_CAMERA
+
+/**
  * Allows you to skip the following cutscenes:
  * -Rareware Cutscene (Note: This is the very first cutscene you see when you boot up the game)
  * -Intro Cutscene

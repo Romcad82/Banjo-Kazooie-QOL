@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern f32  func_802BD51C(void);
 extern void func_802BDCE0(f32, f32*, f32*, f32, f32);
 extern void func_802BDE88(f32*, f32*, f32, f32, f32);
@@ -82,7 +84,9 @@ void ncDynamicCamA_update(void) {
     f32 sp44[3];
     f32 sp38[3];
     f32 sp2C[3];
+#ifndef BETTER_CAMERA
     s32 phi_a0;
+#endif
 
     ncDynamicCamera_getPosition(sp6C);
     ncDynamicCamera_getPosition(sp9C);
@@ -109,8 +113,12 @@ void ncDynamicCamA_update(void) {
         D_80365DB4 = 0.0f;
         sp7C = 1;
     }
+#ifdef BETTER_CAMERA
+    if (sp7C) {
+#else
     phi_a0 = (mlDiffDegF(D_80365DA0, D_80365DA4) > 0.0f) ? 2 : 3;
     if (func_802BC84C(phi_a0)) {
+#endif
         D_80365DB4 = 0.0f;
         sp78 = 1;
         sp7C += 1;
