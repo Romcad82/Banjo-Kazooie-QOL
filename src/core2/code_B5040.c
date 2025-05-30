@@ -18,6 +18,50 @@ s32 savedata_verify(s32 arg0, SaveData *savedata);
 
 /* .data */
 Struct_B5040 D_80370A20[] = {
+#ifdef CHEAT_FLAGS_REWORK
+    {VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO,                          1},
+    {VOLATILE_FLAG_67_SANDCASTLE_OPEN_DOOR_THREE,                        2},
+    {VOLATILE_FLAG_68_SANDCASTLE_OPEN_DOOR_FOUR,                         3},
+    {VOLATILE_FLAG_69_SANDCASTLE_OPEN_DOOR_FIVE,                         4},
+    {VOLATILE_FLAG_6A_SANDCASTLE_OPEN_DOOR_SIX,                          5},
+    {VOLATILE_FLAG_6B_SANDCASTLE_OPEN_DOOR_SEVEN,                        6},
+    {VOLATILE_FLAG_6C_SANDCASTLE_PUZZLE_COMPLETE_CC,                     7},
+    {VOLATILE_FLAG_6D_SANDCASTLE_PUZZLE_COMPLETE_BGS,                    8},
+    {VOLATILE_FLAG_6E_SANDCASTLE_PUZZLE_COMPLETE_FP,                     9},
+    {VOLATILE_FLAG_6F_SANDCASTLE_PUZZLE_COMPLETE_GV,                    10},
+    {VOLATILE_FLAG_70_SANDCASTLE_PUZZLE_COMPLETE_MMM,                   11},
+    {VOLATILE_FLAG_71_SANDCASTLE_PUZZLE_COMPLETE_RBB,                   12},
+    {VOLATILE_FLAG_72_SANDCASTLE_PUZZLE_COMPLETE_CCC,                   13},
+    {VOLATILE_FLAG_7D_SANDCASTLE_RAISE_PIPES_TO_CC,                     14},
+    {VOLATILE_FLAG_7E_SANDCASTLE_RAISE_PIPE_TO_BRENTILDA,               15},
+    {VOLATILE_FLAG_7F_SANDCASTLE_OPEN_CC,                               16},
+    {VOLATILE_FLAG_80_SANDCASTLE_REMOVE_GRILL_NEAR_BGS_JIGGY,           17},
+    {VOLATILE_FLAG_81_SANDCASTLE_CCC_JIGGY_PODIUM,                      18},
+    {VOLATILE_FLAG_82_SANDCASTLE_REMOVE_GRILL_AND_HAT_FROM_STATUE,      19},
+    {VOLATILE_FLAG_83_SANDCASTLE_REMOVE_ICE,                            20},
+    {VOLATILE_FLAG_84_SANDCASTLE_OPEN_BGS,                              21},
+    {VOLATILE_FLAG_85_SANDCASTLE_REMOVE_BREAKABLE_WALLS,                22},
+    {VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED,             23},
+    {VOLATILE_FLAG_87_SANDCASTLE_OPEN_GV,                               24},
+    {VOLATILE_FLAG_88_SANDCASTLE_REMOVE_WEBS,                           25},
+    {VOLATILE_FLAG_89_SANDCASTLE_REMOVE_GLASS_EYE,                      26},
+    {VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED,                       27},
+    {VOLATILE_FLAG_8B_SANDCASTLE_OPEN_FP,                               28},
+    {VOLATILE_FLAG_8C_SANDCASTLE_OPEN_MMM,                              29},
+    {VOLATILE_FLAG_8D_SANDCASTLE_REMOVE_CRYPT_GATE,                     30},
+    {VOLATILE_FLAG_8E_SANDCASTLE_REMOVE_CRYPT_COFFIN_LID,               31},
+    {VOLATILE_FLAG_8F_SANDCASTLE_REMOVE_GRATE_NEAR_WATER_SWITCH,        32},
+    {VOLATILE_FLAG_90_SANDCASTLE_OPEN_RBB,                              33},
+    {VOLATILE_FLAG_91_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY,           34},
+    {VOLATILE_FLAG_92_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY,    35},
+    {VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW,                              36},
+ #ifdef ADDITIONAL_CHEATS
+    {VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL,                     37},
+    {VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT,                       38},
+    {VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG,                   39},
+ #endif
+    {VOLATILE_FLAG_65_CHEAT_ENTERED, FILEPROG_10B_CHEAT_ENTERED},
+#else
     {VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO, FILEPROG_FF_SANDCASTLE_OPEN_DOOR_TWO},
     {VOLATILE_FLAG_67_SANDCASTLE_OPEN_DOOR_THREE, FILEPROG_100_SANDCASTLE_OPEN_DOOR_THREE},
     {VOLATILE_FLAG_68_SANDCASTLE_OPEN_DOOR_FOUR, FILEPROG_101_SANDCASTLE_OPEN_DOOR_FOUR},
@@ -54,13 +98,8 @@ Struct_B5040 D_80370A20[] = {
     {VOLATILE_FLAG_91_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY, FILEPROG_120_SANDCASTLE_REMOVE_GRILL_NEAR_RBB_JIGGY},
     {VOLATILE_FLAG_92_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY, FILEPROG_121_SANDCASTLE_REMOVE_TUNNEL_GRILL_NEAR_RBB_JIGGY},
     {VOLATILE_FLAG_93_SANDCASTLE_OPEN_CCW, FILEPROG_122_SANDCASTLE_OPEN_CCW},
-#ifdef ADDITIONAL_CHEATS
-    {VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL, FILEPROG_124_SANDCASTLE_UNLOCK_ALL},
-    {VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL, FILEPROG_125_SANDCASTLE_RAISE_WATER_LEVEL},
-    {VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT, FILEPROG_126_SANDCASTLE_OPEN_DOOR_EIGHT},
-    {VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG, FILEPROG_127_SANDCASTLE_PUZZLE_COMPLETE_DOG},
-#endif
     {VOLATILE_FLAG_65_CHEAT_ENTERED, FILEPROG_123_CHEAT_ENTERED},
+#endif
     {-1, 0x000}
 };
 
@@ -507,15 +546,40 @@ void saveData_load(SaveData *savedata){
     __savedata_load_jinjosavings(savedata);
     __savedata_load_jinjojiggyrespawns(savedata);
 #endif
+
+#ifdef CHEAT_FLAGS_REWORK
+    for(i = 0; i < 2; i++){
+        enum file_progress_e cheatBits = FILEPROG_FF_SANDCASTLE_CHEAT_ONE + (i * 6);
+        s16 cheatIndex = fileProgressFlag_getN(cheatBits, 6) - 1;
+        if (cheatIndex >= 0) {
+            volatileFlag_set(D_80370A20[cheatIndex].unk0, TRUE);
+        }
+    }
+    volatileFlag_set(VOLATILE_FLAG_65_CHEAT_ENTERED, fileProgressFlag_get(FILEPROG_10B_CHEAT_ENTERED));
+#else
     for(i = 0; D_80370A20[i].unk0 != -1; i++){
         volatileFlag_set(D_80370A20[i].unk0, fileProgressFlag_get(D_80370A20[i].unk2));
     }
+#endif
 }
 
 void saveData_create(SaveData *savedata){
     int i;
+#ifdef CHEAT_FLAGS_REWORK
+    int cheatOffset = 0;
+#endif
     for(i = 0; D_80370A20[i].unk0 != -1; i++){
+#ifdef CHEAT_FLAGS_REWORK
+        enum file_progress_e cheatBits = FILEPROG_FF_SANDCASTLE_CHEAT_ONE + (cheatOffset * 6);
+        if (D_80370A20[i].unk0 == VOLATILE_FLAG_65_CHEAT_ENTERED) {
+            fileProgressFlag_set(D_80370A20[i].unk2, volatileFlag_get(D_80370A20[i].unk0));
+        } else if (volatileFlag_get(D_80370A20[i].unk0)) {
+            fileProgressFlag_setN(cheatBits, D_80370A20[i].unk2, 6);
+            cheatOffset++;
+        }
+#else
         fileProgressFlag_set(D_80370A20[i].unk2, volatileFlag_get(D_80370A20[i].unk0));
+#endif
     }
     savedata_clear(savedata);
     __savedata_save_magic(savedata);

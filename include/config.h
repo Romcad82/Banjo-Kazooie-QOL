@@ -125,6 +125,12 @@
 #define ENTER_MORE_THAN_3_BANNED_CHEATS
 
 /**
+ * Reworks the save flags for banned cheats. Instead of each cheat having their own individual flag (most of which will go unused), save the indexes of whatever cheats were used.
+ * Only two cheats can be saved per file. 6 bits are used for each cheat (which can allow up to 63 different cheats to be saved).
+ */
+#define CHEAT_FLAGS_REWORK
+
+/**
  * Adds additional cheats to use, which are:
  * -"THIS CHEAT IS NO LIE RAISE THE WATER LEVEL VERY HIGH" - Raises the water level in Grunty's Lair to the 2nd level
  * -"THIS ONES SUCH A CHORE GET RID OF THE EIGHTH NOTE DOOR" - Unlocks the Eighth Note Door
@@ -133,6 +139,7 @@
  * -"THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME" - Activates all Note Door Cheats, Complete Puzzle Cheats, Lair Progress Cheats, World Door Cheats, and Additional Cheats
  * (Note: Using this cheat will automatically trigger the text that will delete your save if you accept)
  *
- * NOTE: These codes also work with SHORTER_CHEATS enabled.
+ * NOTE: CHEAT_FLAGS_REWORK must be on to save properly.
+ * Note: These codes also work with SHORTER_CHEATS enabled.
  */
 #define ADDITIONAL_CHEATS
