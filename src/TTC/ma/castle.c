@@ -824,6 +824,18 @@ static SecretCheatCode sSecretsCheatCodes[] = {
 
     // Grunty You Will Displease When You Open Her Door With Ease
     {"5e7l7e6ml7j", 0, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // All The Cauldrons You Will Wake Little Effort It Will Take
+    {"nd0e77bj47d", 0, VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Banjos Got His Groove Now That Hes Learned Every Move
+    {"k5m5idmbj1", 0, VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Many Treasures Are Now Yours Unlock The Last Four Note Doors
+    {"1dniegdbcil", 0, VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Youll Stay Out Of Trouble When Your Health Is Double
+    {"e266d7em4l", 0, VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
  #endif
 #else
     // GO RIGHT ON THROUGH NOTE DOOR TWO
@@ -967,6 +979,18 @@ static SecretCheatCode sSecretsCheatCodes[] = {
 
     // GRUNTY YOU WILL DISPLEASE WHEN YOU OPEN HER DOOR WITH EASE
     {"59gidee6g74bbl42rbjn2j7mjie6g6rjimj9l66974dmjn2j", 0, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // ALL THE CAULDRONS YOU WILL WAKE LITTLE EFFORT IT WILL TAKE
+    {"nbbdmj0ngbl96i2e6g74bb7n8jb4ddbjjcc69d4d74bbdn8j", 0, VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // BANJOS GOT HIS GROOVE NOW THAT HES LEARNED EVERY MOVE
+    {"knip6256dm425966aji67dmndmj2bjn9ijljaj9e16aj", 0, VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // MANY TREASURES ARE NOW YOURS UNLOCK THE LAST FOUR NOTE DOORS
+    {"1nied9jn2g9j2n9ji67e6g92gib608dmjbn2dc6g9i6djl6692", 0, VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // YOULL STAY OUT OF TROUBLE WHEN YOUR HEALTH IS DOUBLE
+    {"e6gbb2dne6gd6cd96gkbj7mjie6g9mjnbdm42l6gkbj", 0, VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
  #endif
 #endif
 
@@ -976,7 +1000,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
 static u8 sLastFloorTileHitCorret = 0; // 0 = "initial", 1 = incorrect, 2 = correct
 #ifdef ADDITIONAL_CHEATS
 static s32 sBackupBannedCheatCodeTotal = 0;
-static BannedCheatCodeRange sBannedCheatCodeRanges[5] = {
+static BannedCheatCodeRange sBannedCheatCodeRanges[9] = {
 #else
 static BannedCheatCodeRange sBannedCheatCodeRanges[4] = {
 #endif
@@ -996,6 +1020,22 @@ static BannedCheatCodeRange sBannedCheatCodeRanges[4] = {
     {
         VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL + VOLATILE_FLAG_CHEAT_OFFSET,
         VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG + VOLATILE_FLAG_CHEAT_OFFSET
+    },
+    {
+        VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS + VOLATILE_FLAG_CHEAT_OFFSET,
+        VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS + VOLATILE_FLAG_CHEAT_OFFSET
+    },
+    {
+        VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES + VOLATILE_FLAG_CHEAT_OFFSET,
+        VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES + VOLATILE_FLAG_CHEAT_OFFSET
+    },
+    {
+        VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS + VOLATILE_FLAG_CHEAT_OFFSET,
+        VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS + VOLATILE_FLAG_CHEAT_OFFSET
+    },
+    {
+        VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET,
+        VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET
     },
 #endif
     NULL
@@ -1123,6 +1163,10 @@ static void unlock_all_cheat_flags(enum volatile_flags_e volaflag_cheat_id) {
     for (i = VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL; i <= VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG; i++) {
         volatileFlag_set(i, 1);
     }
+    volatileFlag_set(VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS, 1);
+    volatileFlag_set(VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES, 1);
+    volatileFlag_set(VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS, 1);
+    volatileFlag_set(VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH, 1);
 
     __maCastle_setFileProgressForSecretCheatCode(0, 14, VOLATILE_FLAG_6C_SANDCASTLE_PUZZLE_COMPLETE_CC, FILEPROG_60_CC_PUZZLE_PIECES_PLACED, 5, 3, FILEPROG_33_CC_OPEN);
     __maCastle_setFileProgressForSecretCheatCode(0, 15, VOLATILE_FLAG_6D_SANDCASTLE_PUZZLE_COMPLETE_BGS, FILEPROG_63_BGS_PUZZLE_PIECES_PLACED, 7, 3, FILEPROG_34_BGS_OPEN);
@@ -1132,6 +1176,7 @@ static void unlock_all_cheat_flags(enum volatile_flags_e volaflag_cheat_id) {
     __maCastle_setFileProgressForSecretCheatCode(0, 19, VOLATILE_FLAG_71_SANDCASTLE_PUZZLE_COMPLETE_RBB, FILEPROG_72_RBB_PUZZLE_PIECES_PLACED, 0xC, 4, FILEPROG_38_RBB_OPEN);
     __maCastle_setFileProgressForSecretCheatCode(0, 20, VOLATILE_FLAG_72_SANDCASTLE_PUZZLE_COMPLETE_CCC, FILEPROG_76_CCW_PUZZLE_PIECES_PLACED, 0xF, 4, FILEPROG_39_CCW_OPEN);
     __maCastle_setFileProgressForSecretCheatCode(0, 54, VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG, FILEPROG_7A_DOG_PUZZLE_PIECES_PLACED, 0x19, 5, FILEPROG_E2_DOOR_OF_GRUNTY_OPEN);
+    __maCastle_setFileProgressForSecretCheatCode(0, 58, VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH, FILEPROG_7F_DOUBLE_HEALTH_PUZZLE_PIECES_PLACED, 4, 3, FILEPROG_B9_DOUBLE_HEALTH);
 
     fileProgressFlag_set(FILEPROG_53_CCW_PUZZLE_PODIUM_SWITCH_PRESSED, 1);
     fileProgressFlag_set(FILEPROG_54_CCW_PUZZLE_PODIUM_ACTIVE, 1);
@@ -1142,6 +1187,22 @@ static void unlock_all_cheat_flags(enum volatile_flags_e volaflag_cheat_id) {
     fileProgressFlag_set(FILEPROG_25_LAIR_WATER_LEVEL_2, 1);
     
     fileProgressFlag_set(FILEPROG_F6_SEEN_DOOR_OF_GRUNTY_PUZZLE_PODIUM, 1);
+
+    fileProgressFlag_set(FILEPROG_49_PINK_CAULDRON_1_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_4A_PINK_CAULDRON_2_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_4B_GREEN_CAULDRON_1_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_4C_GREEN_CAULDRON_2_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_4D_RED_CAULDRON_1_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_4E_RED_CAULDRON_2_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_51_YELLOW_CAULDRON_1_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_52_YELLOW_CAULDRON_2_ACTIVE, 1);
+    fileProgressFlag_set(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET, 1);
+
+    ability_setAllLearned(0xFFFFF);
+    ability_setAllUsed(0x1FFF);
+
+    func_80347958();
+    item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
 
     __maCastle_resetSecretCheatCodeProgress();
 }
@@ -1251,9 +1312,20 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
         5,
         FILEPROG_E2_DOOR_OF_GRUNTY_OPEN
     );
+    __maCastle_setFileProgressForSecretCheatCode(
+        0,
+        secret_cheat_code_index,
+        VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH,
+        FILEPROG_7F_DOUBLE_HEALTH_PUZZLE_PIECES_PLACED,
+        4,
+        3,
+        FILEPROG_B9_DOUBLE_HEALTH
+    );
 #endif
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, 8);
+#ifndef ADDITIONAL_CHEATS
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_77_SANDCASTLE_SET_HEALTH_TO_MAX, ITEM_14_HEALTH, 0, item_getCount(ITEM_15_HEALTH_TOTAL));
+#endif
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_95_SANDCASTLE_INFINTE_MUMBO_TOKENS, ITEM_1C_MUMBO_TOKEN, 0, 99);
     if (volaflag_cheat_id == VOLATILE_FLAG_81_SANDCASTLE_CCC_JIGGY_PODIUM)
     {
@@ -1271,6 +1343,28 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
     if (volaflag_cheat_id == VOLATILE_FLAG_7C_SANDCASTLE_PUZZLE_COMPLETE_DOG)
     {
         fileProgressFlag_set(FILEPROG_F6_SEEN_DOOR_OF_GRUNTY_PUZZLE_PODIUM, 1);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS)
+    {
+        fileProgressFlag_set(FILEPROG_49_PINK_CAULDRON_1_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_4A_PINK_CAULDRON_2_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_4B_GREEN_CAULDRON_1_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_4C_GREEN_CAULDRON_2_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_4D_RED_CAULDRON_1_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_4E_RED_CAULDRON_2_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_51_YELLOW_CAULDRON_1_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_52_YELLOW_CAULDRON_2_ACTIVE, 1);
+        fileProgressFlag_set(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET, 1);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES)
+    {
+        ability_setAllLearned(0xFFFFF);
+        ability_setAllUsed(0x1FFF);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH)
+    {
+        func_80347958();
+        item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
     }
 #endif
 

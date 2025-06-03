@@ -205,7 +205,11 @@ s16 D_80393494[]  = {VOLATILE_FLAG_66_SANDCASTLE_OPEN_DOOR_TWO,
                      VOLATILE_FLAG_69_SANDCASTLE_OPEN_DOOR_FIVE,
                      VOLATILE_FLAG_6A_SANDCASTLE_OPEN_DOOR_SIX,
                      VOLATILE_FLAG_6B_SANDCASTLE_OPEN_DOOR_SEVEN,
-                     VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT}; 
+                     VOLATILE_FLAG_7B_SANDCASTLE_OPEN_DOOR_EIGHT,
+                     VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS,
+                     VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS,
+                     VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS,
+                     VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS}; 
 #else
 s16 D_80393494[]  = {0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B}; 
 #endif
@@ -679,7 +683,7 @@ void func_80387730(Actor *this) {
             return;
         }
 #ifdef ADDITIONAL_CHEATS
-        if ((this->unkF4_8 >= 2U) && (this->unkF4_8 <= 8U) && volatileFlag_get(D_80393494[this->unkF4_8 - 2])) {
+        if ((this->unkF4_8 >= 2U) && (this->unkF4_8 <= 12U) && volatileFlag_get(D_80393494[this->unkF4_8 - 2])) {
 #else
         if ((this->unkF4_8 >= 2U) && (this->unkF4_8 < 8U) && volatileFlag_get(D_80393494[this->unkF4_8 - 2])) {
 #endif

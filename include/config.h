@@ -134,7 +134,11 @@
  * Adds additional cheats to use, which are:
  * -"THIS CHEAT IS NO LIE RAISE THE WATER LEVEL VERY HIGH" - Raises the water level in Grunty's Lair to the 2nd level
  * -"THIS ONES SUCH A CHORE GET RID OF THE EIGHTH NOTE DOOR" - Unlocks the Eighth Note Door
- * -"GRUNTY YOU WILL DISPLEASE WHEN YOU OPEN HER DOOR WITH EASE" - Completes the Grunty picture and unlocks door of grunty
+ * -"GRUNTY YOU WILL DISPLEASE WHEN YOU OPEN HER DOOR WITH EASE" - Completes the Grunty picture and unlocks Door of Grunty
+ * -"ALL THE CAULDRONS YOU WILL WAKE LITTLE EFFORT IT WILL TAKE" - Unlock all Cauldrons
+ * -"BANJOS GOT HIS GROOVE NOW THAT HES LEARNED EVERY MOVE" - Unlock all abilities
+ * -"MANY TREASURES ARE NOW YOURS UNLOCK THE LAST FOUR NOTE DOORS" - Unlocks the Four Note Doors in the room with Dingpot
+ * -"YOULL STAY OUT OF TROUBLE WHEN YOUR HEALTH IS DOUBLE" - Gives Double Health Upgrade
  *
  * -"THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME" - Activates all Note Door Cheats, Complete Puzzle Cheats, Lair Progress Cheats, World Door Cheats, and Additional Cheats
  * (Note: Using this cheat will automatically trigger the text that will delete your save if you accept)
