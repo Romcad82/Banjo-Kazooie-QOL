@@ -85,7 +85,8 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
     s32 s6;
 
 #ifdef HEALTH_SYSTEM_REWORK
-    s32 honeycombTotalHealth = ((honeycombscore_get_total() / 6) + 5);
+    u8 baseHealth = 5 + (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH) * 4);
+    s32 honeycombTotalHealth = MIN((baseHealth + (honeycombscore_get_total() / 6)), 9);
     s8 hasDoubleHealth = fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH);
     bool pauseHud = (honeycombTotalHealth != (item_getCount(ITEM_15_HEALTH_TOTAL) / (hasDoubleHealth + 1)));
 

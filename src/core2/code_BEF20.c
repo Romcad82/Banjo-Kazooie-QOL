@@ -811,22 +811,30 @@ void itemscore_timeScores_fromSaveData(u16 *savedata) {
 void func_8034789C(void) {
     s32 sp1C;
     s32 temp_v0;
+#ifdef HEALTH_SYSTEM_REWORK
+    u8 baseHealth = 5 + (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH) * 4);
+    s32 honeycombTotalHealth;
+#endif
 
     sp1C = honeycombscore_get_total();
     D_80385F30[ITEM_13_EMPTY_HONEYCOMB] = sp1C % 6;
+#ifdef HEALTH_SYSTEM_REWORK
+    honeycombTotalHealth = MIN((baseHealth + (sp1C / 6)), 9);
+#endif
     if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
 #ifdef HEALTH_SYSTEM_REWORK
-        D_80385F30[ITEM_15_HEALTH_TOTAL] = (5 + (sp1C / 6)) * 2;
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombTotalHealth * 2;
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] = 16;
 #endif
     } else {
 #ifdef HEALTH_SYSTEM_REWORK
-        D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + (sp1C / 6);
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombTotalHealth;
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + MIN(3, (sp1C / 6));
 #endif
     }
+#ifndef HEALTH_SYSTEM_REWORK
     if (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH)) {
         temp_v0 = D_80385F30[ITEM_15_HEALTH_TOTAL];
         if (temp_v0 >= 9) {
@@ -836,6 +844,7 @@ void func_8034789C(void) {
             D_80385F30[ITEM_15_HEALTH_TOTAL] = 8;
         }
     }
+#endif
 }
 
 void func_80347958(void){

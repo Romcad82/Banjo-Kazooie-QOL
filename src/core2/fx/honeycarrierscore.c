@@ -232,11 +232,15 @@ void fxhoneycarrierscore_update(s32 arg0, struct8s *arg1){
                         item_adjustByDiffWithHud(ITEM_13_EMPTY_HONEYCOMB, -6);
                         timedFunc_set_2(0.25f, (GenFunction_2)func_8025A6EC, COMUSIC_2B_DING_B, 28000);
                         item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
-                        timedFunc_set_1(1.25f, (GenFunction_1)item_inc, ITEM_15_HEALTH_TOTAL);
 #ifdef HEALTH_SYSTEM_REWORK
-                        if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
+                        if (((item_getCount(ITEM_15_HEALTH_TOTAL) / (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH) + 1)) + 1) <= 9) {
                             timedFunc_set_1(1.25f, (GenFunction_1)item_inc, ITEM_15_HEALTH_TOTAL);
+                            if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
+                                timedFunc_set_1(1.25f, (GenFunction_1)item_inc, ITEM_15_HEALTH_TOTAL);
+                            }
                         }
+#else
+                        timedFunc_set_1(1.25f, (GenFunction_1)item_inc, ITEM_15_HEALTH_TOTAL);
 #endif
                         timedFunc_set_1(1.25f, (GenFunction_1)sfxsource_playHighPriority, SFX_3EA_UNKNOWN);
 #ifdef HEALTH_SYSTEM_REWORK

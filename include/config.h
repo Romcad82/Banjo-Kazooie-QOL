@@ -48,6 +48,7 @@
  * -Collectible Flag Radius Bug
  * -CCW Pink Jinjo Jiggy Despawn (Note: In vanilla, you can respawn the Jiggy by recollecting the Jinjos again, but with JINJO_SAVING enabled, the Jiggy can become permanently uncollectable)
  * -Incorrect BK Health Sprites
+ * -Max Health Cheat Temporarily Removes Double Defense (Note: HEALTH_SYSTEM_REWORK also fixes this bug)
  */
 #define BUG_FIXES
 

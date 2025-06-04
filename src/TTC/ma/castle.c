@@ -1322,7 +1322,13 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
         FILEPROG_B9_DOUBLE_HEALTH
     );
 #endif
+#ifndef HEALTH_SYSTEM_REWORK
+ #ifdef BUG_FIXES
+    __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, (8 * (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH) + 1)));
+ #else
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, 8);
+ #endif
+#endif
 #ifndef ADDITIONAL_CHEATS
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_77_SANDCASTLE_SET_HEALTH_TO_MAX, ITEM_14_HEALTH, 0, item_getCount(ITEM_15_HEALTH_TOTAL));
 #endif
@@ -1332,6 +1338,13 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
         fileProgressFlag_set(FILEPROG_53_CCW_PUZZLE_PODIUM_SWITCH_PRESSED, 1);
         fileProgressFlag_set(FILEPROG_54_CCW_PUZZLE_PODIUM_ACTIVE, 1);
     }
+#ifdef HEALTH_SYSTEM_REWORK
+    if (volaflag_cheat_id == VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH)
+    {
+        func_80347958();
+        item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
+    }
+#endif
 #ifdef ADDITIONAL_CHEATS
     if (volaflag_cheat_id == VOLATILE_FLAG_7A_SANDCASTLE_RAISE_WATER_LEVEL)
     {
