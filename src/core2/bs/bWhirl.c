@@ -5,6 +5,8 @@
 #include "core2/ba/anim.h"
 #include "core2/ba/physics.h"
 
+#include "config.h"
+
 const f32 D_80364AD0 = 80.0f;
 const f32 D_80364AD4 = 425.0f;
 const f32 D_80364AD8 = 0.56f;
@@ -53,7 +55,11 @@ enum bs_e func_802AA510(enum bs_e arg0){
     if(bastick_getZone(arg0) > 0)
         arg0 = BS_1C_WONDERWING_WALK;
 
+#ifdef PRESS_Z_TO_EXIT_MOVES
+    if(bakey_pressed(BUTTON_Z))
+#else
     if(bakey_released(BUTTON_Z))
+#endif
         arg0 = BS_1E_WONDERWING_EXIT;
 
     if(bakey_pressed(BUTTON_A) && player_isStable())
@@ -148,7 +154,11 @@ void bsbwhirl_walk_update(void){
     if(!bastick_getZone() && baphysics_is_slower_than(1.0f))
         sp1C = BS_1B_WONDERWING_IDLE;
 
+#ifdef PRESS_Z_TO_EXIT_MOVES
+    if(bakey_pressed(BUTTON_Z))
+#else
     if(bakey_released(BUTTON_Z))
+#endif
         sp1C = BS_1E_WONDERWING_EXIT;
 
     if(bakey_pressed(BUTTON_A) && player_isStable())
