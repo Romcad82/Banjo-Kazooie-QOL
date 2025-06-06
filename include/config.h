@@ -96,6 +96,11 @@
 #define ONLY_B_BUTTON_SKIPS_DIALOG
 
 /**
+ * Unlock the ability to place all Jiggies in a picture before Bottles tells you.
+ */
+#define UNLOCK_PLACE_ALL_PUZZLE_PIECES
+
+/**
  * The Sand Castle becomes permanently drained when you collect the Sand Castle Jiggy.
  */
 #define SAND_CASTLE_PERMANENTLY_DRAINED

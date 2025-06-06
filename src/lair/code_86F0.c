@@ -496,7 +496,11 @@ void lair_func_8038F924(Actor *this) {
                     lair_func_8038F894(this, 5);
                 } else if (sp7C[FACE_BUTTON(BUTTON_B)] == 1) {
                     func_8038F350(this, 1);
+#ifdef UNLOCK_PLACE_ALL_PUZZLE_PIECES
+                } else if (sp6C[SIDE_BUTTON(BUTTON_Z)] == 1) {
+#else
                 } else if ((sp6C[SIDE_BUTTON(BUTTON_Z)] == 1) && fileProgressFlag_get(FILEPROG_E0_CAN_PLACE_ALL_PUZZLE_PIECES)) {
+#endif
                     lair_func_8038F894(this, 6);
                 } else if (sp7C[FACE_BUTTON(BUTTON_C_DOWN)] == 1) {
                     if (local->unk4) {
