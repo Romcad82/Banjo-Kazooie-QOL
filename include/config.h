@@ -67,6 +67,14 @@
 #define BETTER_CAMERA
 
 /**
+ * Removes the FPS Caps in Gobi's Valley Lobby and the First End Beach Cutscene. Those maps now run at 30 fps instead of 20 fps.
+ *
+ * NOTE: This change has some unintentional side effects.
+ *       You can't clip inside the coffin to get the GV Witch Switch Jiggy early, the moving Shock Jump Spring Pad moves faster, and the dialog in the beach cutscene runs faster.
+ */
+#define REMOVE_FPS_CAPS
+
+/**
  * Allows you to skip the following cutscenes:
  * -Rareware Cutscene (Note: This is the very first cutscene you see when you boot up the game)
  * -Intro Cutscene
