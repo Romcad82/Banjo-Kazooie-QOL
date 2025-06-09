@@ -100,6 +100,23 @@ void CCW_func_8038DB0C(Actor *this){
     }
 }
 
+/*
+ * For some reason, editing src/CCW/code_160.c can cause a crash when loading into MAP_22_CC_INSIDE_CLANKER.
+ * How or why is beyond me, but arbitrarily moving the bug fix to a different file seems to avert the crash.
+ */
+#ifdef BUG_FIXES
+Actor *ccw_code160_assign_zubba_jiggy(Actor *this) {
+    Actor *other;
+    other = actorArray_findClosestActorFromActorId(this->position, ACTOR_46_JIGGY, -1, NULL); // Assign the nearest jiggy to the object instead of the first jiggy found in the actor array
+    if (other != NULL) {
+        if (chjiggy_getJiggyId(other) != JIGGY_4C_CCW_ZUBBAS) { // If nearest jiggy is not Zubba jiggy, reset "other" to NULL
+            other = NULL; 
+        }
+    }
+    return other;
+}
+#endif
+
 void CCW_func_8038DB6C(void)
 {
     spawnableActorList_add(&D_8038EB50, actor_new, ACTOR_FLAG_UNKNOWN_7);

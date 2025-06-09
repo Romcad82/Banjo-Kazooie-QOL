@@ -145,14 +145,9 @@ void func_8038687C(Actor *this) {
         return;
     }
     if ((s32)local->unk0 == 1) {
-// Fixes bug where Jiggy spawned from Pink Jinjo gets mistakenly assigned to "other" variable and gets despawned when you leave beehive
+// Fixes a bug where the Jiggy spawned from the Pink Jinjo gets mistakenly assigned to "other" variable and gets despawned when you leave the beehive.
 #ifdef BUG_FIXES
-        other = actorArray_findClosestActorFromActorId(this->position, ACTOR_46_JIGGY, -1, NULL); // Use the nearest jiggy to the object instead of the first jiggy found in the actor array
-        if (other != NULL) {
-            if (chjiggy_getJiggyId(other) != JIGGY_4C_CCW_ZUBBAS) { // If nearest jiggy is not Zubba jiggy, reset "other" to NULL
-                other = NULL; 
-            }
-        }
+        other = ccw_code160_assign_zubba_jiggy(this);
 #else
         other = actorArray_findActorFromActorId(0x46);
 #endif
