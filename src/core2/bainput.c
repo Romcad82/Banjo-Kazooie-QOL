@@ -65,6 +65,16 @@ int bainput_should_wonderwing(void){
     return bakey_pressed(BUTTON_C_RIGHT) && can_wonderwing();
 }
 
+#ifdef DONT_HOLD_Z_TO_USE_MOVES
+int press_button_to_exit_move(void) {
+    if (getGameMode() == GAME_MODE_3_NORMAL) {
+        return (bakey_pressed(BUTTON_Z) || bakey_pressed(BUTTON_B));
+    } else {
+        return bakey_released(BUTTON_Z);
+    }
+}
+#endif
+
 void bainput_reset(void){
     bainput_enableMask = -1;
     bainput_diveCooldown = 0.0f;

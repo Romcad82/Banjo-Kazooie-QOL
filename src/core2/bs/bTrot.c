@@ -159,8 +159,8 @@ int func_802A8C60(void){
     if(stateTimer_isActive(STATE_TIMER_3_TURBO_TALON))
         return 0;
 
-#ifdef PRESS_Z_TO_EXIT_MOVES
-    return bakey_pressed(BUTTON_Z);
+#ifdef DONT_HOLD_Z_TO_USE_MOVES
+    return press_button_to_exit_move();
 #else
     return bakey_released(BUTTON_Z);
 #endif

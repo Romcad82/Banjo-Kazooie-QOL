@@ -94,9 +94,9 @@
 #define REIMPLEMENT_EXIT_TO_WITCHS_LAIR
 
 /**
- * Press Z to exit out of Talon Trot and Wonderwing.
+ * When you use Talon Trot or Wonderwing, you don't need to hold Z to keep using them. To exit, you can press Z or B.
  */
-#define PRESS_Z_TO_EXIT_MOVES
+#define DONT_HOLD_Z_TO_USE_MOVES
 
 /**
  * Instead of holding L, R, and B to skip dialog, you can just press B.
