@@ -44,6 +44,7 @@
 
 /**
  * Fixes the following bugs:
+ * -Jinjo Statue Softlock
  * -Yum-Yum Crash
  * -Collectible Flag Radius Bug
  * -CCW Pink Jinjo Jiggy Despawn (Note: In vanilla, you can respawn the Jiggy by recollecting the Jinjos again, but with JINJO_SAVING enabled, the Jiggy can become permanently uncollectable)

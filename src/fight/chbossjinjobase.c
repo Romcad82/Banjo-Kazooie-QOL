@@ -82,6 +82,12 @@ void chBossJinjoBase_update(Actor *this) {
     marker_loadModelBin(this->marker);
 
     if (!this->volatile_initialized) {
+        // This fixes the Jinjo Statue Softlock
+#ifdef BUG_FIXES
+        if (this->marker->unk20) {
+            this->marker->unk20 = 0;
+        }
+#endif
         this->volatile_initialized = TRUE;
         marker_setCollisionScripts(this->marker, NULL, chBossJinjoBase_getHitByEgg, NULL);
         marker_setFreeMethod(this->marker, chBossJinjoBase_free);
