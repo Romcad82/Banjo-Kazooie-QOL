@@ -91,7 +91,7 @@ enum gcpausemenu_menu_e {
 /* .data */
 struct1As D_8036C4E0[4] = {
     {0.0f, 0.0f, "RETURN TO GAME",         55, ZOOMBOX_SPRITE_4_BANJO_1, 0},
-    {0.3f, 0.0f, "EXIT TO WITCH'S LAIR", -100, ZOOMBOX_SPRITE_4_BANJO_1, 1},
+    {0.3f, 0.0f, "EXIT TO WITCH'S LAIR", -100, ZOOMBOX_SPRITE_4_BANJO_1, 0},
     {0.1f, 0.0f, "VIEW TOTALS",            90, ZOOMBOX_SPRITE_6_JIGGY_1, 0},
     {0.2f, 0.0f, "SAVE AND QUIT",         125, ZOOMBOX_SPRITE_7_TOOTY_1, 0},
 };

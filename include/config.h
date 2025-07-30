@@ -2,6 +2,7 @@
 
 /**
  * Internal ROM name. NEEDS TO BE **EXACTLY** 20 CHARACTERS. Can't be 19 characters, can't be 21 characters. You can fill it with spaces.
+ * If left undefined, the default ROM name will be "Banjo-Kazooie".
  * The end quote should be here:               "
  */
 #define INTERNAL_ROM_NAME "Banjo-Kazooie QOL   "
@@ -28,8 +29,8 @@
 
 /**
  * Saves collected Jinjos so you don't have to recollect them.
- * Also saves ID of the Jinjo that spawned the Jiggy for each world, so Jiggies can respawn at that Jinjo if you don't collect them.
- * Lastly, it
+ * Also saves the ID of the Jinjo that spawned the Jiggy for each world, so Jiggies can respawn at that Jinjo if you don't collect them.
+ *
  * Note: EEPROM_16K must be on to save properly.
  */
 #define JINJO_SAVING

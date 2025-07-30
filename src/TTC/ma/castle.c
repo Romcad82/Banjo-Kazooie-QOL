@@ -1468,19 +1468,26 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
     bool playedSFX = FALSE;
 #endif
 
-#ifdef EASIER_CHEATS
+#if defined(EASIER_CHEATS) || defined(ENTER_MORE_THAN_3_BANNED_CHEATS)
+ #ifdef EASIER_CHEATS
     if (sLastFloorTileHitCorret == 2) {
         __maCastle_resetSecretCheatCodeProgress();
     }
-#else
+ #else
     if (sLastFloorTileHitCorret == 2)
     {
         return FALSE;
     }
-#endif
+ #endif
 
-#ifndef ENTER_MORE_THAN_3_BANNED_CHEATS
+ #ifndef ENTER_MORE_THAN_3_BANNED_CHEATS
     if (__maCastle_getNumberOfBannedCheatCodesEntered() == 3)
+    {
+        return FALSE;
+    }
+ #endif
+#else
+    if ((sLastFloorTileHitCorret == 2) || (__maCastle_getNumberOfBannedCheatCodesEntered() == 3))
     {
         return FALSE;
     }

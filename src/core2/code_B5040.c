@@ -181,9 +181,10 @@ void savedata_init(void){ //savedata_init
     u8 *jinjosaving_addr;
     u8 *jinjojiggyrespawn_addr;
 #endif
-
+#ifdef EEPROM_16K
     s32 prevOffset;
     s32 prevSize;
+#endif
     
     jiggyscore_getSizeAndPtr(&jiggy_size, &jiggy_addr);
     honeycombscore_getSizeAndPtr(&honeycomb_size, &honeycomb_addr);
@@ -209,22 +210,24 @@ void savedata_init(void){ //savedata_init
     progressflagsOffset = timescoresOffset + timescores_size;
     savedItemsOffset = progressflagsOffset + progressflags_size;
     abilitiesOffset = savedItemsOffset + saved_item_size;
-
+#ifdef EEPROM_16K
     prevOffset = abilitiesOffset;
     prevSize = abilities_size;
-
-#ifdef NOTE_SAVING
+ #ifdef NOTE_SAVING
     notesavingOffset = prevOffset + prevSize;
     prevOffset = notesavingOffset;
     prevSize = notesaving_size;
-#endif
-#ifdef JINJO_SAVING
+ #endif
+ #ifdef JINJO_SAVING
     jinjosavingOffset = prevOffset + prevSize;
     jinjojiggyrespawnOffset = jinjosavingOffset + jinjosaving_size;
     prevOffset = jinjojiggyrespawnOffset;
     prevSize = jinjojiggyrespawn_size;
-#endif
+ #endif
     endOffset = prevOffset + prevSize;
+#else
+    endOffset = abilitiesOffset + abilities_size;
+#endif
 }
 
 void __savedata_load_jiggyScore(u8 *savedata){
@@ -543,12 +546,14 @@ void saveData_load(SaveData *savedata){
     __savedata_load_timeScores(savedata);
     func_8033C4E4(savedata);
     __savedata_load_abilities(savedata);
-#ifdef NOTE_SAVING
+#ifdef EEPROM_16K
+ #ifdef NOTE_SAVING
     __savedata_load_notesavings(savedata);
-#endif
-#ifdef JINJO_SAVING
+ #endif
+ #ifdef JINJO_SAVING
     __savedata_load_jinjosavings(savedata);
     __savedata_load_jinjojiggyrespawns(savedata);
+ #endif
 #endif
 
 #ifdef CHEAT_FLAGS_REWORK
@@ -595,12 +600,14 @@ void saveData_create(SaveData *savedata){
     __savedata_8033C8A0(savedata);
     __savedata_8033CA2C(savedata);
     __savedata_save_abilities(savedata);
-#ifdef NOTE_SAVING
+#ifdef EEPROM_16K
+ #ifdef NOTE_SAVING
     __savedata_save_notesavings(savedata);
-#endif
-#ifdef JINJO_SAVING
+ #endif
+ #ifdef JINJO_SAVING
     __savedata_save_jinjosavings(savedata);
     __savedata_save_jinjojiggyrespawns(savedata);
+ #endif
 #endif
     savedata_update_crc(savedata, sizeof(SaveData));
 }
