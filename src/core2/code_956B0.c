@@ -1492,6 +1492,10 @@ void warp_lairEnterLairFromSMLevel(s32 arg0, s32 arg1) {
         func_8031CC8C(arg0, 0x6912);
     } else {
         fileProgressFlag_set(FILEPROG_BD_ENTER_LAIR_CUTSCENE, 1);
+#ifdef ADDITIONAL_CHEATS
+        volatileFlag_set(VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN, 1);
+        volatileFlag_set(VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH, 1);
+#endif
         // Enter Lair Cutscene
         func_8031CC8C(arg0, 0x8204);
     }

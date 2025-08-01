@@ -2237,6 +2237,9 @@ void chfinalboss_setBossDefeated(void) {
     sp40 = chjinjonator_80391240();
     camera_node = 0x14;
     fileProgressFlag_set(FILEPROG_FC_DEFEAT_GRUNTY, TRUE);
+#ifdef ADDITIONAL_CHEATS
+    volatileFlag_set(VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH, FALSE);
+#endif
     if (sp48->mirror_phase5 != 0) {
         camera_node = 0x23;
     }

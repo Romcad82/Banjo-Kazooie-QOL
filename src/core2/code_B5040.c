@@ -63,6 +63,8 @@ Struct_B5040 D_80370A20[] = {
     {VOLATILE_FLAG_1D_SANDCASTLE_LEARN_ALL_ABILITIES,                   41},
     {VOLATILE_FLAG_B1_SANDCASTLE_OPEN_DINGPOT_NOTE_DOORS,               42},
     {VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH,                  43},
+    {VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN, FILEPROG_10C_SANDCASTLE_REPLAY_FURNACE_FUN},
+    {VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH, FILEPROG_10D_SANDCASTLE_FINAL_BOSS_REMATCH},
  #endif
     {VOLATILE_FLAG_65_CHEAT_ENTERED, FILEPROG_10B_CHEAT_ENTERED},
 #else
@@ -564,6 +566,10 @@ void saveData_load(SaveData *savedata){
             volatileFlag_set(D_80370A20[cheatIndex].unk0, TRUE);
         }
     }
+ #ifdef ADDITIONAL_CHEATS
+    volatileFlag_set(VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN, fileProgressFlag_get(FILEPROG_10C_SANDCASTLE_REPLAY_FURNACE_FUN));
+    volatileFlag_set(VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH, fileProgressFlag_get(FILEPROG_10D_SANDCASTLE_FINAL_BOSS_REMATCH));
+ #endif
     volatileFlag_set(VOLATILE_FLAG_65_CHEAT_ENTERED, fileProgressFlag_get(FILEPROG_10B_CHEAT_ENTERED));
 #else
     for(i = 0; D_80370A20[i].unk0 != -1; i++){
@@ -582,7 +588,13 @@ void saveData_create(SaveData *savedata){
         enum file_progress_e cheatBits = FILEPROG_FF_SANDCASTLE_CHEAT_ONE + (cheatOffset * 6);
         if (D_80370A20[i].unk0 == VOLATILE_FLAG_65_CHEAT_ENTERED) {
             fileProgressFlag_set(D_80370A20[i].unk2, volatileFlag_get(D_80370A20[i].unk0));
-        } else if (volatileFlag_get(D_80370A20[i].unk0)) {
+        }
+ #ifdef ADDITIONAL_CHEATS
+          else if ((D_80370A20[i].unk0 == VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN) || (D_80370A20[i].unk0 == VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH)) {
+            fileProgressFlag_set(D_80370A20[i].unk2, volatileFlag_get(D_80370A20[i].unk0));
+        }
+ #endif
+          else if (volatileFlag_get(D_80370A20[i].unk0)) {
             fileProgressFlag_setN(cheatBits, D_80370A20[i].unk2, 6);
             cheatOffset++;
         }

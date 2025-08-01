@@ -147,7 +147,7 @@
 
 /**
  * Reworks the save flags for banned cheats. Instead of each cheat having their own individual flag (most of which will go unused), save the indexes of whatever cheats were used.
- * Only two cheats can be saved per file. 6 bits are used for each cheat (which can allow up to 63 different cheats to be saved).
+ * Only two cheats can be saved per file. 6 bits are used for each cheat (which can technically allow up to 63 different cheats to be saved, but you are limited to how many volatile flags there are).
  */
 #define CHEAT_FLAGS_REWORK
 
@@ -160,9 +160,14 @@
  * -"BANJOS GOT HIS GROOVE NOW THAT HES LEARNED EVERY MOVE" - Unlock all abilities
  * -"MANY TREASURES ARE NOW YOURS UNLOCK THE LAST FOUR NOTE DOORS" - Unlocks the Four Note Doors in the room with Dingpot
  * -"YOULL STAY OUT OF TROUBLE WHEN YOUR HEALTH IS DOUBLE" - Gives Double Health Upgrade
+ * (Note: These cheats are banned, which means if you input three of them, your save file will be erased)
  *
- * -"THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME" - Activates all Note Door Cheats, Complete Puzzle Cheats, Lair Progress Cheats, World Door Cheats, and Additional Cheats
+ * -"THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME" - Activates all Note Door Cheats, Complete Puzzle Cheats, Lair Progress Cheats, World Door Cheats, and the Additional Cheats listed above
  * (Note: Using this cheat will automatically trigger the text that will delete your save if you accept)
+ *
+ * -"YOU MUST LOVE THIS GAME A TON IF YOU WANT TO REPLAY FURNACE FUN" - Lets you replay Grunty's Furnace Fun
+ * -"GRUNTY YOU MUST DISPATCH IF YOU WANT A REMATCH" - Lets you refight the Final Boss
+ * (Note: These cheats aren't banned, so input them as many times as you like)
  *
  * NOTE: CHEAT_FLAGS_REWORK must be on to save properly.
  * Note: These codes also work with SHORTER_CHEATS enabled.

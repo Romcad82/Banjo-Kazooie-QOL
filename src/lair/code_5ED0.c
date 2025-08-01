@@ -1009,6 +1009,9 @@ void func_8038D670(enum FF_Action next_state) {
                 func_8025AB00();
                 comusic_playTrack(JINGLE_DOOR_OF_GRUNTY_OPENED);
                 fileProgressFlag_set(FILEPROG_A6_FURNACE_FUN_COMPLETE, TRUE);
+#ifdef ADDITIONAL_CHEATS
+                volatileFlag_set(VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN, FALSE);
+#endif
                 volatileFlag_set(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ, FALSE);
                 volatileFlag_set(VOLATILE_FLAG_A6_FF_FOUND_HONEYCOMB, TRUE);
                 volatileFlag_set(VOLATILE_FLAG_A7_FF_FOUND_EXTRALIFE, TRUE);

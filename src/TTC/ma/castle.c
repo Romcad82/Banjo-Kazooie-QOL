@@ -836,6 +836,12 @@ static SecretCheatCode sSecretsCheatCodes[] = {
 
     // Youll Stay Out Of Trouble When Your Health Is Double
     {"e266d7em4l", 0, VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // You Must Love This Game A Ton If You Want To Replay Furnace Fun
+    {"e1bd5nd4e7d9cc", 0, VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // Grunty You Must Dispatch If You Want A Rematch
+    {"5e1l4e7n9", 0, VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
  #endif
 #else
     // GO RIGHT ON THROUGH NOTE DOOR TWO
@@ -991,6 +997,12 @@ static SecretCheatCode sSecretsCheatCodes[] = {
 
     // YOULL STAY OUT OF TROUBLE WHEN YOUR HEALTH IS DOUBLE
     {"e6gbb2dne6gd6cd96gkbj7mjie6g9mjnbdm42l6gkbj", 0, VOLATILE_FLAG_77_SANDCASTLE_UNLOCK_DOUBLE_HEALTH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // YOU MUST LOVE THIS GAME A TON IF YOU WANT TO REPLAY FURNACE FUN
+    {"e6g1g2db6ajdm425n1jnd6i4ce6g7nidd69jrbnecg9in0jcgi", 0, VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN + VOLATILE_FLAG_CHEAT_OFFSET, 00},
+
+    // GRUNTY YOU MUST DISPATCH IF YOU WANT A REMATCH
+    {"59gidee6g1g2dl42rnd0m4ce6g7nidn9j1nd0m", 0, VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH + VOLATILE_FLAG_CHEAT_OFFSET, 00},
  #endif
 #endif
 
@@ -1378,6 +1390,14 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
     {
         func_80347958();
         item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_C6_SANDCASTLE_REPLAY_FURNACE_FUN)
+    {
+        fileProgressFlag_set(FILEPROG_A6_FURNACE_FUN_COMPLETE, FALSE);
+    }
+    if (volaflag_cheat_id == VOLATILE_FLAG_C7_SANDCASTLE_FINAL_BOSS_REMATCH)
+    {
+        fileProgressFlag_set(FILEPROG_FC_DEFEAT_GRUNTY, FALSE);
     }
 #endif
 
