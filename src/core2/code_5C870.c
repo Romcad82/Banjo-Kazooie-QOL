@@ -60,6 +60,10 @@ struct{
     u8 unk1C;
 } D_8037E8E0;
 
+#ifdef SKIPPABLE_CUTSCENES
+s8 paradeHasBeenSetup = FALSE;
+#endif
+
 void func_802E3800(void){
     viewport_setPosition_f3(0.0f, 0.0f, 0.0f);
     viewport_setRotation_f3(-30.0f, 30.0f, 0.0f);
@@ -450,6 +454,9 @@ bool func_802E4424(void) {
                     func_8034B940();
                 }
                 gcparade_8031ABF8();
+#ifdef SKIPPABLE_CUTSCENES
+                paradeHasBeenSetup = TRUE;
+#endif
                 func_802E3E7C(GAME_MODE_3_NORMAL);
                 return FALSE;
 
@@ -461,6 +468,12 @@ bool func_802E4424(void) {
                 ) {
                     func_8034B940();
                 }
+#ifdef SKIPPABLE_CUTSCENES
+                if (!paradeHasBeenSetup) {
+                    gcparade_8031ABF8();
+                }
+                paradeHasBeenSetup = FALSE;
+#endif
                 gcparade_8031ABA0();
                 func_802E3E7C(GAME_MODE_3_NORMAL);
                 return FALSE;
