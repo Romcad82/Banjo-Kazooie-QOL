@@ -520,7 +520,7 @@ static Cube *__code7AF80_getCubeAtPosition(s32 position[3]) {
         (position[2] - sCubeList.min[2]) * sCubeList.stride[1];
 }
 
-Cube *cube_atPosition_s32(s32 position[3]) {
+Cube *cubeList_GetCubeAtPosition_s32(s32 position[3]) {
     s32 sp1C[3];
     s32 i;
     // Cube *out;
@@ -544,13 +544,13 @@ Cube *cube_atPosition_s32(s32 position[3]) {
         + diff[2]*sCubeList.stride[1];
 }
 
-Cube *cube_atPosition_f32(f32 position[3]){
+Cube *cubeList_GetCubeAtPosition_f32(f32 position[3]){
     s32 pos_s32[3];
 
     pos_s32[0] = (s32)position[0];
     pos_s32[1] = (s32)position[1];
     pos_s32[2] = (s32)position[2];
-    return cube_atPosition_s32(pos_s32);
+    return cubeList_GetCubeAtPosition_s32(pos_s32);
 }
 
 Cube *func_8030364C(void){
@@ -694,7 +694,7 @@ void func_80303C54(Cube *cube, ActorMarker *marker, f32 arg2, s32 arg3, s32 *arg
     while (*arg4 != -1){
         phi_s0 = func_803322F0(cube, marker, arg2, arg3, arg4);
         if (phi_s0 != NULL) {
-            if (phi_s0->unk8_0 && phi_s0->marker->unk58 != NULL) {
+            if (phi_s0->is_actor && phi_s0->marker->unk58 != NULL) {
                 if (phi_s0->marker->unk58(phi_s0->marker, marker) == 0) {
                     phi_s0 = NULL;
                 }
@@ -1815,16 +1815,16 @@ s32 func_80306EF4(s32 arg0[3], s32 arg1, u32 arg2) {
     return -1;
 }
 
-s32 func_80307164(s32 arg0[3]) {
+s32 func_80307164(s32 position[3]) {
     Struct_core2_7AF80_1 *phi_v1;
     Struct_core2_7AF80_2 *phi_a0;
 
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
-            if ((SQ(arg0[0] - phi_a0->position[0]) + SQ(arg0[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
+            if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
 // Collectibles with similar x and z positions would mistakenly be assigned the same id. Accounting for y position fixes it.
 #if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_FIXES)
-                if (((phi_a0->position[1] - phi_a0->radius) < arg0[1]) && (arg0[1] < (phi_a0->position[1] + phi_a0->radius))) {
+                if (((phi_a0->position[1] - phi_a0->radius) < position[1]) && (position[1] < (phi_a0->position[1] + phi_a0->radius))) {
                     return phi_v1 - D_8036A9D4;
                 }
 #else
@@ -1845,19 +1845,20 @@ s32 func_80307164(s32 arg0[3]) {
  * fixes the bug exclusively for Mumbo Tokens.
  */
 #ifdef VANILLA_SPECIFIC_BUG_FIXES
-s32 find_mumbo_token_id(s32 arg0[3]) {
+s32 find_mumbo_token_id(s32 position[3]) {
     Struct_core2_7AF80_1 *phi_v1;
     Struct_core2_7AF80_2 *phi_a0;
 
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
-            if ((SQ(arg0[0] - phi_a0->position[0]) + SQ(arg0[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
-                if (((phi_a0->position[1] - phi_a0->radius) < arg0[1]) && (arg0[1] < (phi_a0->position[1] + phi_a0->radius))) {
+            if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
+                if (((phi_a0->position[1] - phi_a0->radius) < position[1]) && (position[1] < (phi_a0->position[1] + phi_a0->radius))) {
                     return phi_v1 - D_8036A9D4;
                 }
             }
         }
     }
+
     return -1;
 }
 #endif
@@ -2167,19 +2168,19 @@ u32 func_80307EA8(s32 arg0, s32 position[3], s32 *arg2, s32 *arg3) {
 
 NodeProp *func_803080C8(s32 arg0) {
     s32 sp3C[3];
-    u32 var_v1;
-    Cube *temp_v0;
+    u32 i_prop;
+    Cube *current_cube;
 
     for(sp3C[1] = sCubeList.min[1]; sp3C[1] <= sCubeList.max[1]; sp3C[1]++){
         if(func_80305C30(sp3C[1] - sCubeList.min[1])){
             for(sp3C[0] = sCubeList.min[0]; sp3C[0] <= sCubeList.max[0]; sp3C[0]++){
                 for(sp3C[2] = sCubeList.min[2]; sp3C[2] <= sCubeList.max[2]; sp3C[2]++){
-                    temp_v0 = __code7AF80_getCubeAtPosition(sp3C);
-                    if (temp_v0 != NULL) {
-                        for(var_v1 = 0; var_v1 < temp_v0->prop1Cnt; var_v1++){
-                            if (arg0 == temp_v0->prop1Ptr[var_v1].unk10_31) {
-                                D_8036A9DC = temp_v0;
-                                return &temp_v0->prop1Ptr[var_v1];
+                    current_cube = __code7AF80_getCubeAtPosition(sp3C);
+                    if (current_cube != NULL) {
+                        for(i_prop = 0; i_prop < current_cube->prop1Cnt; i_prop++){
+                            if (arg0 == current_cube->prop1Ptr[i_prop].unk10_31) {
+                                D_8036A9DC = current_cube;
+                                return &current_cube->prop1Ptr[i_prop];
                             }
                         }
 
@@ -2196,13 +2197,13 @@ Cube *func_80308224(void){
     return D_8036A9DC;
 }
 
-void func_80308230(s32 arg0) {
+void cubeList_sort(s32 absolute_positon) {
     Cube *iCube;
     for(iCube = sCubeList.cubes; iCube < sCubeList.cubes + sCubeList.cubeCnt; iCube++){
-        if (arg0 == 0) {
-            func_8032D158(iCube); //sort cube props (dist from viewport)
+        if (absolute_positon == 0) {
+            cube_sortRelative(iCube); //sort cube props (dist from viewport)
         } else {
-            func_8032D120(iCube); //sort cube props (dist from origin)
+            cube_sortAbsolute(iCube); //sort cube props (dist from origin)
         }
     }
 }
@@ -2212,7 +2213,7 @@ bool func_803082D8(Cube *arg0, s32 *arg1, bool arg2, bool arg3) {
     bool var_a0;
 
     var_v0 = arg0->prop2Ptr + *arg1;
-    while ((var_v0->markerFlag == 1) && (*arg1 < arg0->prop2Cnt)) {
+    while ((var_v0->is_actor == 1) && (*arg1 < arg0->prop2Cnt)) {
         (*arg1)++;
         var_v0++;
     }
@@ -2476,7 +2477,7 @@ void func_80308D2C(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
                 cube = &sCubeList.cubes[D_80382150[phi_s4]];
                 if (viewport_cube_isInFrustum(cube)) {
                     viewport_getPosition_vec3w(vp_pos);
-                    vp_cube_index = cube_atPosition_s32(vp_pos) - sCubeList.cubes;
+                    vp_cube_index = cubeList_GetCubeAtPosition_s32(vp_pos) - sCubeList.cubes;
                     for(phi_s0 = 0; (phi_s0 < D_80382150[phi_s4 + 1]) && (vp_cube_index != D_80382150[phi_s0 + 2]); phi_s0++) {
                     }
                     if (phi_s0 < D_80382150[phi_s4 + 1]) {

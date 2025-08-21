@@ -142,7 +142,7 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
             }
             if(sp2C && sp30 != sp2C ){
                 if(sp2C < sp30){
-                    func_8025A6EC(SFX_AIR_METER_DROPPING, 28000);
+                    coMusicPlayer_playMusic(SFX_AIR_METER_DROPPING, 28000);
                 }
                 else{
                     func_8030E760(0x3e9, 1.2f, 28000);
@@ -153,7 +153,7 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
             sp28 = itemscore_noteScores_get(level_get());
             func_80346DB4(D_80385F30[item]);
             if(D_80385F30[item] == 100 && sp28 != 100){
-                func_8025A6EC(COMUSIC_36_100TH_NOTE_COLLECTED, 20000);
+                coMusicPlayer_playMusic(COMUSIC_36_100TH_NOTE_COLLECTED, 20000);
                 item_inc(ITEM_16_LIFE);
             }
             break;
@@ -603,7 +603,7 @@ void func_803465E4(void){
 void func_80346C10(enum bs_e *retVal, enum bs_e fail_state, enum bs_e success_state, enum item_e item_id, int use_item){
     if(item_empty(item_id)){
         item_adjustByDiffWithHud(item_id, 0);
-        func_8025A6EC(COMUSIC_2C_BUZZER, 22000);
+        coMusicPlayer_playMusic(COMUSIC_2C_BUZZER, 22000);
         if(fail_state != -1){
             *retVal = fail_state;
         }
@@ -660,17 +660,17 @@ void func_80346DB4(s32 note_count) {
         if (D_80385FF0[level_id] < note_count) {
             D_80385FF0[level_id] = note_count;
             if ((level_get() == LEVEL_1_MUMBOS_MOUNTAIN) && (note_count == 50)) {
-                gcdialog_showText(0xF74, 4, NULL, NULL, NULL, NULL);
+                gcdialog_showDialog(0xF74, 4, NULL, NULL, NULL, NULL);
             }
             if (note_count == 100) {
-                gcdialog_showText(0xF78, 4, NULL, NULL, NULL, NULL);
+                gcdialog_showDialog(0xF78, 4, NULL, NULL, NULL, NULL);
             }
 // Removes dialog that says you've passed you're best note score
 #ifndef NOTE_SAVING
             if (note_count == 1) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
-            if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showText(0xF76, 0, NULL, NULL, NULL, NULL))) {
+            if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showDialog(0xF76, 0, NULL, NULL, NULL, NULL))) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
 #endif
