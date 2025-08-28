@@ -6,6 +6,8 @@
 
 #include "version.h"
 
+#include "config.h"
+
 
 #define PFSMANAGER_THREAD_STACK_SIZE 0x200
 
@@ -173,7 +175,18 @@ void pfsManager_update(void) {
         temp_t6 = demo_readInput(&pfsManagerContPadData, &sp5C) == 0;
         if ((D_802812D0.button & s0) || temp_t6) {
             if (D_802812D0.button & s0) {
+#ifdef SKIPPABLE_CUTSCENES
+                if (getGameMode() == GAME_MODE_A_SNS_PICTURE) {
+                    if (gctransition_done() && !check_snsPicturesTransition()) {
+                        volatileFlag_set(VOLATILE_FLAG_64, 1);
+                        func_8034BA20();
+                    }
+                } else {
+                    volatileFlag_set(VOLATILE_FLAG_64, 1);
+                }
+#else
                 volatileFlag_set(VOLATILE_FLAG_64, 1);
+#endif
             } else {
                 volatileFlag_set(VOLATILE_FLAG_63, 1);
             }

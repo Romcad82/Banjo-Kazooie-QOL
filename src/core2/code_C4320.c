@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 extern void func_802E40A8(enum map_e, s32 exit);
 
 typedef struct {
@@ -295,6 +297,16 @@ bool func_8034BB48(void) {
     }
     return FALSE;
 }
+
+#ifdef SKIPPABLE_CUTSCENES
+void reset_demo_index(void){
+    D_80386110 = 0;
+}
+
+bool check_snsPicturesTransition(void) {
+    return D_8038611C;
+}
+#endif
 
 void func_8034BB90(void) {
     s32 sp1C;

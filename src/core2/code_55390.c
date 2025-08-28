@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 extern void actor_postdrawMethod(ActorMarker *);
 
@@ -86,6 +88,10 @@ void func_802DC4C4(void) {
 void func_802DC528(NodeProp *arg0, ActorMarker *arg1){
     if(D_8037DE40 == NULL){
         __spawnQueue_add_0(func_802DC4C4);
+
+#if defined(SKIPPABLE_CUTSCENES) || defined(BUG_FIXES)
+        mapSpecificFlags_set(1, TRUE);
+#endif
     }
 }
 
@@ -109,3 +115,12 @@ void func_802DC604(Gfx **gfx, Mtx **mtx, Vtx **vtx){
         func_802DC320(D_8037DE40, gfx, mtx, vtx);
     }
 }
+
+#if defined(SKIPPABLE_CUTSCENES) || defined(BUG_FIXES)
+bool check_if_GameOver_text_exists(void) {
+    if(D_8037DE40 != NULL){
+        return TRUE;
+    }
+    return FALSE;
+}
+#endif

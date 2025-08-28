@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 Actor *func_802DC320(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
 void func_802DC67C(Actor *this);
 
@@ -58,3 +60,12 @@ void func_802DC780(s32 arg0, s32 arg1){
         func_80326310(marker_getActor(D_8037DE50));
     }
 }
+
+#ifdef SKIPPABLE_CUTSCENES
+bool check_if_TheEnd_text_exists(void) {
+    if(D_8037DE50 != NULL){
+        return TRUE;
+    }
+    return FALSE;
+}
+#endif

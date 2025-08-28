@@ -19,6 +19,11 @@ bool cutscene_skipEnterLairCutsceneCheck(void);
 bool cutscene_skipGameOverCutsceneCheck(void);
 bool cutscene_skipIntroCutsceneCheck(void);
 bool cutscene_skipBeachCutsceneCheck(void);
+#ifdef SKIPPABLE_CUTSCENES
+bool cutscene_skipEndAll100BeachCutsceneCheck(void);
+bool cutscene_skipEndBeach2CutsceneCheck(void);
+bool cutscene_skipEndSprialMountainCutscenesCheck(void);
+#endif
 
 extern void func_802DC560(s32, s32);
 
@@ -66,8 +71,15 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
     if (mapSpecificFlags_get(0) != 0) {
         fileProgressFlag_set(FILEPROG_E1_UNKNOWN, 1);
     }
-#ifdef SKIPPABLE_CUTSCENES
-    if ((sp24 == 1) && !gctransition_8030BDC0()) {
+#if defined(SKIPPABLE_CUTSCENES) || defined(BUG_FIXES)
+    if ((sp24 == 1) && !gctransition_8030BDC0()
+ #ifndef SKIPPABLE_CUTSCENES
+        && fileProgressFlag_get(FILEPROG_E1_UNKNOWN)
+ #endif
+                                               ) {
+        if ((check_if_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)) {
+            return TRUE;
+        } else
 #else
     if ((sp24 == 1) && fileProgressFlag_get(FILEPROG_E1_UNKNOWN) && !gctransition_8030BDC0()) {
 #endif
@@ -87,6 +99,44 @@ bool cutscene_skipBeachCutsceneCheck(void){
     func_803219F4(1);
     return FALSE;
 }
+
+#ifdef SKIPPABLE_CUTSCENES
+bool cutscene_skipEndAll100BeachCutsceneCheck(void) {
+    if (func_8024E698(0) == 1) {
+        reset_demo_index();
+        mapSpecificFlags_set(1, 1);
+    }
+    return FALSE;
+}
+
+bool cutscene_skipEndBeach2CutsceneCheck(void) {
+    if (volatileFlag_get(VOLATILE_FLAG_64)) {
+        volatileFlag_set(VOLATILE_FLAG_64, FALSE);
+    }
+    
+    if (func_8024E698(0) == 1) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool cutscene_skipEndSprialMountainCutscenesCheck(void) {
+    if ((func_8024E698(0) == 1) && !gctransition_8030BDC0()) {
+        if (check_if_TheEnd_text_exists() && !mapSpecificFlags_get(0xC)) {
+            return TRUE;
+        } else if (!mapSpecificFlags_get(0xC)) {
+            f32 transitionTime = (map_get() == MAP_98_CS_END_SPIRAL_MOUNTAIN_1) ? 11.7f : 8.8f;
+
+            mapSpecificFlags_set(0xC, TRUE);
+            func_802DC748(0, 0);
+            timedFunc_set_3(transitionTime, (GenFunction_3)transitionToMap, MAP_1F_CS_START_RAREWARE, 0, 1);
+        } else {
+            timedFuncQueue_flush();
+        }
+    }
+    return FALSE;
+}
+#endif
 
 //checks is a cutscene can be inturrupted and performs take me there
 void cutscenetrigger_check(s32 cs_map, s32 arg1, s32 return_map, s32 return_exit, bool (* condFunc)(void)){
@@ -125,8 +175,24 @@ s32 cutscenetrigger_update(void){
     cutscenetrigger_check(MAP_7C_CS_INTRO_BANJOS_HOUSE_1,   0xC, MAP_1_SM_SPIRAL_MOUNTAIN,      0x12, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_86_CS_SPIRAL_MOUNTAIN_4,      0xC, MAP_1_SM_SPIRAL_MOUNTAIN,      0x12, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_89_CS_INTRO_BANJOS_HOUSE_2,   0xC, MAP_1_SM_SPIRAL_MOUNTAIN,      0x12, cutscene_skipIntroCutsceneCheck);
+#ifdef SKIPPABLE_CUTSCENES
+    cutscenetrigger_check(MAP_87_CS_SPIRAL_MOUNTAIN_5,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
+    cutscenetrigger_check(MAP_94_CS_INTRO_SPIRAL_7,           0, MAP_8E_GL_FURNACE_FUN,            4, cutscene_skipIntroCutsceneCheck);
+    cutscenetrigger_check(MAP_88_CS_SPIRAL_MOUNTAIN_6,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
+    cutscenetrigger_check(MAP_98_CS_END_SPIRAL_MOUNTAIN_1,    0, MAP_1F_CS_START_RAREWARE,        -1, cutscene_skipEndSprialMountainCutscenesCheck);
+    cutscenetrigger_check(MAP_99_CS_END_SPIRAL_MOUNTAIN_2,    0, MAP_1F_CS_START_RAREWARE,        -1, cutscene_skipEndSprialMountainCutscenesCheck);
+    cutscenetrigger_check(MAP_20_CS_END_NOT_100,              0, MAP_98_CS_END_SPIRAL_MOUNTAIN_1, -1, cutscene_skipIntroCutsceneCheck);
+    cutscenetrigger_check(MAP_95_CS_END_ALL_100,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndAll100BeachCutsceneCheck);
+    cutscenetrigger_check(MAP_97_CS_END_BEACH_2,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndBeach2CutsceneCheck);
+#endif
     if(map_get() == MAP_95_CS_END_ALL_100 && mapSpecificFlags_get(1)){
+#ifdef SKIPPABLE_CUTSCENES
+        if (!gctransition_8030BDC0()) {
+            func_8034B9E4();
+        }
+#else
         func_8034B9E4();
+#endif
         mapSpecificFlags_set(1, 0);
     }
     return 0;
@@ -165,6 +231,12 @@ void func_8031CC8C(s32 arg0, s32 arg1) {
     // arg1 = MAP_ID + ENTRY_ID
     f32 vec[3];
     f32 unused[3];
+
+#ifdef SKIPPABLE_CUTSCENES
+    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
+        return;
+    }
+#endif
 
     if ((D_80383190 == 0) && (getGameMode() != GAME_MODE_8_BOTTLES_BONUS)) {
         if (getGameMode() != GAME_MODE_7_ATTRACT_DEMO) {
@@ -245,6 +317,12 @@ void func_8031CE70(f32 *arg0, enum map_e arg1, s32 arg2) {
 
 // set map and exit id?
 void func_8031D04C(enum map_e arg0, s32 exit_id) {
+#ifdef SKIPPABLE_CUTSCENES
+    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
+        return;
+    }
+#endif
+
     func_8031CB50(arg0, exit_id, 0);
 }
 

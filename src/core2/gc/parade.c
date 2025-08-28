@@ -280,17 +280,29 @@ void gcparade_print(s32 index){
 }
 
 #ifdef SKIPPABLE_CUTSCENES
-void skip_parade(void) {
-    if (func_8024E698(0)) {
+void cutscene_skipParadeCutsceneCheck(void) {
+    if (func_8024E698(0) == 1) {
         gcparade_setState(PARADE_STATE_8_END);
     }
+}
+
+bool cutscene_skipEndBeach1CutsceneCheck(void) {
+    if (func_8024E698(0) == 1) {
+        return TRUE;
+    }
+    return FALSE;
 }
 #endif
 
 void gcparade_update(void) {
     s32 sp34;
 
+#ifdef SKIPPABLE_CUTSCENES
+    if ((map_get() == MAP_96_CS_END_BEACH_1) && (mapSpecificFlags_get(4) || cutscene_skipEndBeach1CutsceneCheck()) && !mapSpecificFlags_get(0)) {
+        mapSpecificFlags_set(0, TRUE);
+#else
     if ((map_get() == MAP_96_CS_END_BEACH_1) && mapSpecificFlags_get(4)) {
+#endif
         mapSpecificFlags_set(4, FALSE);
         gcparade_beginFinalParade();
         return;
@@ -298,7 +310,7 @@ void gcparade_update(void) {
     if (volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE) != 0) {
         snackerctl_update();
 #ifdef SKIPPABLE_CUTSCENES
-        skip_parade();
+        cutscene_skipParadeCutsceneCheck();
 #endif
         switch (D_803830F0.state) {
             case PARADE_STATE_3_WARP:

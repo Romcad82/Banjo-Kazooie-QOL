@@ -51,6 +51,7 @@
  * -CCW Pink Jinjo Jiggy Despawn (Note: In vanilla, you can respawn the Jiggy by recollecting the Jinjos again, but with JINJO_SAVING enabled, the Jiggy can become permanently uncollectable)
  * -Incorrect BK Health Sprites
  * -Max Health Cheat Temporarily Removes Double Defense (Note: HEALTH_SYSTEM_REWORK also fixes this bug)
+ * -Minor Game Over Cutscene Issues (Note: SKIPPABLE_CUTSCENES also fixes these issues)
  */
 #define BUG_FIXES
 
@@ -79,11 +80,19 @@
 /**
  * Allows you to skip the following cutscenes:
  * -Rareware Cutscene (Note: This is the very first cutscene you see when you boot up the game)
- * -Intro Cutscene
- * -Enter Lair Cutscene
- * -Game Over Cutscene
+ * -Intro Cutscenes (Note: The vanilla game requires you to have at least one save file to skip this cutscene. This requirement is removed.)
+ * -Enter Lair Cutscene (Note: The vanilla game requires you to have viewed the cutscene at least once in any save file to skip it. This requirement is removed.)
+ * -Game Over Cutscene (Note: The vanilla game requires you to have viewed the cutscene at least once in the current save file to skip it. This requirement is removed.)
+ * -Winning Furnace Fun Cutscene
  * -Furnace Fun Parade
+ * -Mumbo's Barbeque Cutscene
+ * -Grunty Falling Cutscenes
+ * -Ending Beach Cutscenes
  * -Final Parade
+ * -Stop 'N' Swop Picture Cutscenes
+ * -The End Cutscenes
+ * 
+ * Also fixes some minor issues with the Game Over Cutscene.
  */
 #define SKIPPABLE_CUTSCENES
 
