@@ -191,4 +191,15 @@
  * Switches the Stop 'N' Swop item keys so that the game can recieve Stop 'N' Swop data from vanilla Banjo-Kazooie. The game also outputs data that vanilla Banjo-Kazooie can recieve.
  * This means Stop 'N' Swop technically works now, however all this does is unlock the Eggs and Ice Key without inputting the sandcastle cheat codes.
  */
-//#define STOP_N_SWOP_FUNCTIONALITY
+// #define STOP_N_SWOP_FUNCTIONALITY
+
+/**
+ * Alters the default framerate of the game.
+ * While more complicated than this, calculating the framerate can be understood as dividing 60 by X, meaning the max framerate is 60 and the minimum is virtually 0.
+ * DEFAULT_FRAMERATE_MODIFIER is essentially just X, which means you can plug in a number to change the framerate. 1 is 60 FPS, 2 is 30 FPS, 3 is 20 FPS, etc.
+ * Also, there are objects in the game that can change the framerate, such as the one in Gobi's Valley Lobby. These objects will take priority over DEFAULT_FRAMERATE_MODIFIER.
+ * Use REMOVE_FPS_CAPS to ignore these objects.
+ * 
+ * Note: Default is 2 (30 FPS).
+ */
+// #define DEFAULT_FRAMERATE_MODIFIER 2

@@ -148,7 +148,11 @@ void func_803223AC(void) {
     func_8032236C(0x1C, 4, &sp28);
     func_8032236C(0x1D, 5, &sp28);
 #endif
+#ifdef DEFAULT_FRAMERATE_MODIFIER
+    sp28 = (sp28 == 0) ?  DEFAULT_FRAMERATE_MODIFIER : sp28;
+#else
     sp28 = (sp28 == 0) ?  2 : sp28;
+#endif
     viMgr_func_8024BF94(sp28);
 }
 
