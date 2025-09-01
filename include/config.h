@@ -182,3 +182,13 @@
  * Note: These codes also work with SHORTER_CHEATS enabled.
  */
 #define ADDITIONAL_CHEATS
+
+
+
+// EXPERIMENTAL DEFINES //
+
+/**
+ * Switches the Stop 'N' Swop item keys so that the game can recieve Stop 'N' Swop data from vanilla Banjo-Kazooie. The game also outputs data that vanilla Banjo-Kazooie can recieve.
+ * This means Stop 'N' Swop technically works now, however all this does is unlock the Eggs and Ice Key without inputting the sandcastle cheat codes.
+ */
+//#define STOP_N_SWOP_FUNCTIONALITY

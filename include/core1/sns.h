@@ -1,6 +1,8 @@
 #ifndef BANJO_KAZOOIE_CORE1_SNS_H
 #define BANJO_KAZOOIE_CORE1_SNS_H
 
+#include "config.h"
+
 /**
  * sns sets
  */
@@ -15,6 +17,26 @@
 #define SNS_MODE_READ  (0)
 #define SNS_MODE_WRITE (1)
 
+#ifdef STOP_N_SWOP_FUNCTIONALITY
+/**
+ * sns item keys
+ */
+#define SNS_ITEM_COLLECTED_EggYellow (0x108)
+#define SNS_ITEM_COLLECTED_EggRed    (0x109)
+#define SNS_ITEM_COLLECTED_EggGreen  (0x10A)
+#define SNS_ITEM_COLLECTED_EggBlue   (0x10B)
+#define SNS_ITEM_COLLECTED_EggPink   (0x10C)
+#define SNS_ITEM_COLLECTED_EggCyan   (0x10D)
+#define SNS_ITEM_COLLECTED_IceKey    (0x10E)
+/* 0x107 unknown */
+#define SNS_ITEM_UNLOCKED_EggYellow  (0x100)
+#define SNS_ITEM_UNLOCKED_EggRed     (0x101)
+#define SNS_ITEM_UNLOCKED_EggGreen   (0x102)
+#define SNS_ITEM_UNLOCKED_EggBlue    (0x103)
+#define SNS_ITEM_UNLOCKED_EggPink    (0x104)
+#define SNS_ITEM_UNLOCKED_EggCyan    (0x105)
+#define SNS_ITEM_UNLOCKED_IceKey     (0x106)
+#else
 /**
  * sns item keys
  */
@@ -33,6 +55,7 @@
 #define SNS_ITEM_UNLOCKED_EggPink    (0x10C)
 #define SNS_ITEM_UNLOCKED_EggCyan    (0x10D)
 #define SNS_ITEM_UNLOCKED_IceKey     (0x10E)
+#endif
 
 #define SNS_NUM_FLAGS (14)
 
