@@ -141,9 +141,9 @@ void func_803223AC(void) {
     }
 
     sp28 = 0;
+#ifndef IGNORE_FRAMERATE_ALTERING_OBJECTS
     func_8032236C(0x19, 1, &sp28);
     func_8032236C(0x1A, 2, &sp28);
-#ifndef REMOVE_FPS_CAPS
     func_8032236C(0x1B, 3, &sp28);
     func_8032236C(0x1C, 4, &sp28);
     func_8032236C(0x1D, 5, &sp28);

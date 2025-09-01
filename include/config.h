@@ -70,12 +70,18 @@
 #define BETTER_CAMERA
 
 /**
- * Removes the FPS Caps in Gobi's Valley Lobby and the First End Beach Cutscene. Those maps now run at 30 fps instead of 20 fps.
+ * Ignores any objects that alter the framerate.
+ * There are several objects in the game that change the framerate. If the game finds any of these objects in a map, then it changes the FPS depending on what the object ID is.
+ * They can be found in the Concert Cutscene, Gobi's Valley Lobby, and the First Ending Beach Cutscene.
+ * IGNORE_FRAMERATE_ALTERING_OBJECTS removes any functionality that changes the FPS. All maps now run at 30 FPS.
  *
- * NOTE: This change has some unintentional side effects.
- *       You can't clip inside the coffin to get the GV Witch Switch Jiggy early, the moving Shock Jump Spring Pad moves faster, and the dialog in the beach cutscene runs faster.
+ * NOTE: This change has some unintentional side effects:
+ *       -Some sound effects in the Concert Cutscene have slightly different timing
+ *       -You can't clip inside the coffin to get the GV Witch Switch Jiggy early
+ *       -The moving Shock Jump Spring Pad in Gobi's Valley Lobby moves faster
+ *       -The dialog in the First Ending Beach Cutscene runs slightly faster
  */
-#define REMOVE_FPS_CAPS
+#define IGNORE_FRAMERATE_ALTERING_OBJECTS
 
 /**
  * Allows you to skip the following cutscenes:
@@ -197,9 +203,10 @@
  * Alters the default framerate of the game.
  * While more complicated than this, calculating the framerate can be understood as dividing 60 by X, meaning the max framerate is 60 and the minimum is virtually 0.
  * DEFAULT_FRAMERATE_MODIFIER is essentially just X, which means you can plug in a number to change the framerate. 1 is 60 FPS, 2 is 30 FPS, 3 is 20 FPS, etc.
- * Also, there are objects in the game that can change the framerate, such as the one in Gobi's Valley Lobby. These objects will take priority over DEFAULT_FRAMERATE_MODIFIER.
- * Use REMOVE_FPS_CAPS to ignore these objects.
  * 
+ * NOTE: Changing the framerate also changes the physics of many objects as well. May cause some problems throughout the game.
+ * NOTE: There are objects in the game that can change the framerate, such as the one in Gobi's Valley Lobby. These objects will take priority over DEFAULT_FRAMERATE_MODIFIER.
+ *       Use IGNORE_FRAMERATE_ALTERING_OBJECTS to be able to change the framerate in all maps.
  * Note: Default is 2 (30 FPS).
  */
 // #define DEFAULT_FRAMERATE_MODIFIER 2
