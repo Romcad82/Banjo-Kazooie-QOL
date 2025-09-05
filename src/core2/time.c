@@ -2,8 +2,14 @@
 
 #include "core1/vimgr.h"
 
+#include "config.h"
+
 /*.data*/
+#ifdef DEFAULT_TIME_MULTIPLIER
+static f32 s_timeMultiplier = DEFAULT_TIME_MULTIPLIER;
+#else
 static f32 s_timeMultiplier = 1.0f;
+#endif
 
 /* .bss */
 static f32 s_dTimeReal_sec;
@@ -12,7 +18,11 @@ static s32 s_dTimeReal_frames;
 /* .code */
 void time_reset(void){
     s_dTimeReal_sec = 0.01f;
+#ifdef DEFAULT_TIME_MULTIPLIER
+    s_timeMultiplier = DEFAULT_TIME_MULTIPLIER;
+#else
     s_timeMultiplier = 1.0f;
+#endif
     s_dTimeReal_frames = 0;
 }
 

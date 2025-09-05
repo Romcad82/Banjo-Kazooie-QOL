@@ -210,3 +210,15 @@
  * Note: Default is 2 (30 FPS).
  */
 // #define DEFAULT_FRAMERATE_MODIFIER 2
+
+/**
+ * Changes how fast game logic is executed. Can be used to speed up or slow down gameplay.
+ * Anything greater than 1.0f will speed the game up. Any number in between 0 and 1 will slow it down.
+ * 
+ * NOTE: Changing the delta time also changes the physics of many objects as well. May cause some problems throughout the game,
+ *       ESPECIALLY when the value is set too high and the game won't work when it's set to less than or equal to 0.
+ * NOTE: While never used in game, the function time_setMultiplier() can also be used to alter delta time. Any changes made with time_setMultiplier() will take priority over DEFAULT_TIME_MULTIPLIER.
+ *       The other function time_reset() can be used to reset to default values.
+ * Note: Default is 1.0f.
+ */
+// #define DEFAULT_TIME_MULTIPLIER 1.0f
