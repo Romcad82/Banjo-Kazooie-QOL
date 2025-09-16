@@ -14,16 +14,23 @@
 #define REMOVE_ANTI_PIRACY_CHECK
 
 /**
- * Extends save files so extra data can be saved. Also changes header so some emulators and Everdrive can automatically detect 16k Eeprom.
- *
- * NOTE: MUST BE ON SO NOTE SAVING AND JINJO SAVING CAN SAVE PROPERLY.
+ * Adjusts how much data can be saved in each save file.
+ * Any size greater than 0x70 will require 16-kbit EEPROM save type to work. If it is greater than 0x70, the header will be changed
+ * so Everdrive and some emulators can automatically detect 16-kbit EEPROM (This won't work for all emulators, so you may need to select 16-kbit EEPROM save type manually).
+ * 
+ * NOTE: Size must be a multiple of 8. If not, the value will be rounded down to the nearest multiple.
+ * NOTE: Must be on so NOTE_SAVING and JINJO_SAVING can save properly (Value must be at least 0xF0 to work).
+ * Note: If left undefined, the default size will be 0x70.
+ * Note: Minimum size is 0x8 (Don't make value less than 0x70 if you don't change or remove any of the vanilla game save data).
+ *       Maximum size is 0x1F0.
+ *       Any value less than 0x8 will be set to the minimum size. Any value greater than 0x1F0 will be set to the maximum size.
  */
-#define EEPROM_16K
+#define SAVE_FILE_DATA_SIZE 0xF0
 
 /**
  * Saves collected Notes so you don't have to recollect them.
  *
- * Note: EEPROM_16K must be on to save properly.
+ * Note: SAVE_FILE_DATA_SIZE must be on to save properly.
  */
 #define NOTE_SAVING
 
@@ -31,7 +38,7 @@
  * Saves collected Jinjos so you don't have to recollect them.
  * Also saves the ID of the Jinjo that spawned the Jiggy for each world, so Jiggies can respawn at that Jinjo if you don't collect them.
  *
- * Note: EEPROM_16K must be on to save properly.
+ * Note: SAVE_FILE_DATA_SIZE must be on to save properly.
  */
 #define JINJO_SAVING
 

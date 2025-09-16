@@ -183,7 +183,7 @@ void savedata_init(void){ //savedata_init
     u8 *jinjosaving_addr;
     u8 *jinjojiggyrespawn_addr;
 #endif
-#ifdef EEPROM_16K
+#ifdef SAVE_FILE_DATA_SIZE
     s32 prevOffset;
     s32 prevSize;
 #endif
@@ -212,7 +212,7 @@ void savedata_init(void){ //savedata_init
     progressflagsOffset = timescoresOffset + timescores_size;
     savedItemsOffset = progressflagsOffset + progressflags_size;
     abilitiesOffset = savedItemsOffset + saved_item_size;
-#ifdef EEPROM_16K
+#ifdef SAVE_FILE_DATA_SIZE
     prevOffset = abilitiesOffset;
     prevSize = abilities_size;
  #ifdef NOTE_SAVING
@@ -495,14 +495,14 @@ void __savedata_save_jinjojiggyrespawns(u8 *savedata){
 s32 savedata_8033CA2C(s32 filenum, SaveData *save_data){
     s32 sp1C;
     
-#ifdef EEPROM_16K
-    sp1C = eeprom_readBlocks(filenum, 0, save_data, 0x1F); // Reads data from game file
+#ifdef SAVE_FILE_DATA_SIZE
+    sp1C = eeprom_readBlocks(filenum, 0, save_data, (sizeof(SaveData) / 8)); // Reads data from game file
 #else
     sp1C = eeprom_readBlocks(filenum, 0, save_data, 0xF);
 #endif
     if( sp1C 
-#ifdef EEPROM_16K
-        || savedata_verify(0xF8, save_data) 
+#ifdef SAVE_FILE_DATA_SIZE
+        || savedata_verify(sizeof(SaveData), save_data) 
 #else
         || savedata_verify(0x78, save_data) 
 #endif
@@ -516,8 +516,8 @@ s32 savedata_8033CA2C(s32 filenum, SaveData *save_data){
 s32 savedata_8033CA9C(SaveData *savedata){
     s32 sp1C;
     
-#ifdef EEPROM_16K
-    sp1C = eeprom_readBlocks(0, 0xFC, savedata, 0x4); // Reads Stop n' Swop data
+#if defined(SAVE_FILE_DATA_SIZE) && (SAVE_FILE_DATA_SIZE >= 0x78)
+    sp1C = eeprom_readBlocks(0, 0xFC, savedata, 0x4); // Reads Stop 'N' Swop data
 #else
     sp1C = eeprom_readBlocks(0, 0x3C, savedata, 0x4);
 #endif
@@ -548,7 +548,7 @@ void saveData_load(SaveData *savedata){
     __savedata_load_timeScores(savedata);
     func_8033C4E4(savedata);
     __savedata_load_abilities(savedata);
-#ifdef EEPROM_16K
+#ifdef SAVE_FILE_DATA_SIZE
  #ifdef NOTE_SAVING
     __savedata_load_notesavings(savedata);
  #endif
@@ -612,7 +612,7 @@ void saveData_create(SaveData *savedata){
     __savedata_8033C8A0(savedata);
     __savedata_8033CA2C(savedata);
     __savedata_save_abilities(savedata);
-#ifdef EEPROM_16K
+#ifdef SAVE_FILE_DATA_SIZE
  #ifdef NOTE_SAVING
     __savedata_save_notesavings(savedata);
  #endif
@@ -626,8 +626,8 @@ void saveData_create(SaveData *savedata){
 
 int savedata_8033CC98(s32 filenum, u8 *buffer){
     int out;
-#ifdef EEPROM_16K
-    out = eeprom_writeBlocks(filenum, 0, buffer, 0x1F); // Writes data to game file
+#ifdef SAVE_FILE_DATA_SIZE
+    out = eeprom_writeBlocks(filenum, 0, buffer, (sizeof(SaveData) / 8)); // Writes data to game file
 #else
     out = eeprom_writeBlocks(filenum, 0, buffer, 0xF);
 #endif
@@ -649,8 +649,8 @@ int savedata_8033CCD0(s32 filenum){
 int savedata_8033CE40(u8 *buffer){
     int out;
     savedata_update_crc(buffer, sizeof(GlobalData));
-#ifdef EEPROM_16K
-    out = eeprom_writeBlocks(0, 0xFC, buffer, 4); // Writes Stop n' Swop data to the very end of 16k-EEPROM
+#if defined(SAVE_FILE_DATA_SIZE) && (SAVE_FILE_DATA_SIZE >= 0x78)
+    out = eeprom_writeBlocks(0, 0xFC, buffer, 4); // Writes Stop 'N' Swop data to the very end of 16-kbit EEPROM
 #else
     out = eeprom_writeBlocks(0, 0x3C, buffer, 4);
 #endif
