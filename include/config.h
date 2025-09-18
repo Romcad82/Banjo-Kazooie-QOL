@@ -14,6 +14,12 @@
 #define REMOVE_ANTI_PIRACY_CHECK
 
 /**
+ * Makes ROM region free by editing the header so Everdrive can automatically play on native system region.
+ * If left undefined, the default region will be NTSC.
+ */
+#define REGION_FREE
+
+/**
  * Adjusts how much data can be saved in each save file.
  * Any size greater than 0x70 will require 16-kbit EEPROM save type to work. If it is greater than 0x70, the header will be changed
  * so Everdrive and some emulators can automatically detect 16-kbit EEPROM (This won't work for all emulators, so you may need to select 16-kbit EEPROM save type manually).
