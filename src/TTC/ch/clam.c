@@ -250,9 +250,13 @@ static void __chClam_attackOther(ActorMarker *this_marker, ActorMarker *other_ma
         mapSpecificFlags_set(TTC_SPECIFIC_FLAG_5_CLAM_FIRST_MEET_TEXT_SHOWN, TRUE);
     }
 
-// Fixes Yum Yum crash when too many eggs and feathers spawn
+// Fixes Yum-Yum crash when too many eggs and feathers spawn.
 #ifdef BUG_FIXES
-    if ((item_getCount(ITEM_D_EGGS) != 0) && (actorArray_actorCount(ACTOR_52_BLUE_EGG) < 9)) { // Note: For some reason, the 3 eggs floating above the shock jump pad are actors, not props like they usually are. This means that if you collect them, you can spawn 3 more eggs from Yum Yums than if you didn't.
+    /*
+     * Note: For some reason, the 3 eggs floating above the shock jump pad are actors, not props like they usually are.
+     * This means that if you collect them, you can spawn an additional 3 eggs from the Yum-Yums.
+     */
+    if ((item_getCount(ITEM_D_EGGS) != 0) && (actorArray_actorCount(ACTOR_52_BLUE_EGG) < 9)) {
 #else
     if (item_getCount(ITEM_D_EGGS) != 0) {
 #endif

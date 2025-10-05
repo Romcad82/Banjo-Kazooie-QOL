@@ -26,7 +26,7 @@ struct {
     u8 flags[0x71];
 }notesaving;
 
-u8 hutNotesRemaining;
+u8 hutNotesCollected;
 #endif
 
 /* .code */
@@ -89,7 +89,7 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
 
     sp34 = ((fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH))? 2 : 1);
 #ifdef HEALTH_SYSTEM_REWORK
-    D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*D_80385F30[ITEM_15_HEALTH_TOTAL], D_80385F30[ITEM_15_HEALTH_TOTAL]);
+    D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*9, D_80385F30[ITEM_15_HEALTH_TOTAL]);
 #else
     D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*8, D_80385F30[ITEM_15_HEALTH_TOTAL]);
 #endif
@@ -211,7 +211,7 @@ void item_setItemsStartCounts(void){
 }
 
 #if defined(NOTE_SAVING) || defined(JINJO_SAVING)
-s16 return_worldOffset(void) {
+s16 return_noteIndex_worldOffset(void) {
     s16 worldOffset;
 
     switch (level_get()) {
@@ -252,7 +252,11 @@ s16 return_worldOffset(void) {
 #endif
 
 #ifdef NOTE_SAVING
-s16 return_mapOffset(void) {
+/*
+ * Unfortunately, due to the way NOTE_SAVING was implemented, a note index offset needs to be manually written for each map that isn't the main level.
+ * This creates a huge, ugly, hardcoded list that is annoying to change.
+ */
+s16 return_noteIndex_mapOffset(void) {
     s16 mapOffset;
 
     switch (map_get()) {
@@ -393,11 +397,12 @@ s16 return_mapOffset(void) {
     return mapOffset;
 }
 
-s16 adjust_noteIndex(s16 noteIndex) { // Adds offsets to note index depending on what map and world you're in
-    s16 worldOffset = return_worldOffset();
-    s16 mapOffset = return_mapOffset();
+// Adds offsets to note index depending on what map and world you're in.
+s16 adjust_noteIndex(s16 noteIndex) {
+    s16 worldOffset = return_noteIndex_worldOffset();
+    s16 mapOffset = return_noteIndex_mapOffset();
 
-    return noteIndex = (noteIndex + 1) + worldOffset + mapOffset;
+    return noteIndex + 1 + worldOffset + mapOffset;
 }
 
 void remove_collected_notes(Prop *other_prop, s16 noteIndex){
@@ -419,16 +424,18 @@ void set_note_collected(Prop *other_prop) {
     }
 }
 
-void remove_collected_hut_note(Actor* this){ // Despawns hut notes depending on how many of them have been collected
-    if (hutNotesRemaining) {
+// Despawns hut notes depending on how many of them have been collected.
+void remove_collected_hut_note(Actor* this){
+    if (hutNotesCollected) {
         marker_despawn(this->marker);
-        hutNotesRemaining--;
+        hutNotesCollected--;
     }
 }
 
-void set_hut_note_collected(void) { // When a hut note is collected, set a flag at last 5 flags for MM and BGS
+// When a hut note is collected, set one of the last 5 flags for MM and BGS.
+void set_hut_note_collected(void) {
     u16 noteIndex = 96;
-    u16 worldOffset = return_worldOffset();
+    u16 worldOffset = return_noteIndex_worldOffset();
     u8 i;
     
     noteIndex += worldOffset;
@@ -440,17 +447,18 @@ void set_hut_note_collected(void) { // When a hut note is collected, set a flag 
     }
 }
 
-void reset_hut_note_count(void) { // Counts how many notes have been collected when you load into MM and BGS
+// Counts how many notes have been collected when you load into MM and BGS.
+void reset_hut_note_count(void) {
     u16 noteIndex = 96;
-    u16 worldOffset = return_worldOffset();
+    u16 worldOffset = return_noteIndex_worldOffset();
     u8 i;
     
-    hutNotesRemaining = 0;
+    hutNotesCollected = 0;
 
     noteIndex += worldOffset;
     for (i = 0; i < 5; i++) {
-        if ((notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) != 0) {
-            hutNotesRemaining++;
+        if (notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) {
+            hutNotesCollected++;
         }
     }
 }
@@ -465,7 +473,7 @@ void itemscore_levelReset(enum level_e level){
     }
     
 #ifdef NOTE_SAVING
-    D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get()); // Instead of reseting to 0, set to level note total
+    D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get()); // Instead of resetting to 0, set to level note total.
 #else
     D_80385F30[ITEM_C_NOTE] = 0;
 #endif
@@ -482,10 +490,10 @@ void itemscore_levelReset(enum level_e level){
     D_80385F30[ITEM_21_RED_PRESENT] = 0;
     D_80385F30[ITEM_22_CATERPILLAR] = 0;
     itemPrint_reset();
-    D_80385FE8 = 1;
 #ifdef JINJO_SAVING
     setup_hud_with_collected_jinjos();
 #endif
+    D_80385FE8 = 1;
 }
 
 void func_803465BC(void){
@@ -665,7 +673,7 @@ void func_80346DB4(s32 note_count) {
             if (note_count == 100) {
                 gcdialog_showDialog(0xF78, 4, NULL, NULL, NULL, NULL);
             }
-// Removes dialog that says you've passed you're best note score
+// Skips dialog that says you've passed you're best note score.
 #ifndef NOTE_SAVING
             if (note_count == 1) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
@@ -701,7 +709,7 @@ void notesaving_getSizeAndPtr(s32 *size, u8 **addr) {
     *addr = notesaving.flags; 
 }
 
-void notesaving_clearAllFlags(void) { // Resets note saving flags when you change files
+void notesaving_clearAllFlags(void) {
     s32 i;
     for(i = 0; i < 0x71; i++){
         notesaving.flags[i] = 0;
@@ -812,24 +820,24 @@ void func_8034789C(void) {
     s32 sp1C;
     s32 temp_v0;
 #ifdef HEALTH_SYSTEM_REWORK
+    s32 honeycombBarsTotal;
     u8 baseHealth = 5 + (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH) * 4);
-    s32 honeycombTotalHealth;
 #endif
 
     sp1C = honeycombscore_get_total();
     D_80385F30[ITEM_13_EMPTY_HONEYCOMB] = sp1C % 6;
 #ifdef HEALTH_SYSTEM_REWORK
-    honeycombTotalHealth = MIN((baseHealth + (sp1C / 6)), 9);
+    honeycombBarsTotal = MIN((baseHealth + (sp1C / 6)), 9);
 #endif
     if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
 #ifdef HEALTH_SYSTEM_REWORK
-        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombTotalHealth * 2;
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal * 2;
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] = 16;
 #endif
     } else {
 #ifdef HEALTH_SYSTEM_REWORK
-        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombTotalHealth;
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal;
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + MIN(3, (sp1C / 6));
 #endif

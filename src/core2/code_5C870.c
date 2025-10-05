@@ -468,6 +468,7 @@ bool func_802E4424(void) {
                 ) {
                     func_8034B940();
                 }
+// To ensure parade has been properly set up so game can save and reload with no issues.
 #ifdef SKIPPABLE_CUTSCENES
                 if (!paradeHasBeenSetup) {
                     gcparade_8031ABF8();

@@ -3,16 +3,14 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 
 extern f32 func_802FB0E4(struct8s*);
 
 /* .code */
-#ifdef BUG_FIXES
-enum asset_e D_8036A260[] = {0x7E0, 0x7E1, 0x7E2, 0x7E3, 0x7E4, 0x7E4}; // Additional element needed since the calculation to get sprite assets was changed and an extra index could be accessed.
-#else
 enum asset_e D_8036A260[] = {0x7E0, 0x7E1, 0x7E2, 0x7E3, 0x7E4};
-#endif
 Gfx D_8036A278[] =
 {
     gsDPPipeSync(),
@@ -68,6 +66,15 @@ void fxlifescore_free(s32 item_id, struct8s *arg1){
     };
 }
 
+#ifdef BUG_FIXES
+f32 return_healthSprite_animFrame_with_cap(void) {
+    if (D_80381EBC >= 20.0f) {
+        return 19.5f;
+    }
+    return D_80381EBC;
+}
+#endif
+
 void fxlifescore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     s32 sp10C;
     Vtx *sp108;
@@ -82,8 +89,9 @@ void fxlifescore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mtx,
     s32 spE4;
     s32 spE0;
     s32 spDC;
+    
 #ifdef BUG_FIXES
-    f32 animFrame = D_80381EBC;
+    f32 animFrame = return_healthSprite_animFrame_with_cap();
 #endif
 
     sp10C = -1;
@@ -100,18 +108,8 @@ void fxlifescore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mtx,
         gDPSetCombineLERP((*gfx)++, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0);
         gDPSetPrimColor((*gfx)++, 0, 0, 0x00, 0x00, 0x00, 0xFF);
         do{  
-/*
- * Fixes an issue where reloading from a death would show the wrong health sprite for the first frame of animation.
- * It was particularly noticable since the animation doesn't start until a second after the hud appears.
- */
+// Fixes an issue where reloading from a death would show the wrong health sprite for the first frame of animation.
 #ifdef BUG_FIXES
-            /* 
-             * When "D_80381EBC" is 20, it shows the sad BK sprite. But when it lowers to 19, it would then abruptly switch to the dead BK sprite.
-             * Now, when "D_80381EBC" is 20, just cap the animation frame to 19.
-             */
-            if (D_80381EBC == 20) {
-                animFrame -= 1;
-            }
             func_80348044(gfx, D_80381EB0[D_80381EC4], (s32) animFrame % 4, 0, 0, 0, 0, 2, 2, &spF0, &spEC, &spE8, &spE4, &spE0, &spDC, &sp10C);
 #else
             func_80348044(gfx, D_80381EB0[D_80381EC4], (s32) D_80381EBC % 4, 0, 0, 0, 0, 2, 2, &spF0, &spEC, &spE8, &spE4, &spE0, &spDC, &sp10C);
@@ -151,13 +149,21 @@ void fxlifescore_update(enum item_e item_id, struct8s *arg1) {
     s32 sp1C;
     s32 sp18;
 
+#ifdef BUG_FIXES
+    f32 animFrame = return_healthSprite_animFrame_with_cap();
+#endif
+
     sp20 = (s32) ((f32) func_802FFE04() - D_80381EBC);
     switch (func_802FB0D4(arg1)) {
         case 1:
             if (D_80381EB0[D_80381EC4] == NULL) {
-// The "D_80381EBC" variable is a multiple of 4, but was incorrectly divided by 5. This gave the wrong index and loaded an incorrect health sprite when you went into a new area.
+/*
+ * The "D_80381EBC" variable is a multiple of 4, but was incorrectly divided by 5. This would give the wrong index and load an incorrect health sprite when you went into a new area.
+ * However, fixing this creates another issue where dividing the max value of "D_80381EBC", which is 20.0f, will result in an index outside of the array, and cause a crash when trying to load from it.
+ * Instead, create another variable where it's assigned "D_80381EBC" but with a max value of 19.5f.
+ */
 #ifdef BUG_FIXES
-                D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) D_80381EBC / 4]);
+                D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) animFrame / 4]);
 #else
                 D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) D_80381EBC / 5]);
 #endif

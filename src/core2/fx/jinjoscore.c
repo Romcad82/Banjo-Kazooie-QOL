@@ -315,13 +315,13 @@ enum marker_e return_jinjo_marker_id(s16 jinjoIndex) {
     }
 }
 
-void setup_hud_with_collected_jinjos() {
+void setup_hud_with_collected_jinjos(void) {
     s16 jinjoIndex;
-    s16 worldOffset = (return_worldOffset() / 20);
+    s16 worldOffset = (return_noteIndex_worldOffset() / 20);
     
     for (jinjoIndex = (worldOffset + 1); jinjoIndex <= (worldOffset + 5); jinjoIndex++) {
         if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
-            if ((jinjosaving.flags[(jinjoIndex - 1) / 8] & (1 << (jinjoIndex & 7))) != 0) {
+            if (jinjosaving.flags[(jinjoIndex - 1) / 8] & (1 << (jinjoIndex & 7))) {
                 enum marker_e marker_id = return_jinjo_marker_id(jinjoIndex - 1);
                 item_adjustByDiffWithoutHud(ITEM_12_JINJOS, 1 << (marker_id + 6));
                 D_80381E58[(jinjoIndex - 1) % 5] = 3;
@@ -354,7 +354,7 @@ s16 return_jinjoIndex(enum marker_e marker_id) {
             break;
     }
 
-    return jinjoIndex += (return_worldOffset() / 20);
+    return jinjoIndex + (return_noteIndex_worldOffset() / 20);
 }
 
 void remove_collected_jinjos(Actor *this, enum marker_e marker_id){
@@ -375,22 +375,24 @@ void set_jinjo_collected(enum marker_e marker_id) {
     }
 }
 
-bool respawn_jinjo_jiggy(enum marker_e marker_id){ // Needed to respawn jiggies if you leave a level
+// Needed to respawn uncollected jiggies if you leave a level or die.
+bool respawn_jinjo_jiggy(enum marker_e marker_id){
     s16 jinjoIndex = return_jinjoIndex(marker_id);
     
     if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
-        if (bitfield_get_n_bits(jinjojiggyrespawn.flags, ((return_worldOffset() / 100) * 3), 3) == (((jinjoIndex - 1) % 5) + 1)) {
+        if (bitfield_get_n_bits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset() / 100) * 3), 3) == (((jinjoIndex - 1) % 5) + 1)) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-void set_jinjo_jiggy_respawn(enum marker_e marker_id) { // Sets jiggy to respawn at last collected jinjo
+// Sets jiggy to respawn at last jinjo you collected.
+void set_jinjo_jiggy_respawn(enum marker_e marker_id) {
     s16 jinjoIndex = return_jinjoIndex(marker_id);
     
     if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
-        bitfield_set_n_bits(jinjojiggyrespawn.flags, ((return_worldOffset() / 100) * 3), (((jinjoIndex - 1) % 5) + 1), 3);
+        bitfield_set_n_bits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset() / 100) * 3), (((jinjoIndex - 1) % 5) + 1), 3);
     }
 }
 
@@ -399,7 +401,7 @@ void jinjosaving_getSizeAndPtr(s32 *size, u8 **addr) {
     *addr = jinjosaving.flags; 
 }
 
-void jinjosaving_clearAllFlags(void) { // Resets jinjo saving flags when you change files
+void jinjosaving_clearAllFlags(void) {
     s32 i;
     for(i = 0; i < 0x6; i++){
         jinjosaving.flags[i] = 0;
@@ -411,7 +413,7 @@ void jinjojiggyrespawn_getSizeAndPtr(s32 *size, u8 **addr) {
     *addr = jinjojiggyrespawn.flags; 
 }
 
-void jinjojiggyrespawn_clearAllFlags(void) { // Resets jinjo jiggy respawn flags when you change files
+void jinjojiggyrespawn_clearAllFlags(void) {
     s32 i;
     for(i = 0; i < 0x4; i++){
         jinjojiggyrespawn.flags[i] = 0;

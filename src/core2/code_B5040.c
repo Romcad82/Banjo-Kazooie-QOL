@@ -327,7 +327,7 @@ void __savedata_load_abilities(u8 *savedata){ //savedata_load_abilities
 }
 
 #ifdef NOTE_SAVING
-void __savedata_load_notesavings(u8 *savedata){
+void __savedata_load_notesaving(u8 *savedata){
     s32 notesaving_size;
     u8 *notesaving_addr;
     int i;
@@ -456,7 +456,7 @@ void __savedata_save_abilities(u8 *savedata){ //savedata_save_abilities
 }
 
 #ifdef NOTE_SAVING
-void __savedata_save_notesavings(u8 *savedata){
+void __savedata_save_notesaving(u8 *savedata){
     s32 notesaving_size;
     u8 *notesaving_addr;
     int i;
@@ -550,7 +550,7 @@ void saveData_load(SaveData *savedata){
     __savedata_load_abilities(savedata);
 #ifdef SAVE_FILE_DATA_SIZE
  #ifdef NOTE_SAVING
-    __savedata_load_notesavings(savedata);
+    __savedata_load_notesaving(savedata);
  #endif
  #ifdef JINJO_SAVING
     __savedata_load_jinjosavings(savedata);
@@ -614,7 +614,7 @@ void saveData_create(SaveData *savedata){
     __savedata_save_abilities(savedata);
 #ifdef SAVE_FILE_DATA_SIZE
  #ifdef NOTE_SAVING
-    __savedata_save_notesavings(savedata);
+    __savedata_save_notesaving(savedata);
  #endif
  #ifdef JINJO_SAVING
     __savedata_save_jinjosavings(savedata);

@@ -100,8 +100,8 @@ s32 D_8038355C;
 
 #ifdef NOTE_SAVING
 s16 currNotePositions[100][3];
-u8 addressCount;
-u8 noteCount;
+u8 addressOffset;
+u8 noteTotal;
 #endif
 
 /* .code */
@@ -948,12 +948,13 @@ void code7AF80_initCubeFromFile(File *file_ptr, Cube *cube) {
 }
 
 #ifdef NOTE_SAVING
-void reset_note_positions(void) { // Resets on every map load
+// Resets upon every map load.
+void reset_note_saving_variables(void) {
     u8 i;
     u8 j;
 
-    addressCount = 0;
-    noteCount = 0;
+    addressOffset = 0;
+    noteTotal = 0;
     for (i = 0; i < 100; i++) {
         for (j = 0; j < 3; j++) {
             currNotePositions[i][j] = 0;
@@ -961,61 +962,73 @@ void reset_note_positions(void) { // Resets on every map load
     }
 }
 
-void reset_addressCount(void) {
-    addressCount = 0;
+void reset_addressOffset(void) {
+    addressOffset = 0;
 }
 
-void check_and_save_note_positions(u8 byte) { // Reads data from asset file to find and save note positions. Also counts how many notes are in a map. Does this one byte at a time
-    switch (addressCount) {
+/*
+ * Checks data when game is reading setup file to find and save note positions. Also counts how many notes are found in a map. Reads one byte at a time.
+ *
+ * byte: Current byte loaded from setup file.
+ * addressOffset: Keeps track of the position 'byte' should be in object structure.
+ */
+void check_and_save_note_positions(u8 byte) {
+    /* 
+     * cases 0-3 checks for sprite ID and other info. If each 'byte' matches with what should be expected from a typical note sprite structure (0x164000BX),
+     * then move on to cases 4-9, where the position of the current note is saved to a list, which is used when checking for note indexes.
+     * case 10 adds to noteTotal and resets addressOffset.
+     */
+    switch (addressOffset) {
         case 0:
             if (byte == 0x16) {
-                addressCount++;
+                addressOffset++;
             }
             break;
         case 1:
             if (byte == 0x40) {
-                addressCount++;
+                addressOffset++;
             } else {
-                addressCount = 0;
+                addressOffset = 0;
             }
             break;
         case 2:
             if (byte == 0x00) {
-                addressCount++;
+                addressOffset++;
             } else {
-                addressCount = 0;
+                addressOffset = 0;
             }
             break;
         case 3:
             if ((byte >> 4) == 0xB) {
-                addressCount++;
+                addressOffset++;
             } else {
-                addressCount = 0;
+                addressOffset = 0;
             }
             break;
         case 4:
         case 6:
         case 8:
-            currNotePositions[noteCount][(addressCount / 2) - 2] |= (byte << 8);
-            addressCount++;
+            currNotePositions[noteTotal][(addressOffset / 2) - 2] |= (byte << 8);
+            addressOffset++;
             break;
         case 5:
         case 7:
         case 9:
-            currNotePositions[noteCount][(addressCount / 2) - 2] |= byte;
-            addressCount++;
+            currNotePositions[noteTotal][(addressOffset / 2) - 2] |= byte;
+            addressOffset++;
             break;
         case 10:
-            noteCount++;
-            addressCount = 0;
+            noteTotal++;
+            addressOffset = 0;
             break;
     }
 }
 
-s16 remove_or_return_noteIndex(Prop *other_prop, bool remove) { // Compares positions found from check_and_save_note_positions with input. If there is a match, then either remove the note or just return its index value
+// Compares note positions found from check_and_save_note_positions with input. If there is a match, then either remove the note or just return its index value.
+s16 remove_or_return_noteIndex(Prop *other_prop, bool remove) {
     s16 i;
 
-    for (i = 0; i < noteCount; i++) {
+    for (i = 0; i < noteTotal; i++) {
         if ((other_prop->unk4[0] == currNotePositions[i][0]) && 
             (other_prop->unk4[1] == currNotePositions[i][1]) && 
             (other_prop->unk4[2] == currNotePositions[i][2])) {
@@ -1031,13 +1044,13 @@ s16 remove_or_return_noteIndex(Prop *other_prop, bool remove) { // Compares posi
 }
 
 bool check_if_note(Prop *other_prop){
-    s32 temp_v0_5;
+    s32 temp_v0_5 = other_prop->spriteProp.sprite_index + 0x572;
 
-    temp_v0_5 = other_prop->spriteProp.sprite_index + 0x572;
     return (temp_v0_5 == 0x6D6);
 }
 
-void search_for_notes_through_cube(Cube *cube) { // Called when you load into a map. Removes any note that's been collected
+// Called when you load into a map. Removes any note that's been collected.
+void check_for_notes_through_cube(Cube *cube) {
     Prop *var_v1;
     s32 i;
 

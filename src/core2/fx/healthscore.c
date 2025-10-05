@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 extern f32 func_802FB0E4(struct8s*);
 
@@ -86,24 +88,25 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
 
 #ifdef HEALTH_SYSTEM_REWORK
     u8 baseHealth = 5 + (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH) * 4);
-    s32 honeycombTotalHealth = MIN((baseHealth + (honeycombscore_get_total() / 6)), 9);
+    s32 honeycombBarsTotal = MIN((baseHealth + (honeycombscore_get_total() / 6)), 9);
     s8 hasDoubleHealth = fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH);
-    bool pauseHud = (honeycombTotalHealth != (item_getCount(ITEM_15_HEALTH_TOTAL) / (hasDoubleHealth + 1)));
+    bool waitForHealthTotalUpdate = (honeycombBarsTotal != (item_getCount(ITEM_15_HEALTH_TOTAL) / (hasDoubleHealth + 1)));
 
     /*
-     * In the vanilla game, "gTotalHealth" would update after the Hud reappears on screen to give you a new Honeycomb. However, "honeycombTotalHealth" is updated when you collect an Empty Honeycomb,
-     * which causes a visual bug where the last even Honeycomb is pushed to the right before the new Honeycomb appears from the top. "pauseHud" checks if "honeycombTotalHealth" and your health total are the same.
-     * If they aren't (which means you collected an Empty Honeycomb and you're waiting for the animation to play and give you a health upgrade) then subtract one from "honeycombTotalHealth" so your hud won't
-     * update until health total is updated and is the same as "honeycombTotalHealth".
+     * In the vanilla game, "gTotalHealth" would update after the Hud reappears on screen to give you a new Honeycomb. However, "honeycombBarsTotal" is updated when you collect an Empty Honeycomb,
+     * which causes a visual bug where the last even numbered Honeycomb is pushed to the right before the new Honeycomb appears from the top.
+     * "waitForHealthTotalUpdate" checks if "honeycombBarsTotal" and your health total are the same.
+     * If they aren't (which means you collected an Empty Honeycomb and you're waiting for the animation to play and give you a health upgrade) then subtract one from "honeycombBarsTotal" so your hud won't
+     * update until health total is updated and is the same as "honeycombBarsTotal".
      */
-    if (pauseHud) {
-        honeycombTotalHealth -= 1;
+    if (waitForHealthTotalUpdate) {
+        honeycombBarsTotal -= 1;
 
         /*
          * New Red Honeycombs don't update their y position properly when you upgrade your health, so this resets it before it appears.
-         * New Yellow Honeycombs don't have this issue, but this shouldn't affect them anyways.
+         * New Yellow Honeycombs don't have this issue, but this shouldn't affect them in anyway.
          */
-        D_80381F08[honeycombTotalHealth] = -64.0f; 
+        D_80381F08[honeycombBarsTotal] = -64.0f; 
     }
 #endif
 
@@ -117,8 +120,8 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
 
     //loop over each honeycomb piece
 #ifdef HEALTH_SYSTEM_REWORK
-    for (i = honeycombTotalHealth - 1; i >= 0; i--) {//L80300E40
-        if (i != 0 && (i + 1 != honeycombTotalHealth || honeycombTotalHealth & 1)) {
+    for (i = honeycombBarsTotal - 1; i >= 0; i--) {//L80300E40
+        if (i != 0 && (i + 1 != honeycombBarsTotal || honeycombBarsTotal & 1)) {
 #else
     for (i = gTotalHealth - 1; i >= 0; i--) {//L80300E40
         if (i != 0 && (i + 1 != gTotalHealth || gTotalHealth & 1)) {
@@ -133,7 +136,7 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
 
         if (gHealth > i) {
 #ifdef HEALTH_SYSTEM_REWORK
-            if ((0 < (gHealth - (f32)(honeycombTotalHealth)) && (gHealth - (f32)(honeycombTotalHealth)) > i) && (hasDoubleHealth)) {
+            if ((0 < (gHealth - (f32)(honeycombBarsTotal)) && (gHealth - (f32)(honeycombBarsTotal)) > i) && (hasDoubleHealth)) {
 #else
             if (0 < (gHealth - 8.0f) && (gHealth - 8.0f) > i) {
 #endif

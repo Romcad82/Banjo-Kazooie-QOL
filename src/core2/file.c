@@ -90,7 +90,7 @@ void file_getByte(File *file, u8 *dst) {
 
 void file_getNBytes(File *file, u8 *dst, s32 cnt) {
 #ifdef NOTE_SAVING
-    reset_addressCount();
+    reset_addressOffset();
 #endif
     while (cnt > 0) {
         file_getByte(file, dst);

@@ -107,9 +107,9 @@ void CCW_func_8038DB0C(Actor *this){
 #ifdef BUG_FIXES
 Actor *ccw_code160_assign_zubba_jiggy(Actor *this) {
     Actor *other;
-    other = actorArray_findClosestActorFromActorId(this->position, ACTOR_46_JIGGY, -1, NULL); // Assign the nearest jiggy to the object instead of the first jiggy found in the actor array
+    other = actorArray_findClosestActorFromActorId(this->position, ACTOR_46_JIGGY, -1, NULL);
     if (other != NULL) {
-        if (chjiggy_getJiggyId(other) != JIGGY_4C_CCW_ZUBBAS) { // If nearest jiggy is not Zubba jiggy, reset "other" to NULL
+        if (chjiggy_getJiggyId(other) != JIGGY_4C_CCW_ZUBBAS) {
             other = NULL; 
         }
     }

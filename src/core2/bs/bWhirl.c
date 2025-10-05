@@ -56,7 +56,7 @@ enum bs_e func_802AA510(enum bs_e arg0){
         arg0 = BS_1C_WONDERWING_WALK;
 
 #ifdef DONT_HOLD_Z_TO_USE_MOVES
-    if(press_button_to_exit_move())
+    if(exit_move_check())
 #else
     if(bakey_released(BUTTON_Z))
 #endif
@@ -155,7 +155,7 @@ void bsbwhirl_walk_update(void){
         sp1C = BS_1B_WONDERWING_IDLE;
 
 #ifdef DONT_HOLD_Z_TO_USE_MOVES
-    if(press_button_to_exit_move())
+    if(exit_move_check())
 #else
     if(bakey_released(BUTTON_Z))
 #endif

@@ -160,7 +160,7 @@ int func_802A8C60(void){
         return 0;
 
 #ifdef DONT_HOLD_Z_TO_USE_MOVES
-    return press_button_to_exit_move();
+    return exit_move_check();
 #else
     return bakey_released(BUTTON_Z);
 #endif

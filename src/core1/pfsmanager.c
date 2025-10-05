@@ -175,6 +175,7 @@ void pfsManager_update(void) {
         temp_t6 = demo_readInput(&pfsManagerContPadData, &sp5C) == 0;
         if ((D_802812D0.button & s0) || temp_t6) {
             if (D_802812D0.button & s0) {
+// Makes Stop 'N' Swop Pictures skippable.
 #ifdef SKIPPABLE_CUTSCENES
                 if (getGameMode() == GAME_MODE_A_SNS_PICTURE) {
                     if (gctransition_done() && !check_snsPicturesTransition()) {

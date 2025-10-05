@@ -27,6 +27,9 @@ void musicNote_update(Actor* this){
     this->scale = 0.42857143f;
 
 #ifdef NOTE_SAVING
-    remove_collected_hut_note(this);
+    if (!this->initialized) {
+        this->initialized = TRUE;
+        remove_collected_hut_note(this);
+    }
 #endif
 }

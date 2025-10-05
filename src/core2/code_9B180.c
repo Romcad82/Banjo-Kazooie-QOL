@@ -103,8 +103,9 @@ void func_803222BC(Struct_core2_9B180_0 * ag0){
 void func_803222F4(Struct_core2_9B180_0 *arg0){
     if(D_8036DE78){
         D_8036DE78 = 0;
+// Rareware Cutscene
 #ifndef SKIPPABLE_CUTSCENES
-        arg0 ->unk4 = 0; // Rareware cutscene
+        arg0 ->unk4 = 0;
 #endif
     }
 }

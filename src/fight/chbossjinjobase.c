@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "fight.h"
 
+#include "config.h"
+
 typedef struct {
     u8 sfxsourceIdx;
 } ActorLocal_BossJinjoBase;
@@ -82,7 +84,7 @@ void chBossJinjoBase_update(Actor *this) {
     marker_loadModelBin(this->marker);
 
     if (!this->volatile_initialized) {
-        // This fixes the Jinjo Statue Softlock
+// This fixes the Jinjo Statue Softlock.
 #ifdef BUG_FIXES
         if (this->marker->unk20) {
             this->marker->unk20 = 0;

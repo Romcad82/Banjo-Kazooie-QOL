@@ -81,6 +81,7 @@ void __chJinjo_802CDD3C(Actor * this){
     }
 }
 
+// Checks for very specific jinjos due to issues with respawning jiggy.
 #ifdef JINJO_SAVING
 bool specific_jinjoJiggyRespawn_check(enum marker_e marker_id) {
     switch (level_get()) {

@@ -76,8 +76,9 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
  #ifndef SKIPPABLE_CUTSCENES
         && fileProgressFlag_get(FILEPROG_E1_UNKNOWN)
  #endif
-                                               ) {
-        if ((check_if_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)) {
+        ) {
+        // Fixes a small issue where you have to press start twice when the Game Over text appears to skip the cutscene.
+        if ((does_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)) {
             return TRUE;
         } else
 #else
@@ -186,6 +187,7 @@ s32 cutscenetrigger_update(void){
     cutscenetrigger_check(MAP_97_CS_END_BEACH_2,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndBeach2CutsceneCheck);
 #endif
     if(map_get() == MAP_95_CS_END_ALL_100 && mapSpecificFlags_get(1)){
+// To prevent multiple transitions from MAP_95_CS_END_ALL_100 cutscene to Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
         if (!gctransition_8030BDC0()) {
             func_8034B9E4();
@@ -232,6 +234,7 @@ void func_8031CC8C(s32 arg0, s32 arg1) {
     f32 vec[3];
     f32 unused[3];
 
+// Prevents map transitions when you skip Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
     if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
         return;
@@ -317,6 +320,7 @@ void func_8031CE70(f32 *arg0, enum map_e arg1, s32 arg2) {
 
 // set map and exit id?
 void func_8031D04C(enum map_e arg0, s32 exit_id) {
+// Prevents map transitions when you skip Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
     if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
         return;

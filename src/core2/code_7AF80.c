@@ -899,7 +899,7 @@ static void __code7AF80_initCubeFromFile(Cube *cube, File* file_ptr) {
         ) {
             code7AF80_initCubeFromFile(file_ptr, cube);
 #ifdef NOTE_SAVING
-            search_for_notes_through_cube(cube);
+            check_for_notes_through_cube(cube);
 #endif
         }
     }
@@ -913,7 +913,7 @@ void cubeList_fromFile(File *file_ptr) {
     NodeProp *iPtr;
 
 #ifdef NOTE_SAVING
-    reset_note_positions();
+    reset_note_saving_variables();
 #endif
 
     file_getNWords_ifExpected(file_ptr, 1, cube_position_from, 3);
@@ -1822,7 +1822,7 @@ s32 func_80307164(s32 position[3]) {
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
             if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
-// Collectibles with similar x and z positions would mistakenly be assigned the same id. Accounting for y position fixes it.
+// Collectibles within the lateral radius of each other would mistakenly be assigned the same id. Accounting for Y position fixes it.
 #if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_FIXES)
                 if (((phi_a0->position[1] - phi_a0->radius) < position[1]) && (position[1] < (phi_a0->position[1] + phi_a0->radius))) {
                     return phi_v1 - D_8036A9D4;
@@ -1837,8 +1837,8 @@ s32 func_80307164(s32 position[3]) {
 }
 
 /*
- * There is a bug in the code that checks if the position of an item is within its flag's radius. The problem is that it doesn't check if the Y position of the item is withing its radius. This can cause issues
- * such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they have similar X and Z positions. However, fixing this bug can cause other issues in the vanilla game. For example,
+ * There is a bug in the code that checks if the position of an item is within its flag's radius. The problem is that it doesn't check if the Y position of the item is within its radius. This can cause issues
+ * such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they're within the lateral radius of each other. However, fixing this bug can cause other issues in the vanilla game. For example,
  * some jiggies are placed outside of their flag's radius on the Y axis, which causes them to not set their flags if they are collected.
  * 
  * To fix this, if "BUG_FIXES" is enabled, then fix the radius bug for all collectibles. However, if "VANILLA_SPECIFIC_BUG_FIXES" is also enabled, then undo the fix, and create a second function that

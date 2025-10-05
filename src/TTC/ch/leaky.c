@@ -46,7 +46,7 @@ static void __chLeaky_updateFunc(Actor *this) {
         if (jiggyscore_isCollected(JIGGY_10_TTC_SANDCASTLE) && !levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN)) {
             levelSpecificFlags_set(2, TRUE);
             this->has_met_before = TRUE;
-            marker_despawn(actorArray_findClosestActorFromActorId(this->position, 0x56, -1, NULL)->marker);
+            marker_despawn(actorArray_findClosestActorFromActorId(this->position, ACTOR_56_SHRAPNEL, -1, NULL)->marker); // Delete the Shrapnel floating over the Sandcastle.
         }
 #endif
 

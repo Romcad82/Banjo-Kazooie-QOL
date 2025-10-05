@@ -267,7 +267,7 @@ void codeABC00_spawnJiggyAtLocation(enum jiggy_e jiggy_id, f32 location[3]) {
 
 /*
  * This isn't a perfect solution, but it works.
- * Essentially, there are certain jiggies that don't respawn properly with Jinjo Saving enabled.
+ * Essentially, there are certain jiggies that don't respawn properly with JINJO_SAVING enabled.
  * The RBB Yellow Jinjo Jiggy and CCW Green Jinjo Jiggy clip through the objects they're supposed to spawn on,
  * and it makes them much harder to collect them (so does TTC Purple Jinjo Jiggy, but it's more of a visual issue).
  * Funnily enough, these are issues in the XBLA version as well.
@@ -282,7 +282,7 @@ void spawnStaticJiggyAtLocation(enum jiggy_e jiggy_id, f32 location[3]) {
     jiggylist_list[jiggy_id - 1].unk10.position[0] = location[0];
     jiggylist_list[jiggy_id - 1].unk10.position[1] = location[1];
     jiggylist_list[jiggy_id - 1].unk10.position[2] = location[2];
-    jiggylist_list[0x17 - 1].init(&jiggylist_list[jiggy_id - 1].unk10);
+    jiggylist_list[JIGGY_17_CC_CLANKER_RAISED - 1].init(&jiggylist_list[jiggy_id - 1].unk10);
     jiggyscore_setSpawned(jiggy_id, TRUE);
 }
 #endif

@@ -1043,7 +1043,7 @@ void func_802D5628(void){
         func_802D5178(LEVEL_FLAG_3F_LAIR_GRUNTY_DOOR_OPEN, 0xE2, 0x40, MAP_93_GL_DINGPOT,  0x10, 0xA, ACTOR_2E5_DOOR_OF_GRUNTY,   0x28);
         if(volatileFlag_get(VOLATILE_FLAG_18)){
             if(!fileProgressFlag_get(FILEPROG_99_PAST_50_NOTE_DOOR_TEXT)){
-// Removes dialog that explains original note score system.
+// Skips dialog that explains original note score system.
 #ifndef NOTE_SAVING
                 gcdialog_showDialogConditional(0xF75, 0xE, NULL, NULL, NULL, NULL, func_802D5140);
 #endif
@@ -1052,7 +1052,7 @@ void func_802D5628(void){
             }
             else{//L802D5DD8
                 if(!volatileFlag_get(VOLATILE_FLAG_16)){
-// Removes dialog that tells you your new best note score.
+// Skips dialog that tells you your new best note score.
 #ifndef NOTE_SAVING
                     gcdialog_showDialogConditional(0xF77, 0x4, NULL, NULL, NULL, NULL, func_802D5140);
 #endif

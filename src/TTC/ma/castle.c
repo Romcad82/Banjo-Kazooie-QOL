@@ -764,7 +764,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     {"d0dkid9", 0, VOLATILE_FLAG_85_SANDCASTLE_REMOVE_BREAKABLE_WALLS + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // Youll Be Glad To See The Shock Jump Pad
-    {"ek5d2d2pr", 0, VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // Also unlocks the shock jump pad in Grunty's Lair
+    {"ek5d2d2pr", 0, VOLATILE_FLAG_86_SANDCASTLE_SHOCKSPRING_JUMP_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // This Comes In Handy To Open Somewhere Sandy
     {"d04md622", 0, VOLATILE_FLAG_87_SANDCASTLE_OPEN_GV + VOLATILE_FLAG_CHEAT_OFFSET, 00},
@@ -776,7 +776,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     {"570ie2mj", 0, VOLATILE_FLAG_89_SANDCASTLE_REMOVE_GLASS_EYE + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // You Wont Be Sad Now You Can Use The Fly Pad
-    {"e7k2ie0gdcr", 0, VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00}, // For some reason, this cheat permanently unlocks the timed flight pad in Grunty's Lair
+    {"e7k2ie0gdcr", 0, VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED + VOLATILE_FLAG_CHEAT_OFFSET, 00},
 
     // Now You Can Go And Trudge In The Snow
     {"ie05nd4d2", 0, VOLATILE_FLAG_8B_SANDCASTLE_OPEN_FP + VOLATILE_FLAG_CHEAT_OFFSET, 00},
@@ -1337,6 +1337,7 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
     );
 #endif
 #ifndef HEALTH_SYSTEM_REWORK
+ // Fixes oversight where Max Health Cheats temporarily removes Double Defense.
  #ifdef BUG_FIXES
     __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, (8 * (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH) + 1)));
  #else
@@ -1596,6 +1597,7 @@ static bool __maCastle_isFloorTileValidForSecretCheatCode(LetterFloorTile *floor
                     return TRUE;
                 }
 #ifdef EASIER_CHEATS
+                // "playedSFX" is to prevent moo sound effect from playing multiple times at once.
                 if (!playedSFX) {
                     func_8030E58C(SFX_2B_BULL_MOO_1, randf2(0.6f, 0.7f));
                     playedSFX = TRUE;
