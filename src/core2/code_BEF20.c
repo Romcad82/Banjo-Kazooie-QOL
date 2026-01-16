@@ -89,7 +89,15 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
 
     sp34 = ((fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH))? 2 : 1);
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*9, D_80385F30[ITEM_15_HEALTH_TOTAL]);
+    } else {
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*8, D_80385F30[ITEM_15_HEALTH_TOTAL]);
+    }
+ #else
     D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*9, D_80385F30[ITEM_15_HEALTH_TOTAL]);
+ #endif
 #else
     D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*8, D_80385F30[ITEM_15_HEALTH_TOTAL]);
 #endif
@@ -211,10 +219,11 @@ void item_setItemsStartCounts(void){
 }
 
 #if defined(NOTE_SAVING) || defined(JINJO_SAVING)
-s16 return_noteIndex_worldOffset(void) {
+s16 return_noteIndex_worldOffset(enum level_e manualLevel) {
     s16 worldOffset;
+    enum level_e levelId = (manualLevel) ? manualLevel : level_get();
 
-    switch (level_get()) {
+    switch (levelId) {
         case LEVEL_1_MUMBOS_MOUNTAIN:
             worldOffset = 0;
             break;
@@ -399,17 +408,23 @@ s16 return_noteIndex_mapOffset(void) {
 
 // Adds offsets to note index depending on what map and world you're in.
 s16 adjust_noteIndex(s16 noteIndex) {
-    s16 worldOffset = return_noteIndex_worldOffset();
+    s16 worldOffset = return_noteIndex_worldOffset(0);
     s16 mapOffset = return_noteIndex_mapOffset();
 
     return noteIndex + 1 + worldOffset + mapOffset;
 }
 
 void remove_collected_notes(Prop *other_prop, s16 noteIndex){
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return;
+    }
+ #endif
+
     noteIndex = adjust_noteIndex(noteIndex);
     
     if ((0 < noteIndex) && (noteIndex <= 900)) {
-        if ((notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) != 0) {
+        if (notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) {
             other_prop->spriteProp.unk8_4 = 0;
         }
     }
@@ -417,6 +432,13 @@ void remove_collected_notes(Prop *other_prop, s16 noteIndex){
 
 void set_note_collected(Prop *other_prop) {
     s16 noteIndex = remove_or_return_noteIndex(other_prop, FALSE);
+
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return;
+    }
+ #endif
+
     noteIndex = adjust_noteIndex(noteIndex);
     
     if ((0 < noteIndex) && (noteIndex <= 900)) {
@@ -426,6 +448,12 @@ void set_note_collected(Prop *other_prop) {
 
 // Despawns hut notes depending on how many of them have been collected.
 void remove_collected_hut_note(Actor* this){
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return;
+    }
+ #endif
+
     if (hutNotesCollected) {
         marker_despawn(this->marker);
         hutNotesCollected--;
@@ -434,32 +462,50 @@ void remove_collected_hut_note(Actor* this){
 
 // When a hut note is collected, set one of the last 5 flags for MM and BGS.
 void set_hut_note_collected(void) {
-    u16 noteIndex = 96;
-    u16 worldOffset = return_noteIndex_worldOffset();
+    s16 noteIndex = 96;
+    s16 worldOffset = return_noteIndex_worldOffset(0);
     u8 i;
     
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return;
+    }
+ #endif
+
     noteIndex += worldOffset;
-    for (i = 0; i < 5; i++) {
-        if ((notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) == 0) {
-            notesaving.flags[((noteIndex + i) - 1) / 8] |= (1 << ((noteIndex + i) & 7));
-            break;
+    for (i = 0; i < 5; i++) {        
+        if ((0 < noteIndex) && (noteIndex <= 900)) {
+            if ((notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) == 0) {
+                notesaving.flags[(noteIndex - 1) / 8] |= (1 << (noteIndex & 7));
+                break;
+            }
         }
+        noteIndex++;
     }
 }
 
 // Counts how many notes have been collected when you load into MM and BGS.
 void reset_hut_note_count(void) {
-    u16 noteIndex = 96;
-    u16 worldOffset = return_noteIndex_worldOffset();
+    s16 noteIndex = 96;
+    s16 worldOffset = return_noteIndex_worldOffset(0);
     u8 i;
     
     hutNotesCollected = 0;
 
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return;
+    }
+ #endif
+    
     noteIndex += worldOffset;
     for (i = 0; i < 5; i++) {
-        if (notesaving.flags[((noteIndex + i) - 1) / 8] & (1 << ((noteIndex + i) & 7))) {
-            hutNotesCollected++;
+        if ((0 < noteIndex) && (noteIndex <= 900)) {
+            if (notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) {
+                hutNotesCollected++;
+            }
         }
+        noteIndex++;
     }
 }
 #endif
@@ -473,7 +519,15 @@ void itemscore_levelReset(enum level_e level){
     }
     
 #ifdef NOTE_SAVING
-    D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get()); // Instead of resetting to 0, set to level note total.
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get());
+    } else {
+        D_80385F30[ITEM_C_NOTE] = 0;
+    }
+ #else
+    D_80385F30[ITEM_C_NOTE] = itemscore_noteScores_get(level_get());
+ #endif
 #else
     D_80385F30[ITEM_C_NOTE] = 0;
 #endif
@@ -665,16 +719,35 @@ void func_80346DB4(s32 note_count) {
 
     level_id = level_get();
     if (!func_802E4A08() && (level_id > 0) && (level_id < 0xE)) {
-        if (D_80385FF0[level_id] < note_count) {
+        if (D_80385FF0[level_id] < note_count
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+            || is_qol_feature_enabled(QOL_ID_NOTE_SAVING)
+#endif
+            ) {
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+            if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+                D_80385FF0[level_id] = note_count;
+            }
+#else
             D_80385FF0[level_id] = note_count;
+#endif
             if ((level_get() == LEVEL_1_MUMBOS_MOUNTAIN) && (note_count == 50)) {
                 gcdialog_showDialog(0xF74, 4, NULL, NULL, NULL, NULL);
             }
             if (note_count == 100) {
                 gcdialog_showDialog(0xF78, 4, NULL, NULL, NULL, NULL);
             }
-// Skips dialog that says you've passed you're best note score.
-#ifndef NOTE_SAVING
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+            if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+                if (note_count == 1) {
+                    levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
+                }
+                if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showDialog(0xF76, 0, NULL, NULL, NULL, NULL))) {
+                    levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
+                }
+            }
+// When only NOTE_SAVING is enabled, completely remove dialog that says you've passed you're best note score.
+#elif !defined(NOTE_SAVING)
             if (note_count == 1) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
@@ -690,9 +763,44 @@ void func_80346DB4(s32 note_count) {
     }
 }
 
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+s32 noteSaving_flags_countAll(void) {
+    s32 total = 0;
+    s16 i;
+
+    for (i = 1; i <= 900; i++) {
+        if (notesaving.flags[(i - 1) / 8] & (1 << (i & 7))) {
+            total++;
+        }
+    }
+    return total;
+}
+
+s32 noteSaving_flags_countLevel(enum level_e lvl_id) {
+    s32 total = 0;
+    s16 noteIndex = return_noteIndex_worldOffset(lvl_id) + 1;
+    s16 i;
+
+    for (i = 0; i < 100; i++) {
+        if ((0 < noteIndex) && (noteIndex <= 900)) {
+            if (notesaving.flags[(noteIndex - 1) / 8] & (1 << (noteIndex & 7))) {
+                total++;
+            }
+        }
+        noteIndex++;
+    }
+    return total;
+}
+#endif
+
 s32 itemscore_noteScores_getTotal(void){
     int i = 1;
     s32 total = 0;
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+    if (is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return noteSaving_flags_countAll();
+    }
+#endif
     do{
         total += D_80385FF0[i++];
     }while(i < 0xe);
@@ -700,6 +808,11 @@ s32 itemscore_noteScores_getTotal(void){
 }
 
 s32 itemscore_noteScores_get(enum level_e lvl_id){
+#if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
+    if (is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
+        return noteSaving_flags_countLevel(lvl_id);
+    }
+#endif
     return D_80385FF0[lvl_id];
 }
 
@@ -831,18 +944,47 @@ void func_8034789C(void) {
 #endif
     if (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH)) {
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
         D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal * 2;
+    } else {
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = 16;
+    }
+ #else
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal * 2;
+ #endif
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] = 16;
 #endif
     } else {
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
         D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal;
+    } else {
+        D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + MIN(3, (sp1C / 6));
+    }
+ #else
+        D_80385F30[ITEM_15_HEALTH_TOTAL] = honeycombBarsTotal;
+ #endif
 #else
         D_80385F30[ITEM_15_HEALTH_TOTAL] =  5 + MIN(3, (sp1C / 6));
 #endif
     }
-#ifndef HEALTH_SYSTEM_REWORK
+#if defined(OPTIONS_MENU) && defined(HEALTH_SYSTEM_REWORK)
+    if (!is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
+        if (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH)) {
+            temp_v0 = D_80385F30[ITEM_15_HEALTH_TOTAL];
+            if (temp_v0 >= 9) {
+                D_80385F30[ITEM_15_HEALTH_TOTAL] = temp_v0;
+            }
+            else{
+                D_80385F30[ITEM_15_HEALTH_TOTAL] = 8;
+            }
+        }
+    }
+// When only HEALTH_SYSTEM_REWORK is enabled, completely replace code that sets max health for cheat code.
+#elif !defined(HEALTH_SYSTEM_REWORK)
     if (volatileFlag_get(VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH)) {
         temp_v0 = D_80385F30[ITEM_15_HEALTH_TOTAL];
         if (temp_v0 >= 9) {

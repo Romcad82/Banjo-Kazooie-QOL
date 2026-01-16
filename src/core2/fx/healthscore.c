@@ -99,7 +99,11 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
      * If they aren't (which means you collected an Empty Honeycomb and you're waiting for the animation to play and give you a health upgrade) then subtract one from "honeycombBarsTotal" so your hud won't
      * update until health total is updated and is the same as "honeycombBarsTotal".
      */
-    if (waitForHealthTotalUpdate) {
+    if (waitForHealthTotalUpdate
+#ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)
+#endif
+        ) {
         honeycombBarsTotal -= 1;
 
         /*
@@ -120,6 +124,11 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
 
     //loop over each honeycomb piece
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
+        honeycombBarsTotal = gTotalHealth;
+    }
+ #endif
     for (i = honeycombBarsTotal - 1; i >= 0; i--) {//L80300E40
         if (i != 0 && (i + 1 != honeycombBarsTotal || honeycombBarsTotal & 1)) {
 #else
@@ -136,6 +145,12 @@ void fxhealthscore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mt
 
         if (gHealth > i) {
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK)) {
+        honeycombBarsTotal = (s32)(8.0f);
+        hasDoubleHealth = 1;
+    }
+ #endif
             if ((0 < (gHealth - (f32)(honeycombBarsTotal)) && (gHealth - (f32)(honeycombBarsTotal)) > i) && (hasDoubleHealth)) {
 #else
             if (0 < (gHealth - 8.0f) && (gHealth - 8.0f) > i) {
@@ -198,15 +213,23 @@ void fxhealthscore_update(enum item_e item_id, struct8s *arg1) {
     f32 temp_f20;
     s32 var_s0;
     s32 sp2C;
-
+#if defined(OPTIONS_MENU) && defined(HEALTH_SYSTEM_REWORK)
+    u8 maxHealth = 9 + (u8)(is_qol_feature_enabled(QOL_ID_HEALTH_SYSTEM_REWORK));
+#endif
 
     temp_f20 = time_getDelta();
     sp2C = func_802FB0D4(arg1);
 
 #ifdef HEALTH_SYSTEM_REWORK
+ #ifdef OPTIONS_MENU
+    if (item_getCount(ITEM_15_HEALTH_TOTAL) >= maxHealth) {
+        gTotalHealth = maxHealth - 1;
+    }
+ #else
     if (item_getCount(ITEM_15_HEALTH_TOTAL) >= 10) {
         gTotalHealth = 9;
     }
+ #endif
 #else
     if (item_getCount(ITEM_15_HEALTH_TOTAL) >= 9) {
         gTotalHealth = 8;

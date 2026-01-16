@@ -1824,6 +1824,11 @@ s32 func_80307164(s32 position[3]) {
             if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
 // Collectibles within the lateral radius of each other would mistakenly be assigned the same id. Accounting for Y position fixes it.
 #if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_FIXES)
+ #ifdef OPTIONS_MENU
+                if (!is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+                    return phi_v1 - D_8036A9D4;
+                } else
+ #endif
                 if (((phi_a0->position[1] - phi_a0->radius) < position[1]) && (position[1] < (phi_a0->position[1] + phi_a0->radius))) {
                     return phi_v1 - D_8036A9D4;
                 }

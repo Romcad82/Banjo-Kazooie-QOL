@@ -381,6 +381,9 @@ void dialog_update(void) {
     s32 sp7C;
     s32 padding[4];
     char *sp4C[8];
+#if defined(OPTIONS_MENU) && defined(ONLY_B_BUTTON_SKIPS_DIALOG)
+    s32 skipTextVariable;
+#endif
 
     ret = -1;
 
@@ -598,7 +601,17 @@ void dialog_update(void) {
             }
     
 #ifdef ONLY_B_BUTTON_SKIPS_DIALOG
+ #ifdef OPTIONS_MENU
+            if (is_qol_feature_enabled(QOL_ID_ONLY_B_BUTTON_SKIPS_DIALOG)) {
+                skipTextVariable = (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u);
+            } else {
+                skipTextVariable = (NOT((g_Dialog.u8.unk128_31 & 0x80) ? func_8024E5E8(0, 4) : func_8024E5E8(0, 3)));
+            }
+
+            if (skipTextVariable) {
+ #else
             if (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u) {
+ #endif
 #else
             if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? func_8024E5E8(0, 4) : func_8024E5E8(0, 3))) {
 #endif

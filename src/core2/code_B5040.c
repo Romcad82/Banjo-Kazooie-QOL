@@ -215,12 +215,12 @@ void savedata_init(void){ //savedata_init
 #ifdef SAVE_FILE_DATA_SIZE
     prevOffset = abilitiesOffset;
     prevSize = abilities_size;
- #ifdef NOTE_SAVING
+ #if defined(NOTE_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     notesavingOffset = prevOffset + prevSize;
     prevOffset = notesavingOffset;
     prevSize = notesaving_size;
  #endif
- #ifdef JINJO_SAVING
+ #if defined(JINJO_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     jinjosavingOffset = prevOffset + prevSize;
     jinjojiggyrespawnOffset = jinjosavingOffset + jinjosaving_size;
     prevOffset = jinjojiggyrespawnOffset;
@@ -549,10 +549,10 @@ void saveData_load(SaveData *savedata){
     func_8033C4E4(savedata);
     __savedata_load_abilities(savedata);
 #ifdef SAVE_FILE_DATA_SIZE
- #ifdef NOTE_SAVING
+ #if defined(NOTE_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     __savedata_load_notesaving(savedata);
  #endif
- #ifdef JINJO_SAVING
+ #if defined(JINJO_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     __savedata_load_jinjosavings(savedata);
     __savedata_load_jinjojiggyrespawns(savedata);
  #endif
@@ -613,10 +613,10 @@ void saveData_create(SaveData *savedata){
     __savedata_8033CA2C(savedata);
     __savedata_save_abilities(savedata);
 #ifdef SAVE_FILE_DATA_SIZE
- #ifdef NOTE_SAVING
+ #if defined(NOTE_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     __savedata_save_notesaving(savedata);
  #endif
- #ifdef JINJO_SAVING
+ #if defined(JINJO_SAVING) && SUFFICIENT_SAVE_DATA_SPACE
     __savedata_save_jinjosavings(savedata);
     __savedata_save_jinjojiggyrespawns(savedata);
  #endif

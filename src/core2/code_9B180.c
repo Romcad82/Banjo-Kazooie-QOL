@@ -104,7 +104,11 @@ void func_803222F4(Struct_core2_9B180_0 *arg0){
     if(D_8036DE78){
         D_8036DE78 = 0;
 // Rareware Cutscene
-#ifndef SKIPPABLE_CUTSCENES
+#if defined(OPTIONS_MENU) && defined(SKIPPABLE_CUTSCENES)
+        if (!is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+            arg0->unk4 = 0;
+        }
+#elif !defined(SKIPPABLE_CUTSCENES)
         arg0 ->unk4 = 0;
 #endif
     }
@@ -142,7 +146,15 @@ void func_803223AC(void) {
     }
 
     sp28 = 0;
-#ifndef IGNORE_FRAMERATE_ALTERING_OBJECTS
+#if defined(OPTIONS_MENU) && defined(IGNORE_FRAMERATE_ALTERING_OBJECTS)
+    if (!is_qol_feature_enabled(QOL_ID_IGNORE_FRAMERATE_ALTERING_OBJECTS)) {
+        func_8032236C(0x19, 1, &sp28);
+        func_8032236C(0x1A, 2, &sp28);
+        func_8032236C(0x1B, 3, &sp28);
+        func_8032236C(0x1C, 4, &sp28);
+        func_8032236C(0x1D, 5, &sp28);
+    }
+#elif !defined(IGNORE_FRAMERATE_ALTERING_OBJECTS)
     func_8032236C(0x19, 1, &sp28);
     func_8032236C(0x1A, 2, &sp28);
     func_8032236C(0x1B, 3, &sp28);

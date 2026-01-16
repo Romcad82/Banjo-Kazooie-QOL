@@ -19,11 +19,6 @@ bool cutscene_skipEnterLairCutsceneCheck(void);
 bool cutscene_skipGameOverCutsceneCheck(void);
 bool cutscene_skipIntroCutsceneCheck(void);
 bool cutscene_skipBeachCutsceneCheck(void);
-#ifdef SKIPPABLE_CUTSCENES
-bool cutscene_skipEndAll100BeachCutsceneCheck(void);
-bool cutscene_skipEndBeach2CutsceneCheck(void);
-bool cutscene_skipEndSprialMountainCutscenesCheck(void);
-#endif
 
 extern void func_802DC560(s32, s32);
 
@@ -39,7 +34,11 @@ u8 D_80383190;
 // func_8031C640
 bool cutscene_skipIntroCutsceneCheck(void) {
 #ifdef SKIPPABLE_CUTSCENES
-    if (func_8024E698(0) == 1) {
+    if (func_8024E698(0) == 1
+ #ifdef OPTIONS_MENU
+        && (gameFile_anyNonEmpty() != 0 || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))
+ #endif
+        ) {
 #else
     if ((func_8024E698(0) == 1) && (gameFile_anyNonEmpty() != 0)) {
 #endif
@@ -52,7 +51,14 @@ bool cutscene_skipIntroCutsceneCheck(void) {
 bool cutscene_skipEnterLairCutsceneCheck(void) {
     if ((func_8024E698(0) == 1) 
 #ifdef SKIPPABLE_CUTSCENES
+ #ifdef OPTIONS_MENU
+        && (((D_8037DCCE[0] != 0) 
+            || (D_8037DCCE[1] != 0) 
+            || (D_8037DCCE[2] != 0))
+            || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))) {
+ #else
         ) {
+ #endif
 #else
         && ((D_8037DCCE[0] != 0) 
             || (D_8037DCCE[1] != 0) 
@@ -68,21 +74,29 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
     s32 sp24;
 
     sp24 = func_8024E698(0);
+#ifdef SKIPPABLE_CUTSCENES
+ #ifdef OPTIONS_MENU
+    if ((mapSpecificFlags_get(0) != 0) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+        fileProgressFlag_set(FILEPROG_E1_UNKNOWN, 1);
+    }
+ #else
+    fileProgressFlag_set(FILEPROG_E1_UNKNOWN, 1);
+ #endif
+#else
     if (mapSpecificFlags_get(0) != 0) {
         fileProgressFlag_set(FILEPROG_E1_UNKNOWN, 1);
     }
-#if defined(SKIPPABLE_CUTSCENES) || defined(BUG_FIXES)
-    if ((sp24 == 1) && !gctransition_8030BDC0()
- #ifndef SKIPPABLE_CUTSCENES
-        && fileProgressFlag_get(FILEPROG_E1_UNKNOWN)
+#endif
+    if ((sp24 == 1) && fileProgressFlag_get(FILEPROG_E1_UNKNOWN) && !gctransition_8030BDC0()) {
+// Fixes a small issue where you have to press start twice when the Game Over text appears to skip the cutscene.
+#if defined(BUG_FIXES) || defined(SKIPPABLE_CUTSCENES)
+        if ((does_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)
+ #ifdef OPTIONS_MENU
+            && (is_qol_feature_enabled(QOL_ID_BUG_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))
  #endif
-        ) {
-        // Fixes a small issue where you have to press start twice when the Game Over text appears to skip the cutscene.
-        if ((does_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)) {
+            ) {
             return TRUE;
         } else
-#else
-    if ((sp24 == 1) && fileProgressFlag_get(FILEPROG_E1_UNKNOWN) && !gctransition_8030BDC0()) {
 #endif
         if (!mapSpecificFlags_get(0xC)) {
             mapSpecificFlags_set(0xC, TRUE);
@@ -177,6 +191,18 @@ s32 cutscenetrigger_update(void){
     cutscenetrigger_check(MAP_86_CS_SPIRAL_MOUNTAIN_4,      0xC, MAP_1_SM_SPIRAL_MOUNTAIN,      0x12, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_89_CS_INTRO_BANJOS_HOUSE_2,   0xC, MAP_1_SM_SPIRAL_MOUNTAIN,      0x12, cutscene_skipIntroCutsceneCheck);
 #ifdef SKIPPABLE_CUTSCENES
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+        cutscenetrigger_check(MAP_87_CS_SPIRAL_MOUNTAIN_5,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
+        cutscenetrigger_check(MAP_94_CS_INTRO_SPIRAL_7,           0, MAP_8E_GL_FURNACE_FUN,            4, cutscene_skipIntroCutsceneCheck);
+        cutscenetrigger_check(MAP_88_CS_SPIRAL_MOUNTAIN_6,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
+        cutscenetrigger_check(MAP_98_CS_END_SPIRAL_MOUNTAIN_1,    0, MAP_1F_CS_START_RAREWARE,        -1, cutscene_skipEndSprialMountainCutscenesCheck);
+        cutscenetrigger_check(MAP_99_CS_END_SPIRAL_MOUNTAIN_2,    0, MAP_1F_CS_START_RAREWARE,        -1, cutscene_skipEndSprialMountainCutscenesCheck);
+        cutscenetrigger_check(MAP_20_CS_END_NOT_100,              0, MAP_98_CS_END_SPIRAL_MOUNTAIN_1, -1, cutscene_skipIntroCutsceneCheck);
+        cutscenetrigger_check(MAP_95_CS_END_ALL_100,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndAll100BeachCutsceneCheck);
+        cutscenetrigger_check(MAP_97_CS_END_BEACH_2,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndBeach2CutsceneCheck);
+    }
+ #else
     cutscenetrigger_check(MAP_87_CS_SPIRAL_MOUNTAIN_5,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_94_CS_INTRO_SPIRAL_7,           0, MAP_8E_GL_FURNACE_FUN,            4, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_88_CS_SPIRAL_MOUNTAIN_6,        1, MAP_96_CS_END_BEACH_1,           -1, cutscene_skipIntroCutsceneCheck);
@@ -185,6 +211,7 @@ s32 cutscenetrigger_update(void){
     cutscenetrigger_check(MAP_20_CS_END_NOT_100,              0, MAP_98_CS_END_SPIRAL_MOUNTAIN_1, -1, cutscene_skipIntroCutsceneCheck);
     cutscenetrigger_check(MAP_95_CS_END_ALL_100,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndAll100BeachCutsceneCheck);
     cutscenetrigger_check(MAP_97_CS_END_BEACH_2,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndBeach2CutsceneCheck);
+ #endif
 #endif
     if(map_get() == MAP_95_CS_END_ALL_100 && mapSpecificFlags_get(1)){
 // To prevent multiple transitions from MAP_95_CS_END_ALL_100 cutscene to Stop 'N' Swop Pictures.
@@ -236,7 +263,11 @@ void func_8031CC8C(s32 arg0, s32 arg1) {
 
 // Prevents map transitions when you skip Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
-    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
+    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)
+ #endif
+        ) {
         return;
     }
 #endif
@@ -322,7 +353,11 @@ void func_8031CE70(f32 *arg0, enum map_e arg1, s32 arg2) {
 void func_8031D04C(enum map_e arg0, s32 exit_id) {
 // Prevents map transitions when you skip Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
-    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)) {
+    if ((getGameMode() == GAME_MODE_A_SNS_PICTURE) && volatileFlag_get(VOLATILE_FLAG_64)
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)
+ #endif
+        ) {
         return;
     }
 #endif

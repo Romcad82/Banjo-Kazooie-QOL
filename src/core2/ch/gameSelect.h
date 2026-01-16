@@ -1,3 +1,5 @@
+#include "config.h"
+
 typedef enum {
     GAME_SELECT_INITIALIZE = 1,
     GAME_SELECT_IDLE = 2,
@@ -5,4 +7,8 @@ typedef enum {
     GAME_SELECT_STARTING_SILLY = 4,
     GAME_SELECT_ERASE_CONFIRMATION = 5,
     GAME_SELECT_DONE = 6
+#ifdef OPTIONS_MENU
+    ,
+    GAME_SELECT_OPTIONS_MENU = 7
+#endif
 } GameSelectState;

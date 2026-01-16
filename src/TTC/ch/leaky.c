@@ -43,7 +43,11 @@ static void __chLeaky_updateFunc(Actor *this) {
         this->marker->propPtr->unk8_3 = FALSE;
 
 #ifdef SAND_CASTLE_PERMANENTLY_DRAINED
-        if (jiggyscore_isCollected(JIGGY_10_TTC_SANDCASTLE) && !levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN)) {
+        if (jiggyscore_isCollected(JIGGY_10_TTC_SANDCASTLE) && !levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN)
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_SAND_CASTLE_PERMANENTLY_DRAINED)
+ #endif
+            ) {
             levelSpecificFlags_set(2, TRUE);
             this->has_met_before = TRUE;
             marker_despawn(actorArray_findClosestActorFromActorId(this->position, ACTOR_56_SHRAPNEL, -1, NULL)->marker); // Delete the Shrapnel floating over the Sandcastle.

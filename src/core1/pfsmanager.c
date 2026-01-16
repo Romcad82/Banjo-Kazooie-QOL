@@ -177,7 +177,11 @@ void pfsManager_update(void) {
             if (D_802812D0.button & s0) {
 // Makes Stop 'N' Swop Pictures skippable.
 #ifdef SKIPPABLE_CUTSCENES
-                if (getGameMode() == GAME_MODE_A_SNS_PICTURE) {
+                if (getGameMode() == GAME_MODE_A_SNS_PICTURE
+ #ifdef OPTIONS_MENU
+                    && is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)
+ #endif
+                    ) {
                     if (gctransition_done() && !check_snsPicturesTransition()) {
                         volatileFlag_set(VOLATILE_FLAG_64, 1);
                         func_8034BA20();

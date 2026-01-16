@@ -590,7 +590,11 @@ void updateJigsawPictureActor(Actor *this) {
 
                 // Add all pieces
 #ifdef UNLOCK_PLACE_ALL_PUZZLE_PIECES
-                } else if (side_buttons[SIDE_BUTTON(BUTTON_Z)] == TRUE) {
+                } else if ((side_buttons[SIDE_BUTTON(BUTTON_Z)] == TRUE)
+ #ifdef OPTIONS_MENU
+                           && (fileProgressFlag_get(FILEPROG_E0_CAN_PLACE_ALL_PUZZLE_PIECES) || is_qol_feature_enabled(QOL_ID_UNLOCK_PLACE_ALL_PUZZLE_PIECES))
+ #endif
+                           ) {
 #else
                 } else if ((side_buttons[SIDE_BUTTON(BUTTON_Z)] == TRUE) && fileProgressFlag_get(FILEPROG_E0_CAN_PLACE_ALL_PUZZLE_PIECES)) {
 #endif

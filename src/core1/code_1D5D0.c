@@ -4,6 +4,8 @@
 #include "variables.h"
 #include "save.h"
 
+#include "config.h"
+
 bool snsToRestoreItems = FALSE;
 struct SnsPayload *snsBasePayloadPtr1 = NULL;
 struct SnsPayload *snsBasePayloadPtr2 = NULL;
@@ -88,8 +90,14 @@ void sns_save_and_update_global_data(void)
 
         gSaveData.snsw = gSaveData.snsw << SNS_NUM_FLAGS >> SNS_NUM_FLAGS ^ gSaveData.snsw;
 
+#ifdef OPTIONS_MENU
+        for (i = 0; i < sizeof(gSaveData.optionsMenuFlags); i++) {
+            gSaveData.optionsMenuFlags[i] = 0;
+        }
+#else
         for (i = 0; i < sizeof(gSaveData.UNUSED); i++)
             gSaveData.UNUSED[i] = 0;
+#endif
 
         sns_update_global_save_data_checksum();
     }
@@ -372,3 +380,29 @@ void sns_restore_backed_up_items(void)
     snsToRestoreItems = FALSE;
 }
 
+#ifdef OPTIONS_MENU
+void set_optionsMenu_flags(u8 index, bool state) {
+    u8 byte = index / 8;
+
+    if (byte >= sizeof(gSaveData.optionsMenuFlags)) {
+        return;
+    }
+    
+    if(state) {
+        gSaveData.optionsMenuFlags[byte] |= (1 << (index & 7));
+    } else {
+        gSaveData.optionsMenuFlags[byte] &= ~(1 << (index & 7));
+    }
+    sns_update_global_save_data_checksum();
+}
+
+bool get_optionsMenu_flags(u8 index) {
+    u8 byte = index / 8;
+
+    if (byte >= sizeof(gSaveData.optionsMenuFlags)) {
+        return 0;
+    }
+    
+    return (gSaveData.optionsMenuFlags[byte] & (1 << (index & 7)));
+}
+#endif

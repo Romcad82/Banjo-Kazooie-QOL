@@ -691,7 +691,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
 
                 __baMarker_resolveMusicNoteCollision(other_prop);
 #ifdef NOTE_SAVING
-                set_hut_note_collected(); // Notes spawned from MM and BGS huts.
+                set_hut_note_collected();
 #endif
                 marker_despawn(marker);
                 break;

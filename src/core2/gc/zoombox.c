@@ -7,6 +7,8 @@
 
 #include "time.h"
 
+#include "config.h"
+
 extern void func_80344090(BKSpriteDisplayData *self, s32 frame, Gfx **gfx);
 BKSprite *func_8033B6C4(enum asset_e sprite_id, BKSpriteDisplayData **arg1);
 
@@ -795,7 +797,17 @@ void gczoombox_func_803160A8(GcZoombox *this) {
 }
 
 void func_803162B4(GcZoombox *this){
+#ifdef OPTIONS_MENU
+     u8 red = MIN(this->textRGB[0], this->unk168);
+     u8 green = MIN(this->textRGB[1], this->unk168);
+     u8 blue = MIN(this->textRGB[2], this->unk168);
+
+     func_802F7B90(red, green, blue);
+     func_802F7BA8(this->textAlpha);
+#else
      func_802F7B90(this->unk168, this->unk168, this->unk168);
+#endif
+
      if(this->unk1A4_30){
           if(this->unk1A4_17){
                func_802F79D0(this->unk16A, this->unk16C, this->unk0, this->unk166, -1);
@@ -803,14 +815,26 @@ void func_803162B4(GcZoombox *this){
           else if(this->unk1A4_15){
                print_bold_spaced(this->unk16A, this->unk16C, this->unk0);
           }else{
+/*
+ * Adds Y offset to text string to have a little more control where it displays. Don't use with scrolling text, it's very buggy.
+ * Maybe work on this idea more to have better functionality and less visual errors, but for now it works.
+ */
+#ifdef OPTIONS_MENU
+               print_dialog(this->unk16A, (this->unk16C + this->textYOffset), this->unk0);
+#else
                print_dialog(this->unk16A, this->unk16C, this->unk0);
+#endif
           }
      }
      if(this->unk1A4_29){
           if(this->unk1A4_15){
                print_bold_spaced(this->unk16A, this->unk16E, this->unk30);
           }else{
+#ifdef OPTIONS_MENU
+               print_dialog(this->unk16A, (this->unk16E + this->textYOffset), this->unk30);
+#else
                print_dialog(this->unk16A, this->unk16E, this->unk30);
+#endif
           }
      }
      func_802F7B90(0xff, 0xff, 0xff);
@@ -835,6 +859,9 @@ void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
     if (this->anim_ctrl != NULL) {
         anctrl_drawSetup(this->anim_ctrl, sp50, 1);
     }
+#ifdef OPTIONS_MENU
+    modelRender_setAlpha(this->zoomboxAlpha);
+#endif
     modelRender_draw(gfx, mtx, sp50, sp5C, this->unk198 * sp34, sp38, this->model);
 }
 
@@ -974,7 +1001,6 @@ void func_80316764(GcZoombox *this, s32 arg1) {
         this->unk186 = this->frame_count - 1;
     }
 }
-
 
 void gczoombox_draw(GcZoombox *this, Gfx **gdl, Mtx ** mptr, void *vptr){
      if(!this)
@@ -1397,6 +1423,11 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     this->unk166 = this->unk1A4_19;
     this->unk164 = y;
     this->unk168 = 0xFF;
+#ifdef OPTIONS_MENU
+    this->zoomboxAlpha = this->textAlpha = 0xFF;
+    this->textRGB[0] = this->textRGB[1] = this->textRGB[2] = 0xFF;
+    this->textYOffset = 0;
+#endif
     this->unk1A4_24 = arg3;
     if(this->unk1A4_24){
         this->unk16A = 45;
@@ -1464,6 +1495,22 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     _gczoombox_memClear( this->unkB0, 0x40);
     return this;
 }
+
+#ifdef OPTIONS_MENU
+void zoombox_setSprite(GcZoombox *this, GcZoomboxSprite portrait_id) {
+     if (this->unkF8) {
+          assetCache_free(this->unkF8);
+          this->unkF8 = NULL;
+     }
+     func_803152C4(this);
+     __gczoombox_load_sprite(this, portrait_id);
+     this->unk176 = D_8036C6C0[portrait_id].unk2;
+     this->unk177 = D_8036C6C0[portrait_id].unk3;
+     func_80315200(this);
+     __gczoombox_load_sfx(this, portrait_id);
+     this->portrait_id = portrait_id;
+}
+#endif
 
 /**
  * @brief Manually sets the strings gczoombox displays. Assumed that 

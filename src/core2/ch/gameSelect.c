@@ -8,8 +8,20 @@
 #include "../gc/zoombox.h"
 #include "../code_C9E70.h"
 
+#include "config.h"
+
 #ifndef ABS
 #define	ABS(d)		((d) >= 0) ? (d) : -(d)
+#endif
+
+#ifdef OPTIONS_MENU
+typedef struct optionsZoomboxInfo {
+    enum qol_id      id;
+    u8              *firstStr;
+    u8              *secondStr;
+    GcZoomboxSprite  portrait;
+    u8              *information;
+} optionsZoomboxInfo;
 #endif
 
 void debugScoreStates(void);
@@ -37,9 +49,89 @@ f32 INITIAL_CAMERA_POSITIONS[3][3] = {
     { -413.333313f, 353.333313f, -234.305511f }
 };
 
+#ifdef OPTIONS_MENU
+// ID's must be in the same order as they are in enums.h except for QOL_ID_NONE.
+static const optionsZoomboxInfo optionsZoomboxData[] = {
+ #ifdef NOTE_SAVING
+    {QOL_ID_NOTE_SAVING,                            "NOTE SAVING: ",          "",                 ZOOMBOX_SPRITE_8_MUSIC_NOTE_1,
+     "MUSIC NOTES BECOME A PERMANENT COLLECTIBLE. THEY WON'T RESPAWN WHEN YOU DIE OR LEAVE THE LEVEL."},
+ #endif
+ #ifdef JINJO_SAVING
+    {QOL_ID_JINJO_SAVING,                           "JINJO SAVING: ",         "",                 ZOOMBOX_SPRITE_22_JINJO_BLUE,
+     "JINJOS BECOME A PERMANENT COLLECTIBLE. THEY WON'T RESPAWN WHEN YOU DIE OR LEAVE THE LEVEL."},
+ #endif
+ #ifdef HEALTH_SYSTEM_REWORK
+    {QOL_ID_HEALTH_SYSTEM_REWORK,                   "HEALTH SYSTEM",          "REWORK: ",         ZOOMBOX_SPRITE_2C_HONEYCOMB,
+     "LETS YOU ADD A 9TH HONEYCOMB TO THE HEALTH BAR. ALSO CHANGES HOW DOUBLE HEALTH WORKS. INSTEAD OF GIVING THE PLAYER MAXIMUM HEALTH, IT SIMPLY DOUBLES YOUR CURRENT HEALTH TOTAL."},
+ #endif
+ #if defined(BUG_FIXES) || defined(VANILLA_SPECIFIC_BUG_FIXES)
+    {QOL_ID_BUG_FIXES,                              "BUG FIXES: ",            "",                 ZOOMBOX_SPRITE_34_TERMITE,
+     "FIXES MANY BUGS THROUGHOUT THE GAME."},
+ #endif
+ #ifdef BETTER_CAMERA
+    {QOL_ID_BETTER_CAMERA,                          "BETTER CAMERA: ",        "",                 ZOOMBOX_SPRITE_F_BOTTLES,
+     "THE CAMERA IS SLIGHTLY BETTER. IT DOESN'T DRASTICALLY CHANGE ANGLES WHEN ROTATING AROUND LEVEL GEOMETRY."},
+ #endif
+ #ifdef IGNORE_FRAMERATE_ALTERING_OBJECTS
+    {QOL_ID_IGNORE_FRAMERATE_ALTERING_OBJECTS,      "DEFAULT TO 30 FPS: ",    "",                 ZOOMBOX_SPRITE_47_MUMMUM,
+     "SOME ROOMS AND CUTSCENES SET THE FPS TO 20 INSTEAD OF 30. CHANGE IT SO ALL ROOMS AND CUTSCENES RUN AT 30 FPS."},
+ #endif
+ #ifdef SKIPPABLE_CUTSCENES
+    {QOL_ID_SKIPPABLE_CUTSCENES,                    "SKIPPABLE",              "CUTSCENES: ",      ZOOMBOX_SPRITE_5E_SEXY_GRUNTY, // Some enum names are wrong. Says it's Grunty but is actually Klungo.
+     "ALLOWS YOU TO SKIP MANY CUTSCENES IN THE GAME."},
+ #endif
+ #ifdef REIMPLEMENT_EXIT_TO_WITCHS_LAIR
+    {QOL_ID_REIMPLEMENT_EXIT_TO_WITCHS_LAIR,        "EXIT TO WITCH'S LAIR: ", "",                 ZOOMBOX_SPRITE_5_GRUNTILDA_2,
+     "REIMPLEMENTS EXIT TO WITCH'S LAIR OPTION IN THE PAUSE MENU. YOU CAN ONLY USE IT IF YOU'RE IN A LEVEL."},
+ #endif
+ #ifdef DONT_HOLD_Z_TO_USE_MOVES
+    {QOL_ID_DONT_HOLD_Z_TO_USE_MOVES,               "DON'T HOLD Z",           "TO USE MOVES: ",   ZOOMBOX_SPRITE_D_KAZOOIE_1,
+     "WHEN YOU USE TALON TROT OR WONDERWING, YOU DON'T NEED TO HOLD Z TO KEEP USING THE MOVE. TO EXIT, YOU CAN PRESS Z OR B."},
+ #endif
+ #ifdef ONLY_B_BUTTON_SKIPS_DIALOG
+    {QOL_ID_ONLY_B_BUTTON_SKIPS_DIALOG,             "ONLY B BUTTON",          "SKIPS DIALOG: ",   ZOOMBOX_SPRITE_4_BANJO_1,
+     "INSTEAD OF HOLDING L, R, AND B TO SKIP DIALOG, YOU CAN JUST PRESS B."},
+ #endif
+ #ifdef UNLOCK_PLACE_ALL_PUZZLE_PIECES
+    {QOL_ID_UNLOCK_PLACE_ALL_PUZZLE_PIECES,         "UNLOCK PLACE ALL",       "PUZZLE PIECES: ",  ZOOMBOX_SPRITE_6_JIGGY_1,
+     "UNLOCK THE ABILITY TO PLACE ALL JIGGIES IN A PICTURE BEFORE BOTTLES TEACHES YOU."},
+ #endif
+ #ifdef SAND_CASTLE_PERMANENTLY_DRAINED
+    {QOL_ID_SAND_CASTLE_PERMANENTLY_DRAINED,        "SANDCASTLE DRAINED",     "PERMANENTLY: ",    ZOOMBOX_SPRITE_38_LEAKY,
+     "THE SANDCASTLE IN TREASURE TROVE COVE BECOMES PERMANENTLY DRAINED WHEN YOU COLLECT THE SANDCASTLE JIGGY."},
+ #endif
+ #ifdef LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
+    {QOL_ID_LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID, "DROP WATER PYRAMID",     "MUMBO TOKEN: ",    ZOOMBOX_SPRITE_26_MUMBO_TOKEN,
+     "LOWERS THE MUMBO TOKEN INSIDE THE WATER PYRAMID IN GOBI'S VALLEY WHEN YOU COLLECT THE JIGGY AND DRAIN THE WATER."},
+ #endif
+ #ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+    {QOL_ID_CLUCKER_CUTSCENE_VOLATILE_FLAG,         "CLUCKER CUTSCENE",       "PLAYS ONCE: ",     ZOOMBOX_SPRITE_55_ADULT_EEYRIE,
+     "THE CUTSCENE THAT PLAYS WHEN YOU DEFEAT A CLUCKER WILL ONLY PLAY ONCE PER PLAY SESSION, INSTEAD OF WHEN YOU EXIT A LEVEL."},
+ #endif
+ #if defined(SHORTER_CHEATS) || defined(EASIER_CHEATS) || defined(ENTER_MORE_THAN_3_BANNED_CHEATS)
+    {QOL_ID_CHEAT_CODES_OVERHAUL,                   "SANDCASTLE CHEAT",       "CODES OVERHAUL: ", ZOOMBOX_SPRITE_59_BLACK_SNIPPET,
+     "MADE IMPROVEMENTS TO HOW YOU INPUT CHEAT CODES IN THE SANDCASTLE IN TREASURE TROVE COVE."},
+ #endif
+ #ifdef ADDITIONAL_CHEATS
+    {QOL_ID_ADDITIONAL_CHEATS,                      "ADDITIONAL CHEAT",       "CODES: ",          ZOOMBOX_SPRITE_5B_CHEATO,
+     "ADDS MORE CHEATS TO USE IN THE SANDCASTLE IN TREASURE TROVE COVE."},
+ #endif
+
+    {QOL_ID_NONE,                                   "END OF LIST",            "",                 ZOOMBOX_SPRITE_4_BANJO_1,
+     "YOU SHOULDN'T BE ABLE TO READ THIS!"}
+};
+#endif
+
 u8 *CONTROL_STICK_INSTRUCTIONS = "USE THE CONTROL STICK TO SELECT A GAME.";   
 u8 *ERASE_INSTRUCTIONS = "PRESS A TO PLAY THE GAME OR Z TO ERASE IT!";
 u8 *ERASE_CONFIRMATION = "ARE YOU SURE? PRESS A TO CONFIRM, OR B TO CANCEL";
+#ifdef OPTIONS_MENU
+u8 *OPTIONS_INSTRUCTIONS_L_BUTTON_ONE = "PRESS L TO VIEW THE OPTIONS MENU.";
+u8 *OPTIONS_INSTRUCTIONS_CONTROL_STICK = "USE THE CONTROL STICK TO SCROLL UP AND DOWN.";
+u8 *OPTIONS_INSTRUCTIONS_A_BUTTON = "PRESS A TO TURN THE OPTION ON OR OFF.";
+u8 *OPTIONS_INSTRUCTIONS_L_BUTTON_TWO = "PRESS L TO READ WHAT THE OPTION DOES.";
+u8 *OPTIONS_INSTRUCTIONS_B_BUTTON = "PRESS B TO GO BACK TO THE MAIN MENU.";
+#endif
 
 s32 gameNumber = -1;
 
@@ -56,6 +148,11 @@ ActorAnimationInfo banjoSleepingAnimations[] = {
     { 0x24E, 1.0f },
     { 0x24F, 0.6f },  
     { 0x24D, 2.0f }
+#ifdef OPTIONS_MENU
+    ,
+    { 0x000, 0.0f }, // GAME_SELECT_DONE
+    { 0x24D, 2.0f }  // GAME_SELECT_OPTIONS_MENU
+#endif
 };
 ActorInfo gameSelect_banjoSleeping = { 0xE4, 0x195, 0x532, 0x1, banjoSleepingAnimations, gameSelect_initAndUpdate, actor_update_func_80326224, gameSelect_zoomboxDraw, 0, 0, 0.0f, 0 };
 
@@ -66,6 +163,11 @@ ActorAnimationInfo banjoGameboyAnimations[] = {
     { 0x251, 1.0f },
     { 0x252, 0.67f }, 
     { 0x250, 4.5f }
+#ifdef OPTIONS_MENU
+    ,
+    { 0x000, 0.0f }, // GAME_SELECT_DONE
+    { 0x250, 4.5f }  // GAME_SELECT_OPTIONS_MENU
+#endif
 };
 ActorInfo gameSelect_banjoGameboy = { 0xE5, 0x196, 0x532, 0x1, banjoGameboyAnimations, gameSelect_update, actor_update_func_80326224, gameSelect_draw, 0, 0, 0.0f, 0 };
 
@@ -76,6 +178,11 @@ ActorAnimationInfo banjoCookingAnimations[] = {
     { 0x24B, 1.0f },  
     { 0x24C, 1.0f },
     { 0x24A, 1.0f }
+#ifdef OPTIONS_MENU
+    ,
+    { 0x000, 0.0f }, // GAME_SELECT_DONE
+    { 0x24A, 1.0f }  // GAME_SELECT_OPTIONS_MENU
+#endif
 };
 ActorInfo gameSelect_banjoCooking = { 0xE6, 0x197, 0x532, 0x1, banjoCookingAnimations, gameSelect_update, actor_update_func_80326224, gameSelect_draw, 0, 0, 0.0f, 0 };
 
@@ -97,11 +204,44 @@ u8 D_8037DCCD;
 u8 D_8037DCCE[3];
 s32 pad_8037DCD4;
 s32 pad_8037DCD8;
+#ifdef OPTIONS_MENU
+u8 mainMenuStrCnt = 3;
+u8 optionsMenuStrCnt = 4;
+bool lastPortraitOpacityFix = FALSE;
+#endif
 
 struct {
     u8 *controlInstruction;
     u8 *eraseInstruction;
+#ifdef OPTIONS_MENU
+    u8 *optionsInstruction;
+#endif
 } selectInstructions;
+
+#ifdef OPTIONS_MENU
+struct {
+    u8 *instructionOne;
+    u8 *instructionTwo;
+    u8 *instructionThree;
+    u8 *instructionFour;
+} optionsMenuInstructions;
+
+struct {
+    u8 *optionsSelection;
+    u8 *optionsState;
+} optionsMenu_selections;
+
+struct {
+    u8         selection;
+    u8         onScreenSelection;
+    bool       onLowerHalfOfMenu;
+    s8         moveDelay;
+    u8         selectDelay;
+    bool       movingMenu;
+    s8         menuMoveDirection;
+    GcZoombox *zoombox[6];
+} optionsMenuStruct;
+#endif
 
 s32 previousGameNumber;
 bool isFileMoving; // Is the camera / player moving between save files?
@@ -143,6 +283,10 @@ Actor *gameSelect_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
 Actor *gameSelect_zoomboxDraw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     Actor *ret_val = gameSelect_draw(marker, gfx, mtx, vtx);
 
+#ifdef OPTIONS_MENU
+    u8 i;
+#endif
+
     if (chGameSelectBottomZoombox) {
         gczoombox_draw(chGameSelectBottomZoombox, gfx, mtx, vtx);
     }
@@ -151,6 +295,14 @@ Actor *gameSelect_zoomboxDraw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **v
         gczoombox_draw(chGameSelectTopZoombox, gfx, mtx, vtx);
     }
     
+#ifdef OPTIONS_MENU
+    for (i = 0; i < 6; i++) {
+        if (optionsMenuStruct.zoombox[i]) {
+            gczoombox_draw(optionsMenuStruct.zoombox[i], gfx, mtx, vtx);
+        }
+    }
+#endif
+
     return ret_val;    
 }
 
@@ -300,6 +452,15 @@ void gameSelect_free(Actor *this){
         chGameSelectBottomZoombox = NULL;
     }
 
+#ifdef OPTIONS_MENU
+    for (i = 0; i < 6; i++) {
+        if (optionsMenuStruct.zoombox[i]) {
+            gczoombox_free(optionsMenuStruct.zoombox[i]);
+            optionsMenuStruct.zoombox[i] = NULL;
+        }
+    }
+#endif
+
     for (i = 0; i < 3; i++) {
         gameFile_8033CFD4(i);
     }
@@ -328,6 +489,289 @@ void spawnGameSelectProps(ActorMarker *marker) {
     prop->scale = scale;
 }
 
+#ifdef OPTIONS_MENU
+void optionsMenu_init(void) {
+    u8 i;
+
+    optionsMenuStruct.selection = optionsMenuStruct.onScreenSelection = optionsMenuStruct.selectDelay = optionsMenuStruct.menuMoveDirection = 0;
+    optionsMenuStruct.moveDelay = -1;
+    optionsMenuStruct.onLowerHalfOfMenu = optionsMenuStruct.movingMenu = FALSE;
+}
+
+void optionsMenu_zoombox_callback(s32 portrait_id, s32 zoombox_state) {
+    u8 i;
+    
+    if (zoombox_state == 2) {
+        for (i = 1; i < 6; i++) {
+            if (optionsMenuStruct.zoombox[i]) {
+                gczoombox_highlight(optionsMenuStruct.zoombox[i], FALSE);
+            }
+        }
+    }
+}
+
+void set_text_to_finish_displaying(void) {
+    isTopTextNotFinishedDisplaying = FALSE;
+}
+
+void update_optionsMenu_zoombox_strings(u8 selectionIndex, u8 zoomboxIndex, bool instantlyPrintStrings) {
+    u8 *zoombox_strings[2];
+    static u8 upperTextLine[6][0x20];
+    static u8 lowerTextLine[6][0x20];
+    u8 *status;
+    bool printStatusOnLowerLine = (strcmp("", optionsZoomboxData[selectionIndex].secondStr) || (strlen(optionsZoomboxData[selectionIndex].firstStr) >= 19));
+
+    strcpy(upperTextLine[zoomboxIndex], "");
+    strcat(upperTextLine[zoomboxIndex], optionsZoomboxData[selectionIndex].firstStr);
+    strcpy(lowerTextLine[zoomboxIndex], "");
+    strcat(lowerTextLine[zoomboxIndex], optionsZoomboxData[selectionIndex].secondStr);
+    if (!get_optionsMenu_flags(selectionIndex)) {
+        status = "ON";
+        optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[1] = 0xFF;
+        optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[0] = optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[2] = 0x00;
+    } else {
+        status = "OFF";
+        optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[0] = 0xFF;
+        optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[1] = optionsMenuStruct.zoombox[zoomboxIndex]->textRGB[2] = 0x00;
+    }
+
+    if (printStatusOnLowerLine) {
+        strcat(lowerTextLine[zoomboxIndex], status);
+        optionsMenuStruct.zoombox[zoomboxIndex]->textYOffset = -1;
+    } else {
+        strcat(upperTextLine[zoomboxIndex], status);
+        optionsMenuStruct.zoombox[zoomboxIndex]->textYOffset = 4;
+    }
+
+    zoombox_strings[0] = upperTextLine[zoomboxIndex];
+    zoombox_strings[1] = lowerTextLine[zoomboxIndex];
+
+    gczoombox_setStrings(optionsMenuStruct.zoombox[zoomboxIndex], 2, zoombox_strings);
+
+    if (instantlyPrintStrings) {
+        do {
+            gczoombox_update(optionsMenuStruct.zoombox[zoomboxIndex]);
+        } while (optionsMenuStruct.zoombox[zoomboxIndex]->state != 0xA);
+    }
+}
+
+void open_mainMenu_zoomboxes(Actor *this) {
+    s32 gamenum = this->marker->id - 0xE4;
+    u8 i;
+
+    gczoombox_free(chGameSelectTopZoombox);
+    chGameSelectTopZoombox = NULL;
+
+    gczoombox_free(chGameSelectBottomZoombox);
+    chGameSelectBottomZoombox = NULL;
+
+    chGameSelectBottomZoombox = gczoombox_new(0xA0, ZOOMBOX_SPRITE_C_BANJO_2, 2, 0, NULL);
+    gczoombox_open(chGameSelectBottomZoombox);
+    gczoombox_func_803184C8(chGameSelectBottomZoombox, 30.0f, 5, 2, 0.4f, 0, 0);
+    setGameInformationZoombox(gamenum);
+    
+    chGameSelectTopZoombox = gczoombox_new(0xA, ZOOMBOX_SPRITE_D_KAZOOIE_1, 2, 1, topZoomboxCallback);
+    gczoombox_setStrings(chGameSelectTopZoombox, mainMenuStrCnt, (char **)&selectInstructions);
+    gczoombox_open(chGameSelectTopZoombox);
+    gczoombox_maximize(chGameSelectTopZoombox);
+
+    for (i = 0; i < 6; i++) {
+        if (optionsMenuStruct.zoombox[i]) {
+            gczoombox_free(optionsMenuStruct.zoombox[i]);
+            optionsMenuStruct.zoombox[i] = NULL;
+        }
+    }
+
+    isTopTextNotFinishedDisplaying = FALSE;
+
+    subaddie_set_state(this, GAME_SELECT_IDLE);
+}
+
+void open_optionsMenu_zoomboxes(void) {
+    u8 i;
+
+    optionsMenu_init();
+
+    gczoombox_free(chGameSelectTopZoombox);
+    chGameSelectTopZoombox = NULL;
+    
+    gczoombox_free(chGameSelectBottomZoombox);
+    chGameSelectBottomZoombox = NULL;
+    
+    chGameSelectTopZoombox = gczoombox_new(0xA, ZOOMBOX_SPRITE_10_MUMBO_1, 2, 0, NULL);
+    gczoombox_setStrings(chGameSelectTopZoombox, optionsMenuStrCnt, (char **)&optionsMenuInstructions);
+    gczoombox_open(chGameSelectTopZoombox);
+    gczoombox_maximize(chGameSelectTopZoombox);
+
+    chGameSelectBottomZoombox = gczoombox_new(0x0, ZOOMBOX_SPRITE_C_BANJO_2, 2, 0, NULL); // 'chGameSelectBottomZoombox' needs to not be NULL in order for Game Select to update.
+
+    for (i = 0; i < 6; i++) {
+        f32 delay = ((f32)(MIN(i, 4)) / 10.0f) + 0.1f;
+        bool atLastIndex = (optionsZoomboxData[i + 1].id == QOL_ID_NONE);
+        
+        optionsMenuStruct.zoombox[i] = gczoombox_new((30 * i + 54), optionsZoomboxData[i].portrait, 2, 0, optionsMenu_zoombox_callback);
+        gczoombox_func_803184C8(optionsMenuStruct.zoombox[i], 60.0f, 5, 2, 0.3f, 0, 0);
+        func_80318640(optionsMenuStruct.zoombox[i], 0x40, 0.75f, 0.99999f, 0);
+        if (i != 5) {
+            func_80318760(optionsMenuStruct.zoombox[i], 8000);
+        } else {
+            func_80318760(optionsMenuStruct.zoombox[i], 0);
+            optionsMenuStruct.zoombox[i]->zoomboxAlpha = optionsMenuStruct.zoombox[i]->textAlpha = 0x00;
+            lastPortraitOpacityFix = TRUE;
+        }
+        
+        update_optionsMenu_zoombox_strings(i, i, FALSE);
+        
+        timedFunc_set_1(delay, (GenFunction_1) gczoombox_open, (s32)optionsMenuStruct.zoombox[i]);
+        timedFunc_set_1(delay, (GenFunction_1) gczoombox_maximize, (s32)optionsMenuStruct.zoombox[i]);
+
+        if (atLastIndex) {
+            break;
+        }
+    }
+
+    timedFunc_set_0(31.0f * time_getDelta(), (GenFunction_0) set_text_to_finish_displaying);
+}
+
+void close_mainMenu_zoomboxes(void) {
+    func_803188B4(chGameSelectTopZoombox);
+    gczoombox_close(chGameSelectTopZoombox);
+
+    func_803188B4(chGameSelectBottomZoombox);
+    gczoombox_close(chGameSelectBottomZoombox);
+
+    isTopTextNotFinishedDisplaying = TRUE;
+}
+
+void close_optionsMenu_zoomboxes(void) {
+    u8 i;
+
+    func_803188B4(chGameSelectTopZoombox);
+    gczoombox_close(chGameSelectTopZoombox);
+
+    for (i = 0; i < 6; i++) {
+        if (optionsMenuStruct.zoombox[i]) {
+            // Mute almost all zoomboxes so only one makes a sound when they all close at once.
+            if (i != 0) {
+                func_80318760(optionsMenuStruct.zoombox[i], 0);
+            }
+        
+            func_803188B4(optionsMenuStruct.zoombox[i]);
+            gczoombox_close(optionsMenuStruct.zoombox[i]);
+        }
+    }
+
+    isTopTextNotFinishedDisplaying = TRUE;
+}
+
+void update_optionsMenu_zoombox_info(void) {
+    s8 nextOnScreenSelectionNumber = optionsMenuStruct.onScreenSelection + optionsMenuStruct.menuMoveDirection;
+    if ((nextOnScreenSelectionNumber < 0) || (4 < nextOnScreenSelectionNumber)) {
+        optionsMenuStruct.onLowerHalfOfMenu = (4 < nextOnScreenSelectionNumber);
+        optionsMenuStruct.movingMenu = TRUE;
+    } else {
+        optionsMenuStruct.movingMenu = FALSE;
+    }
+}
+
+void update_optionsMenu_zoombox_data(void) {
+    s8 nextOnScreenSelectionNumber = optionsMenuStruct.onScreenSelection + optionsMenuStruct.menuMoveDirection;
+    if ((nextOnScreenSelectionNumber < 0) || (4 < nextOnScreenSelectionNumber)) {
+        u8 i;
+        for (i = 0; i < 6; i++) {
+            if (optionsMenuStruct.zoombox[i]) {
+                u8 topOnScreenSelection = optionsMenuStruct.selection - optionsMenuStruct.onScreenSelection - (u8)optionsMenuStruct.onLowerHalfOfMenu;
+
+                func_8031877C(optionsMenuStruct.zoombox[i]);
+                update_optionsMenu_zoombox_strings((i + topOnScreenSelection), i, TRUE);
+                //gczoombox_loadSprite(optionsMenuStruct.zoombox[i], optionsZoomboxData[i + topOnScreenSelection].portrait);
+                zoombox_setSprite(optionsMenuStruct.zoombox[i], optionsZoomboxData[i + topOnScreenSelection].portrait);
+            }
+        }
+    }
+}
+
+void update_optionsMenu_zoombox_highlights(void) {
+    s8 nextOnScreenSelectionNumber = optionsMenuStruct.onScreenSelection + optionsMenuStruct.menuMoveDirection;
+
+    if ((nextOnScreenSelectionNumber < 0) || (4 < nextOnScreenSelectionNumber)) {
+        if (!optionsMenuStruct.onLowerHalfOfMenu) {
+            optionsMenuStruct.zoombox[0]->unk168 = 0x80;
+            optionsMenuStruct.zoombox[1]->unk168 = 0xff;
+
+            gczoombox_highlight(optionsMenuStruct.zoombox[1], FALSE);
+            gczoombox_highlight(optionsMenuStruct.zoombox[0], TRUE);
+            gczoombox_func_803160A8(optionsMenuStruct.zoombox[0]);
+
+            optionsMenuStruct.zoombox[0]->zoomboxAlpha = optionsMenuStruct.zoombox[0]->textAlpha = 0x00;
+            optionsMenuStruct.zoombox[5]->zoomboxAlpha = optionsMenuStruct.zoombox[5]->textAlpha = 0xFF;
+        } else {
+            optionsMenuStruct.zoombox[4]->unk168 = 0xff;
+            optionsMenuStruct.zoombox[5]->unk168 = 0x80;
+
+            gczoombox_highlight(optionsMenuStruct.zoombox[4], FALSE);
+            gczoombox_highlight(optionsMenuStruct.zoombox[5], TRUE);
+            gczoombox_func_803160A8(optionsMenuStruct.zoombox[5]);
+
+            optionsMenuStruct.zoombox[0]->zoomboxAlpha = optionsMenuStruct.zoombox[0]->textAlpha = 0xFF;
+            optionsMenuStruct.zoombox[5]->zoomboxAlpha = optionsMenuStruct.zoombox[5]->textAlpha = 0x00;
+        }
+    } else {
+        u8 currZoombox = optionsMenuStruct.onScreenSelection + (u8)optionsMenuStruct.onLowerHalfOfMenu;
+        
+        gczoombox_highlight(optionsMenuStruct.zoombox[currZoombox], FALSE);
+        optionsMenuStruct.onScreenSelection += optionsMenuStruct.menuMoveDirection;
+        currZoombox += optionsMenuStruct.menuMoveDirection;
+        gczoombox_highlight(optionsMenuStruct.zoombox[currZoombox], TRUE);
+        gczoombox_func_803160A8(optionsMenuStruct.zoombox[currZoombox]);
+    }
+}
+
+void update_optionsMenu_zoombox_y_pos(int zoomboxIndex) {
+    u8 baseYPos = 30 * zoomboxIndex + 24;
+    u8 topZoomboxOffset = 30 * (u8)(!optionsMenuStruct.onLowerHalfOfMenu);
+    s8 transitionOffset = 5 * (optionsMenuStruct.moveDelay + 1) * optionsMenuStruct.menuMoveDirection;
+
+    func_80318B7C(optionsMenuStruct.zoombox[zoomboxIndex], (baseYPos + topZoomboxOffset + transitionOffset));
+}
+
+void update_optionsMenu_zoombox_transparency(int zoomboxIndex) {
+    u8 appearingZoomboxIndex = (optionsMenuStruct.onLowerHalfOfMenu) ? 5 : 0;
+    
+    if (zoomboxIndex == appearingZoomboxIndex) {
+        u8 alpha = MIN((37 * (7 - (optionsMenuStruct.moveDelay + 1))), 0xFF);
+
+        optionsMenuStruct.zoombox[zoomboxIndex]->zoomboxAlpha = alpha;
+        optionsMenuStruct.zoombox[zoomboxIndex]->unk168 = alpha;
+        optionsMenuStruct.zoombox[zoomboxIndex]->textAlpha = alpha;
+    } else {
+        u8 alpha = MAX((37 * (optionsMenuStruct.moveDelay + 1)), 0x00);
+
+        optionsMenuStruct.zoombox[zoomboxIndex]->zoomboxAlpha = alpha;
+        optionsMenuStruct.zoombox[zoomboxIndex]->unk168 = alpha / 2;
+        optionsMenuStruct.zoombox[zoomboxIndex]->textAlpha = alpha;
+    }
+}
+
+void reset_optionsMenu_zoombox_y_pos_and_transparency(void) {
+    if ((optionsMenuStruct.moveDelay == 0) && optionsMenuStruct.movingMenu) {
+        int i;
+
+        optionsMenuStruct.moveDelay--;
+
+        for (i = 0; i < 6; i++) {
+            if (optionsMenuStruct.zoombox[i]) {
+                update_optionsMenu_zoombox_y_pos(i);
+
+                if ((i == 0) || (i == 5)) {
+                    update_optionsMenu_zoombox_transparency(i);
+                }
+            }
+        }
+    }
+}
+#endif
+
 void gameSelect_update(Actor *this) {
     int game_number;
     int game_numbers_match;
@@ -348,6 +792,9 @@ void gameSelect_update(Actor *this) {
     f32 function_time;
     s32 previous_game_number;
     f32 sp34[3];
+#ifdef OPTIONS_MENU
+    f32 *joystick_y;
+#endif
 
     // Actor ID to game number
     game_number = this->marker->id - 0xE4;
@@ -386,10 +833,17 @@ void gameSelect_update(Actor *this) {
     controller_copySideButtons(0, side_buttons);
     controller_copyFaceButtons(0, face_buttons);
     controller_getJoystick(0, &joystick);
+#ifdef OPTIONS_MENU
+    joystick_y = &joystick;
+    joystick_y++;
+#endif
 
     switch (this->state) {
         case GAME_SELECT_IDLE:
         case GAME_SELECT_ERASE_CONFIRMATION:
+#ifdef OPTIONS_MENU
+        case GAME_SELECT_OPTIONS_MENU:
+#endif
             switch (game_number) {
                 case 0: // Sleeping Banjo; cycle his snoring sfx
                     if (actor_animationIsAt(this, 0.1f)) {
@@ -457,7 +911,11 @@ void gameSelect_update(Actor *this) {
 
                     subaddie_set_state(this, GAME_SELECT_IDLE);
                     func_8031877C(chGameSelectTopZoombox);
+#ifdef OPTIONS_MENU
+                    gczoombox_setStrings(chGameSelectTopZoombox, mainMenuStrCnt, (char **)&selectInstructions);
+#else
                     gczoombox_setStrings(chGameSelectTopZoombox, 2, (char **)&selectInstructions);
+#endif
                     cycleInstructionsTimer = 0.0f;
                 }
 
@@ -547,7 +1005,16 @@ void gameSelect_update(Actor *this) {
                     func_8025A58C(0, 0x1f4);
                     actor_playAnimationOnce(this);
 
-                } else {
+                }
+#ifdef OPTIONS_MENU
+                  else if ((side_buttons[SIDE_BUTTON(BUTTON_L)] == 1) && (optionsZoomboxData[0].id != QOL_ID_NONE)) {
+                    close_mainMenu_zoomboxes();
+                    timedFunc_set_0(1.0f, (GenFunction_0) open_optionsMenu_zoomboxes);
+                    subaddie_set_state(this, GAME_SELECT_OPTIONS_MENU);
+                    cycleInstructionsTimer = 0.0f;
+                }
+#endif
+                  else {
                     if ((0.7 < ((0.0f <= joystick) ? joystick : -joystick)) && isFileMoving == FALSE) {
                         previous_game_number = gameNumber;
 
@@ -601,7 +1068,11 @@ void gameSelect_update(Actor *this) {
                     cycleInstructionsTimer += delta_time;
                     if (20.0 < cycleInstructionsTimer) {
                         func_8031877C(chGameSelectTopZoombox);
+#ifdef OPTIONS_MENU
+                        gczoombox_setStrings(chGameSelectTopZoombox, mainMenuStrCnt, (char **)&selectInstructions);
+#else
                         gczoombox_setStrings(chGameSelectTopZoombox, 2, (char **)&selectInstructions);
+#endif
                         cycleInstructionsTimer = 0.0f;
                     }
                 }
@@ -610,6 +1081,100 @@ void gameSelect_update(Actor *this) {
 
             case GAME_SELECT_DONE:
                 break;
+            
+#ifdef OPTIONS_MENU
+            case GAME_SELECT_OPTIONS_MENU:
+                if (!isTopTextNotFinishedDisplaying) {
+                    if (optionsMenuStruct.moveDelay > 0) {
+                        optionsMenuStruct.moveDelay--;
+
+                        if (optionsMenuStruct.moveDelay == 5) {
+                            update_optionsMenu_zoombox_data();
+                            update_optionsMenu_zoombox_highlights();
+                        }
+
+                        if (optionsMenuStruct.movingMenu) {
+                            for (i = 0; i < 6; i++) {
+                                if (optionsMenuStruct.zoombox[i]) {
+                                    update_optionsMenu_zoombox_y_pos(i);
+
+                                    if ((i == 0) || (i == 5)) {
+                                        update_optionsMenu_zoombox_transparency(i);
+                                    }
+                                }
+                            }
+                        }
+                    } else if (0.75 < *joystick_y) {
+                        reset_optionsMenu_zoombox_y_pos_and_transparency();
+
+                        if ((s32) optionsMenuStruct.selection > 0) {
+                            optionsMenuStruct.selection--;
+                            optionsMenuStruct.menuMoveDirection = -1;
+
+                            update_optionsMenu_zoombox_info();
+                            
+                            optionsMenuStruct.moveDelay = 6;
+                        }
+                    } else if (*joystick_y < -0.75) {
+                        reset_optionsMenu_zoombox_y_pos_and_transparency();
+
+                        if (optionsZoomboxData[(s32) optionsMenuStruct.selection + 1].id != QOL_ID_NONE) {
+                            optionsMenuStruct.selection++;
+                            optionsMenuStruct.menuMoveDirection = 1;
+
+                            update_optionsMenu_zoombox_info();
+                            
+                            optionsMenuStruct.moveDelay = 6;
+                        }
+                    } else {
+                        reset_optionsMenu_zoombox_y_pos_and_transparency();
+                    }
+
+                    if (optionsMenuStruct.selectDelay > 0) {
+                        optionsMenuStruct.selectDelay--;
+                    } else if ((face_buttons[FACE_BUTTON(BUTTON_A)] == 1) && (optionsMenuStruct.moveDelay < 6)) {
+                        bool inverseState = !get_optionsMenu_flags(optionsMenuStruct.selection);
+                        u8 currZoombox = optionsMenuStruct.onScreenSelection + (u8)optionsMenuStruct.onLowerHalfOfMenu;
+
+                        set_optionsMenu_flags(optionsMenuStruct.selection, inverseState);
+                        optionsMenuStruct.selectDelay = 10;
+                        
+                        func_8031877C(optionsMenuStruct.zoombox[currZoombox]);
+                        update_optionsMenu_zoombox_strings(optionsMenuStruct.selection, currZoombox, FALSE);
+
+                        coMusicPlayer_playMusic(COMUSIC_2B_DING_B, 22000);
+                    } else if (face_buttons[FACE_BUTTON(BUTTON_B)] == 1) {
+                        lastPortraitOpacityFix = FALSE;
+                        close_optionsMenu_zoomboxes();
+                        timedFunc_set_1(1.0f, (GenFunction_1) open_mainMenu_zoomboxes, (s32)this);
+                        cycleInstructionsTimer = 0.0f;
+                    } else if ((side_buttons[SIDE_BUTTON(BUTTON_L)] == 1) && (1.0f < cycleInstructionsTimer)) {
+                        func_8031877C(chGameSelectTopZoombox);
+                        gczoombox_setStrings(chGameSelectTopZoombox, 1, (char **)&optionsZoomboxData[optionsMenuStruct.selection].information);
+                        cycleInstructionsTimer = 0.0f;
+                    }
+
+                    cycleInstructionsTimer += delta_time;
+                    if (20.0f < cycleInstructionsTimer) {
+                        func_8031877C(chGameSelectTopZoombox);
+                        gczoombox_setStrings(chGameSelectTopZoombox, optionsMenuStrCnt, (char **)&optionsMenuInstructions);
+                        cycleInstructionsTimer = 0.0f;
+                    }
+                /*
+                 * Small issue where gczoombox_draw will try to increase the value of 'unk168' when the zoombox opens, which raises the opacity of the portrait.
+                 * This is a quick and easy fix to keep very bottom zoombox portrait invisible when the options menu opens.
+                 */
+                } else if (lastPortraitOpacityFix) {
+                    optionsMenuStruct.zoombox[5]->unk168 = 0x00;
+                }
+
+                for (i = 0; i < 6; i++) {
+                    if (optionsMenuStruct.zoombox[i]) {
+                        gczoombox_update(optionsMenuStruct.zoombox[i]);
+                    }
+                }
+                break;
+#endif
         }
     }
 
@@ -639,6 +1204,27 @@ void gameSelect_initAndUpdate(Actor * this){
 
     selectInstructions.controlInstruction = (&CONTROL_STICK_INSTRUCTIONS)[i];
     selectInstructions.eraseInstruction = (&ERASE_INSTRUCTIONS)[i];
+#ifdef OPTIONS_MENU
+    if (optionsZoomboxData[0].id != QOL_ID_NONE) {
+        selectInstructions.optionsInstruction = (&OPTIONS_INSTRUCTIONS_L_BUTTON_ONE)[i];
+    } else {
+        selectInstructions.optionsInstruction = NULL;
+        mainMenuStrCnt = 2;
+    }
+
+    if (optionsZoomboxData[1].id != QOL_ID_NONE) {
+        optionsMenuInstructions.instructionOne = (&OPTIONS_INSTRUCTIONS_CONTROL_STICK)[i];
+        optionsMenuInstructions.instructionTwo = (&OPTIONS_INSTRUCTIONS_A_BUTTON)[i];
+        optionsMenuInstructions.instructionThree = (&OPTIONS_INSTRUCTIONS_L_BUTTON_TWO)[i];
+        optionsMenuInstructions.instructionFour = (&OPTIONS_INSTRUCTIONS_B_BUTTON)[i];
+    } else {
+        optionsMenuInstructions.instructionOne = (&OPTIONS_INSTRUCTIONS_A_BUTTON)[i];
+        optionsMenuInstructions.instructionTwo = (&OPTIONS_INSTRUCTIONS_L_BUTTON_TWO)[i];
+        optionsMenuInstructions.instructionThree = (&OPTIONS_INSTRUCTIONS_B_BUTTON)[i];
+        optionsMenuInstructions.instructionFour = NULL;
+        optionsMenuStrCnt = 3;
+    }
+#endif
 
     if (!this->initialized) {
         gameFile_8033CE40();
@@ -651,7 +1237,11 @@ void gameSelect_initAndUpdate(Actor * this){
 
         if (chGameSelectTopZoombox == NULL) {
             chGameSelectTopZoombox = gczoombox_new(0xA, ZOOMBOX_SPRITE_D_KAZOOIE_1, 2, 1, topZoomboxCallback);
+#ifdef OPTIONS_MENU
+            gczoombox_setStrings(chGameSelectTopZoombox, mainMenuStrCnt, (char **)&selectInstructions);
+#else
             gczoombox_setStrings(chGameSelectTopZoombox, 2, (char **)&selectInstructions);
+#endif
             gczoombox_open(chGameSelectTopZoombox);
             gczoombox_maximize(chGameSelectTopZoombox);
         }
@@ -714,3 +1304,16 @@ void gameSelect_setGameNumber(s32 num) {
 void gameSelect_resetGameNumber(void) {
     gameNumber = -1;
 }
+
+#ifdef OPTIONS_MENU
+bool is_qol_feature_enabled(enum qol_id id) {
+    u8 i;
+
+    for (i = 0; ((i < id) && (optionsZoomboxData[i].id != QOL_ID_NONE)); i++) {
+        if (optionsZoomboxData[i].id == id) {
+            return !get_optionsMenu_flags(i);
+        }
+    }
+    return FALSE;
+}
+#endif

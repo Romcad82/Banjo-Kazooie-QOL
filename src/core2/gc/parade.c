@@ -281,12 +281,22 @@ void gcparade_print(s32 index){
 
 #ifdef SKIPPABLE_CUTSCENES
 void cutscene_skipParadeCutsceneCheck(void) {
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+        return;
+    } else
+ #endif
     if (func_8024E698(0) == 1) {
         gcparade_setState(PARADE_STATE_8_END);
     }
 }
 
 bool cutscene_skipEndBeach1CutsceneCheck(void) {
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+        return FALSE;
+    } else
+ #endif
     if (func_8024E698(0) == 1) {
         return TRUE;
     }

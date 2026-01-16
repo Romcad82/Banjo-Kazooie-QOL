@@ -4,6 +4,8 @@
 #include <ultra64.h>
 #include "structs.h"
 
+#include "config.h"
+
 #define ZOOMBOX_MAX_STRING_COUNT 8
 
 typedef enum talk_pic_e {
@@ -128,7 +130,11 @@ typedef struct {
     BKSprite *unk100;
     BKSpriteDisplayData *unk104;
     u8  unk108[5];  //sfx_indexes
+#ifdef OPTIONS_MENU
+    u8  textRGB[3];
+#else
     u8  pad10D[3];
+#endif
     f32  unk110[5]; //sfx_???
     s16 unk124[5];  //sfx_???
     s16 unk12E;
@@ -145,7 +151,11 @@ typedef struct {
     u8 unk15C;
     u8 unk15D;
     u8 unk15E;
+#ifdef OPTIONS_MENU
+    s8 textYOffset;
+#else
     u8 pad15F[0x1];
+#endif
     u8 *unk160;
     s16 unk164;
     s16 unk166; //top_transparency???
@@ -160,7 +170,12 @@ typedef struct {
     s8  unk177;
     s8  unk178;
     s8  unk179;
+#ifdef OPTIONS_MENU
+    u8  zoomboxAlpha;
+    u8  textAlpha;
+#else
     u8  pad17A[0x2];
+#endif
     f32 unk17C;
     s8  unk180;
     s8  unk181;

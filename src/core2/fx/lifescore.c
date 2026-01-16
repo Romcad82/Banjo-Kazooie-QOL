@@ -68,7 +68,11 @@ void fxlifescore_free(s32 item_id, struct8s *arg1){
 
 #ifdef BUG_FIXES
 f32 return_healthSprite_animFrame_with_cap(void) {
-    if (D_80381EBC >= 20.0f) {
+    if (D_80381EBC >= 20.0f
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+ #endif
+        ) {
         return 19.5f;
     }
     return D_80381EBC;
@@ -158,12 +162,20 @@ void fxlifescore_update(enum item_e item_id, struct8s *arg1) {
         case 1:
             if (D_80381EB0[D_80381EC4] == NULL) {
 /*
- * The "D_80381EBC" variable is a multiple of 4, but was incorrectly divided by 5. This would give the wrong index and load an incorrect health sprite when you went into a new area.
+ * The "D_80381EBC" variable is a multiple of 4, but is incorrectly divided by 5. This would give the wrong index and load an incorrect health sprite when you went into a new area.
  * However, fixing this creates another issue where dividing the max value of "D_80381EBC", which is 20.0f, will result in an index outside of the array, and cause a crash when trying to load from it.
  * Instead, create another variable where it's assigned "D_80381EBC" but with a max value of 19.5f.
  */
 #ifdef BUG_FIXES
+ #ifdef OPTIONS_MENU
+                if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+                    D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) animFrame / 4]);
+                } else {
+                    D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) D_80381EBC / 5]);
+                }
+ #else
                 D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) animFrame / 4]);
+ #endif
 #else
                 D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) D_80381EBC / 5]);
 #endif

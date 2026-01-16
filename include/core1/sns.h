@@ -112,7 +112,11 @@ struct GlobalSave {
         struct StopNSwop_Bitfield sns;
         u32                       snsw;
     };
+#ifdef OPTIONS_MENU
+    u8  optionsMenuFlags[0x18];
+#else
     u8  UNUSED[0x18];
+#endif
     u32 crc;
 };
 

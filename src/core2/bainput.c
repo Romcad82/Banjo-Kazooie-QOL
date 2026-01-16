@@ -67,7 +67,11 @@ int bainput_should_wonderwing(void){
 
 #ifdef DONT_HOLD_Z_TO_USE_MOVES
 int exit_move_check(void) {
-    if (getGameMode() == GAME_MODE_3_NORMAL) {
+    if (getGameMode() == GAME_MODE_3_NORMAL
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_DONT_HOLD_Z_TO_USE_MOVES)
+ #endif
+        ) {
         return (bakey_pressed(BUTTON_Z) || bakey_pressed(BUTTON_B));
     // Game modes such as the title screen demos need to use the vanilla controls to not desync.
     } else {

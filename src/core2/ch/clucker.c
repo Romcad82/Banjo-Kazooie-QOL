@@ -93,14 +93,28 @@ void func_80357264(Actor *this, s32 next_state){
 
     if(next_state == 5){
 #ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+ #ifdef OPTIONS_MENU
+        bool cutsceneFlag = (is_qol_feature_enabled(QOL_ID_CLUCKER_CUTSCENE_VOLATILE_FLAG)) ? !volatileFlag_get(VOLATILE_FLAG_14_CLUCKER_CUTSCENE) : !levelSpecificFlags_get(LEVEL_FLAG_14_TTC_UNKNOWN);
+
+        if(cutsceneFlag
+ #else
         if(!volatileFlag_get(VOLATILE_FLAG_14_CLUCKER_CUTSCENE)
+ #endif
 #else
         if(!levelSpecificFlags_get(LEVEL_FLAG_14_TTC_UNKNOWN)
 #endif
             && !( actorArray_findClosestActorFromActorId(this->position, 0x318, -1, &sp38) && ( sp38 < 250.0f))
         ){
 #ifdef CLUCKER_CUTSCENE_VOLATILE_FLAG
+ #ifdef OPTIONS_MENU
+            if (is_qol_feature_enabled(QOL_ID_CLUCKER_CUTSCENE_VOLATILE_FLAG)) {
+                volatileFlag_set(VOLATILE_FLAG_14_CLUCKER_CUTSCENE, 1);
+            } else {
+                levelSpecificFlags_set(LEVEL_FLAG_14_TTC_UNKNOWN, TRUE);
+            }
+ #else
             volatileFlag_set(VOLATILE_FLAG_14_CLUCKER_CUTSCENE, 1);
+ #endif
 #else
             levelSpecificFlags_set(LEVEL_FLAG_14_TTC_UNKNOWN, TRUE);
 #endif

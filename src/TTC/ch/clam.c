@@ -256,7 +256,11 @@ static void __chClam_attackOther(ActorMarker *this_marker, ActorMarker *other_ma
      * Note: For some reason, the 3 eggs floating above the shock jump pad are actors, not props like they usually are.
      * This means that if you collect them, you can spawn an additional 3 eggs from the Yum-Yums.
      */
-    if ((item_getCount(ITEM_D_EGGS) != 0) && (actorArray_actorCount(ACTOR_52_BLUE_EGG) < 9)) {
+    if ((item_getCount(ITEM_D_EGGS) != 0) && (actorArray_actorCount(ACTOR_52_BLUE_EGG) < 9 
+ #ifdef OPTIONS_MENU
+        || !is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+ #endif
+        )) {
 #else
     if (item_getCount(ITEM_D_EGGS) != 0) {
 #endif
@@ -264,7 +268,11 @@ static void __chClam_attackOther(ActorMarker *this_marker, ActorMarker *other_ma
     }
 
 #ifdef BUG_FIXES
-    if ((item_getCount(ITEM_F_RED_FEATHER) != 0) && (actorArray_actorCount(ACTOR_129_RED_FEATHER) < 6)) {
+    if ((item_getCount(ITEM_F_RED_FEATHER) != 0) && (actorArray_actorCount(ACTOR_129_RED_FEATHER) < 6
+ #ifdef OPTIONS_MENU
+        || !is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+ #endif
+        )) {
 #else
     if (item_getCount(ITEM_F_RED_FEATHER) != 0) {
 #endif

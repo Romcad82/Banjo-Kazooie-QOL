@@ -47,7 +47,15 @@ enum mumbotoken_e func_802E0A90(Actor *this){
     pos[1] = (s32)this->position[1];
     pos[2] = (s32)this->position[2];
 #ifdef VANILLA_SPECIFIC_BUG_FIXES
+ #ifdef OPTIONS_MENU
+    if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+        id = find_mumbo_token_id(pos);
+    } else {
+        id = func_80307164(pos);
+    }
+ #else
     id = find_mumbo_token_id(pos);
+ #endif
 #else
     id = func_80307164(pos);
 #endif
@@ -67,7 +75,11 @@ void func_802E0B10(Actor *this){
     if(!this->initialized){
         this->initialized = TRUE;
 #ifdef VANILLA_SPECIFIC_BUG_FIXES
-        if (map_get() == MAP_1D_MMM_CELLAR) {
+        if (map_get() == MAP_1D_MMM_CELLAR
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+ #endif
+            ) {
             local->uid = MUMBOTOKEN_74_MMM_INSIDE_BARREL_IN_CELLAR;
         }
 #endif
@@ -92,7 +104,11 @@ void func_802E0B10(Actor *this){
     if(!func_8032BBE8(this)){
         marker_setCollisionScripts(this->marker, chMumboToken_collect, NULL, NULL);
 #ifdef LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
-        if ((local->uid == MUMBOTOKEN_30_GV_INSIDE_WATER_PYRAMID) && (jiggyscore_isCollected(JIGGY_42_GV_WATER_PYRAMID))) {
+        if ((local->uid == MUMBOTOKEN_30_GV_INSIDE_WATER_PYRAMID) && (jiggyscore_isCollected(JIGGY_42_GV_WATER_PYRAMID))
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID)
+ #endif
+            ) {
             this->position[1] = 175.0f;
         }
 #endif

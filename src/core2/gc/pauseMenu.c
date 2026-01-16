@@ -735,7 +735,11 @@ s32 gcpausemenu_initLargestPageIndex(void) {
 
 bool gcpausemenu_initReturnToLair(void) {
 #ifdef REIMPLEMENT_EXIT_TO_WITCHS_LAIR
-    if ((level_get() == LEVEL_6_LAIR) || (level_get() == LEVEL_B_SPIRAL_MOUNTAIN) || (level_get() == LEVEL_C_BOSS)) {
+    if ((level_get() == LEVEL_6_LAIR) || (level_get() == LEVEL_B_SPIRAL_MOUNTAIN) || (level_get() == LEVEL_C_BOSS)
+ #ifdef OPTIONS_MENU
+        || !is_qol_feature_enabled(QOL_ID_REIMPLEMENT_EXIT_TO_WITCHS_LAIR)
+ #endif
+        ) {
         D_8036C4E0[1].delay = 0.3f;
         D_8036C4E0[2].delay = 0.1f;
         D_8036C4E0[3].delay = 0.2f;

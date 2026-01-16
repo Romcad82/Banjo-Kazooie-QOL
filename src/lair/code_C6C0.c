@@ -52,7 +52,7 @@ void func_80392B6C(Actor *this) {
     }
     if (mapSpecificFlags_get(7) != 0) {
         sp28 = ml_vec3f_distance(this->position, this->unk1C) / 350.0;
-// To prevent song from playing when transitioning to FF Parade.
+// Prevents Tooty's theme from playing when transitioning to FF Parade.
 #ifdef SKIPPABLE_CUTSCENES
         if (!mapSpecificFlags_get(2)) {
             comusic_playTrack(COMUSIC_A9_TOOTY);
@@ -68,9 +68,13 @@ void func_80392B6C(Actor *this) {
         player_walkToPosition(this->unk1C, (f32) sp28, &func_80392B1C, this->marker);
     }
 
-// Stop any music track that could be playing and transition to FF Parade.
+// When you press start, stop any music track that could be playing and transition to FF Parade.
 #ifdef SKIPPABLE_CUTSCENES
-    if ((func_8024E698(0) == 1) && mapSpecificFlags_get(9) && !mapSpecificFlags_get(2)) {
+    if ((func_8024E698(0) == 1) && mapSpecificFlags_get(9) && !mapSpecificFlags_get(2)
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)
+ #endif
+        ) {
         comusic_8025AB44(COMUSIC_A8_KLUNGO_BY_FALLEN_GRUNTY, 0, 2000);
         func_8025AABC(0xA8);
         func_80392AB0(NULL, 0, 0);

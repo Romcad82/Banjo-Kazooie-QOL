@@ -468,7 +468,11 @@ bool func_802E4424(void) {
                 ) {
                     func_8034B940();
                 }
-// To ensure parade has been properly set up so game can save and reload with no issues.
+/*
+ * When you skip the parade before the Furnace Fun map transitions into the first character in the parade,
+ * it skips over a function that saves your progress.
+ * This extra code ensures that the parade has been properly set up so the game can save and reload with no issues.
+ */
 #ifdef SKIPPABLE_CUTSCENES
                 if (!paradeHasBeenSetup) {
                     gcparade_8031ABF8();
