@@ -41,7 +41,7 @@ LocalStruct_1 D_80368DF0[] = {
     {0x9,  SFX_98_DEAF_THUD,        1.0f,  1.1f,  0.05f, 21000},
     {0xA,  SFX_99_METALLIC_THUD,    1.0f,  1.1f,  0.05f, 21000},
     {0xC,  SFX_123_BANJO_LANDING_10, 0.85f, 0.89f, 0.05f, 21000},
-    {0xD,  SFX_3F2_UNKNOWN,         0.96f, 1.04f, 0.02f, 10000},
+    {0xD,  SFX_3F2_BOING,           0.96f, 1.04f, 0.02f, 10000},
     {0xE,  SFX_10_BANJO_LANDING_07, 1.2f,  1.35f, 0.05f, 13000},
     {0xF,  SFX_DC_IDLE_PADDLING,    0.95f, 1.1f,  0.05f, 16000},
     {0}
@@ -74,7 +74,7 @@ s32 func_802F4420(Struct5Ds *this){
         return 4;
     }
 
-    return func_803246B4(map_get(), this->unk0);
+    return func_803246B4(gsworld_get_map(), this->unk0);
 }
 
 void func_802F44AC(Struct5Ds *this, enum sfx_e sfx_id, f32 arg2, f32 arg3, s32 arg4){

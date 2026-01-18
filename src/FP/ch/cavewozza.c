@@ -12,7 +12,7 @@ extern ActorAnimationInfo D_803926F0[]= {
     {ASSET_221_ANIM_WOZZA_IN_CAVE, 5.0f}
 };
 
-extern ActorInfo D_80392700 = { MARKER_20F_WOZZA_IN_CAVE, ACTOR_33F_WOZZA_IN_CAVE, ASSET_494_MODEL_WOZZA,
+extern ActorInfo gChWozzaCave = { MARKER_20F_WOZZA_IN_CAVE, ACTOR_33F_WOZZA_IN_CAVE, ASSET_494_MODEL_WOZZA,
     0x1, D_803926F0,
     func_80390630, actor_update_func_80326224, actor_draw,
     2500, 0, 1.6f, 0
@@ -62,21 +62,21 @@ void func_80390630(Actor *this){
                 || actor_animationIsAt(this, 0.92f)
                 
             ){
-                sfx_playFadeShorthandDefault(SFX_3F2_UNKNOWN, 0.8f, 24000, this->position, 500, 2000);
+                sfx_playFadeShorthandDefault(SFX_3F2_BOING, 0.8f, 24000, this->position, 500, 2000);
             }
         }
 
         if (subaddie_playerIsWithinSphereAndActive(this, 350)) {
             if (player_getTransformation() == TRANSFORM_4_WALRUS) {
                 if (!levelSpecificFlags_get(LEVEL_FLAG_31_FP_UNKNOWN)) {
-                    if (gcdialog_showDialog(ASSET_C27_DIALOG_UNKNOWN, 0x23, NULL, NULL, NULL, NULL)) {
+                    if (gcdialog_showDialog(ASSET_C27_DIALOG_WOZZA_CAVE_MEET_AS_WALRUS, 0x23, NULL, NULL, NULL, NULL)) {
                         levelSpecificFlags_set(LEVEL_FLAG_31_FP_UNKNOWN, TRUE);
                     }
                 }
             }
             else {
                 if (!levelSpecificFlags_get(LEVEL_FLAG_32_FP_UNKNOWN)) {
-                    if (gcdialog_showDialog(ASSET_C26_DIALOG_UNKNOWN, 0x23, NULL, NULL, NULL, NULL)) {
+                    if (gcdialog_showDialog(ASSET_C26_DIALOG_WOZZA_CAVE_MEET_AS_BEAR, 0x23, NULL, NULL, NULL, NULL)) {
                         levelSpecificFlags_set(LEVEL_FLAG_32_FP_UNKNOWN, TRUE);
                     }
                 }

@@ -30,7 +30,7 @@ ActorAnimationInfo D_80392520[] ={
     {0x1AE, 0.55f}
 };
 
-ActorInfo D_80392588 = { MARKER_20B_WOZZA, ACTOR_1F3_WOZZA, ASSET_494_MODEL_WOZZA, 
+ActorInfo gChWozza = { MARKER_20B_WOZZA, ACTOR_1F3_WOZZA, ASSET_494_MODEL_WOZZA, 
     0x1, D_80392520,
     FP_func_8038F7AC, actor_update_func_80326224, func_8038F210,
     0, 0, 1.6f, 0
@@ -69,11 +69,11 @@ void func_8038F2F0(Actor *this){
 void func_8038F330(ActorMarker *caller, enum asset_e text_id, s32 arg2){
     Actor *this = marker_getActor(caller);
     switch(text_id){
-        case 0xC1B:
+        case ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR:
             timed_exitStaticCamera(0.0f);
             break;
 
-        case 0xC1C:
+        case ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS:
             timed_exitStaticCamera(0.0f);
             func_8038F2F0(this);
             break;
@@ -106,7 +106,7 @@ void func_8038F454(Actor *this){
         subaddie_set_state(this, 2);
         actor_loopAnimation(this);
         timed_setStaticCameraToNode(0.0f, 0x2e);
-        func_80324DBC(0.0f, 0xc1b, 0x2a, this->position, this->marker, func_8038F330, NULL);
+        func_80324DBC(0.0f, ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR, 0x2a, this->position, this->marker, func_8038F330, NULL);
         timedFunc_set_1(2.5f, (GenFunction_1)func_8038F3F4, (s32)this->marker);
     }
     else{
@@ -136,7 +136,7 @@ bool func_8038F5D4(Actor *this, f32 arg1[3], f32 arg2, f32 arg3, s32 arg4){
     this->yaw_ideal = (f32) func_803297C8(this, arg1);
     func_80328FB0(this, arg3);
     if(actor_animationIsAt(this, 0.9f)){
-        sfx_playFadeShorthandDefault(SFX_3F2_UNKNOWN, 0.8f, 24000, this->position, 500, 2000);
+        sfx_playFadeShorthandDefault(SFX_3F2_BOING, 0.8f, 24000, this->position, 500, 2000);
     }
     this->actor_specific_1_f = (1.0f- sp24)*arg2;
     func_80329054(this, 2);
@@ -273,7 +273,7 @@ void FP_func_8038F7AC(Actor *this){
             func_8038F560(this);
 
             if(!local->unk30){
-                if(gcdialog_showDialog(0xc1d, 0x20, NULL, NULL, NULL, NULL)){
+                if(gcdialog_showDialog(ASSET_C1D_DIALOG_WOZZA_RETURN, 0x20, NULL, NULL, NULL, NULL)){
                     local->unk30 =  TRUE;
                 }
             }
@@ -300,7 +300,7 @@ void FP_func_8038F7AC(Actor *this){
             }
 
             if(subaddie_playerIsWithinSphereAndActive(this, 500) && !this->has_met_before){
-                if(gcdialog_showDialog(0xc1c, 0xAA, this->position, this->marker, func_8038F330, func_8038F3C4)){
+                if(gcdialog_showDialog(ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS, 0xAA, this->position, this->marker, func_8038F330, func_8038F3C4)){
                     timed_setStaticCameraToNode(0.0f, 0x2E);
                     this->has_met_before = TRUE;
                 }

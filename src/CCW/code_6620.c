@@ -20,9 +20,9 @@ void func_8038CC4C(Actor *this);
 
 /* .data */
 Struct_CCW_6620_0 D_8038F490[] ={
-    {0x43, 0, 0xCCE},
-    {0x45, 1, 0xCD1},
-    {0x46, 1, 0xCD3},
+    {0x43, 0, ASSET_CCE_DIALOG_GNAWTY_MEET_SPRING},
+    {0x45, 1, ASSET_CD1_DIALOG_GNAWTY_MEET_FALL_OUTSIDE},
+    {0x46, 1, ASSET_CD3_DIALOG_GNAWTY_MEET_WINTER_OUTSIDE},
     0
 };
 
@@ -93,7 +93,7 @@ void func_8038CC4C(Actor *this) {
         this->volatile_initialized = TRUE;
         this->has_met_before = FALSE;
         local->unk0 = &D_8038F490[0];
-        while(local->unk0->map_id != 0 && map_get() != local->unk0->map_id){
+        while(local->unk0->map_id != 0 && gsworld_get_map() != local->unk0->map_id){
             local->unk0++;
         }
         func_8038CB40(this, 1);

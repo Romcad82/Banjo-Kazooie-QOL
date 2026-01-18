@@ -42,7 +42,7 @@ enum mumbotoken_e func_802E0A90(Actor *this){
     s32 id;
     s32 pos[3];
 
-    map_get();
+    gsworld_get_map();
     pos[0] = (s32)this->position[0];
     pos[1] = (s32)this->position[1];
     pos[2] = (s32)this->position[2];
@@ -75,7 +75,7 @@ void func_802E0B10(Actor *this){
     if(!this->initialized){
         this->initialized = TRUE;
 #ifdef VANILLA_SPECIFIC_BUG_FIXES
-        if (map_get() == MAP_1D_MMM_CELLAR
+        if (gsworld_get_map() == MAP_1D_MMM_CELLAR
  #ifdef OPTIONS_MENU
             && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
  #endif

@@ -6,6 +6,7 @@ baseroms/*
 
 #compiled or ripped asm
 asm/nonmatchings
+asm/data
 asm/*.s
 asm/*/*.s
 asm/core1/os
@@ -73,3 +74,5 @@ undefined_funcs_auto*
 #secret folder
 tmp/
 tmp/*
+
+.venv

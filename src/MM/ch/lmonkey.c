@@ -94,7 +94,7 @@ void chlmonkey_update(Actor *this) {
     actor_collisionOff(this);
     this->marker->propPtr->unk8_3 = 1;
 
-    if (map_get() != MAP_2_MM_MUMBOS_MOUNTAIN) {
+    if (gsworld_get_map() != MAP_2_MM_MUMBOS_MOUNTAIN) {
         func_80343DEC(this);
     }
     else {//L80388630
@@ -153,7 +153,7 @@ void chlmonkey_update(Actor *this) {
                 }
 
                 if (0.24 <= this->unk48) {
-                    mapSpecificFlags_set(MM_SPECIFIC_FLAG_3_CHIMPY_HAS_LEAVED, TRUE);
+                    mapSpecificFlags_set(MM_SPECIFIC_FLAG_3_CHIMPY_HAS_LEFT, TRUE);
                 }
 
                 if (0.99 <= this->unk48) {

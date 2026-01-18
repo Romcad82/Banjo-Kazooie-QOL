@@ -11,7 +11,7 @@ ActorAnimationInfo D_80392680[] = {
     {0x222, 2.0f}
 };
 
-ActorInfo D_80392690 = { 0x20D, 0x33D, 0x38A,
+ActorInfo gChBoggyHome = { 0x20D, 0x33D, 0x38A,
     0x1, D_80392680,
     func_80390388, actor_update_func_80326224, func_80390290,
     2500, 0, 1.0f, 0
@@ -77,14 +77,14 @@ void func_80390388(Actor *this){
         && (player_movementGroup() == BSGROUP_0_NONE || player_movementGroup() == BSGROUP_8_TROT)
     ){
         if(0.0f == this->unk1C[0] && func_80390334()){
-            if(gcdialog_showDialog(ASSET_C1F_DIALOG_BOGGY_NEEDS_SLEEP, 0xb, this->position, NULL, NULL, NULL)){
+            if(gcdialog_showDialog(ASSET_C1F_DIALOG_BOGGY_IGLOO_2, 0xb, this->position, NULL, NULL, NULL)){
                 this->has_met_before = TRUE;
                 this->unk1C[0] = 1.0f;
             }
         }
         else{
             if( !this->has_met_before ){
-                if(gcdialog_showDialog(ASSET_C1E_DIALOG_BOGGY_LOOK_FOR_PRESENTS, 0x2b, this->position, NULL, NULL, NULL)){
+                if(gcdialog_showDialog(ASSET_C1E_DIALOG_BOGGY_IGLOO_1, 0x2b, this->position, NULL, NULL, NULL)){
                     this->has_met_before = TRUE;
                 }
             }

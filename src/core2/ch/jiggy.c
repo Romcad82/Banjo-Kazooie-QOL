@@ -29,7 +29,7 @@ enum jiggy_e getJiggyId(Actor *this) {
     s32 id;
     s32 position[3];
     
-    id = map_get();
+    id = gsworld_get_map();
 
     position[0] = (s32)this->position[0];
     position[1] = (s32)this->position[1]; 
@@ -196,7 +196,7 @@ void chjiggy_update(Actor *this) {
                     break;
 
                 case JIGGY_2F_FP_XMAS_TREE:
-                    if (levelSpecificFlags_get(LEVEL_FLAG_29_FP_UNKNOWN)) {
+                    if (levelSpecificFlags_get(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE)) {
                         actor_collisionOn(this);
                     } else {
                         actor_collisionOff(this);
