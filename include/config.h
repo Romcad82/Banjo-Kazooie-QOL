@@ -85,13 +85,14 @@
 #define BUG_FIXES
 
 /**
- * Fixes the following vanilla specific bugs:
- * -MMM Loggo & Cellar Token ID
+ * Fixes the following vanilla specific bugs and oversights:
+ * -MMM Loggo & Cellar Mumbo Token ID
  * -"Collectible Flag Radius Bug" Fix For Mumbo Tokens Only (Note: Due to the way some flags and items are positioned in the vanilla game, this bug is necessary for them to set properly.)
+ * -Issue With The Mumbo Token Inside The Water Pyramid In Gobi's Valley Becoming Uncollectible When You Collect The Jiggy And Drain The Water
  *
  * Note: These fixes are hardcoded with the vanilla game in mind.
  */
-#define VANILLA_SPECIFIC_BUG_FIXES
+#define VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
 
 /**
  * Camera is slightly better. Doesn't drastically change angles when rotating around level geometry.
@@ -158,11 +159,6 @@
  * The Sandcastle in TTC becomes permanently drained when you collect the Sandcastle Jiggy.
  */
 #define SAND_CASTLE_PERMANENTLY_DRAINED
-
-/**
- * Lowers the Mumbo Token Inside the Water Pyramid in Gobi's Valley when you collect the Jiggy and drain the water.
- */
-#define LOWER_MUMBO_TOKEN_INSIDE_WATER_PYRAMID
 
 /**
  * Adds a volatile flag to the Clucker Cutscene so you don't have to rewatch it when you leave the level.

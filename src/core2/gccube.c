@@ -1823,7 +1823,7 @@ s32 func_80307164(s32 position[3]) {
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
             if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
 // Collectibles within the lateral radius of each other would mistakenly be assigned the same id. Accounting for Y position fixes it.
-#if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_FIXES)
+#if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES)
  #ifdef OPTIONS_MENU
                 if (!is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
                     return phi_v1 - D_8036A9D4;
@@ -1846,10 +1846,10 @@ s32 func_80307164(s32 position[3]) {
  * such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they're within the lateral radius of each other. However, fixing this bug can cause other issues in the vanilla game. For example,
  * some jiggies are placed outside of their flag's radius on the Y axis, which causes them to not set their flags if they are collected.
  * 
- * To fix this, if "BUG_FIXES" is enabled, then fix the radius bug for all collectibles. However, if "VANILLA_SPECIFIC_BUG_FIXES" is also enabled, then undo the fix, and create a second function that
+ * To fix this, if BUG_FIXES is enabled, then fix the radius bug for all collectibles. However, if VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES is also enabled, then undo the fix, and create a second function that
  * fixes the bug exclusively for Mumbo Tokens.
  */
-#ifdef VANILLA_SPECIFIC_BUG_FIXES
+#ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
 s32 find_mumbo_token_id(s32 position[3]) {
     Struct_core2_7AF80_1 *phi_v1;
     Struct_core2_7AF80_2 *phi_a0;
