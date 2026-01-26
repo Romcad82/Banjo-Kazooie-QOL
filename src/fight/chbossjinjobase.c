@@ -84,11 +84,11 @@ void chBossJinjoBase_update(Actor *this) {
     marker_loadModelBin(this->marker);
 
     if (!this->volatile_initialized) {
-// This fixes the Jinjo Statue Softlock.
-#ifdef BUG_FIXES
+// Fixes the Jinjo Statue Softlock bug where the hitbox of the Jinjo Statue isn't set correctly.
+#ifdef BUG_AND_OVERSIGHT_FIXES
         if (this->marker->unk20
  #ifdef OPTIONS_MENU
-            && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+            && is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif
             ) {
             this->marker->unk20 = 0;

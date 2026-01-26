@@ -48,7 +48,7 @@ enum mumbotoken_e func_802E0A90(Actor *this){
     pos[2] = (s32)this->position[2];
 #ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
  #ifdef OPTIONS_MENU
-    if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+    if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
         id = find_mumbo_token_id(pos);
     } else {
         id = func_80307164(pos);
@@ -74,10 +74,11 @@ void func_802E0B10(Actor *this){
     local = (ActorLocal_MumboToken *)&this->local;
     if(!this->initialized){
         this->initialized = TRUE;
+// Fixes an oversight in the vanilla game where two Mumbo Tokens in MMM were given the same ID.
 #ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
         if (gsworld_get_map() == MAP_1D_MMM_CELLAR
  #ifdef OPTIONS_MENU
-            && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+            && is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif
             ) {
             local->uid = MUMBOTOKEN_74_MMM_INSIDE_BARREL_IN_CELLAR;
@@ -103,10 +104,11 @@ void func_802E0B10(Actor *this){
 
     if(!func_8032BBE8(this)){
         marker_setCollisionScripts(this->marker, chMumboToken_collect, NULL, NULL);
+// Fixes an oversight where the Mumbo Token inside the Water Pyramid in Gobi's Valley became uncollectible after you drained the water.
 #ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
         if ((local->uid == MUMBOTOKEN_30_GV_INSIDE_WATER_PYRAMID) && (jiggyscore_isCollected(JIGGY_42_GV_WATER_PYRAMID))
  #ifdef OPTIONS_MENU
-            && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+            && is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif
             ) {
             this->position[1] = 175.0f;

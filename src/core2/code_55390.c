@@ -89,10 +89,9 @@ void func_802DC528(NodeProp *arg0, ActorMarker *arg1){
     if(D_8037DE40 == NULL){
         __spawnQueue_add_0(func_802DC4C4);
 
-// Fixes a small issue where pressing start after Game Over text disappears will spawn the Game Over text again.
-#if defined(BUG_FIXES) || defined(SKIPPABLE_CUTSCENES)
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(SKIPPABLE_CUTSCENES)
  #ifdef OPTIONS_MENU
-        if (is_qol_feature_enabled(QOL_ID_BUG_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+        if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
             mapSpecificFlags_set(1, TRUE);
         }
  #else
@@ -122,12 +121,3 @@ void func_802DC604(Gfx **gfx, Mtx **mtx, Vtx **vtx){
         func_802DC320(D_8037DE40, gfx, mtx, vtx);
     }
 }
-
-#if defined(BUG_FIXES) || defined(SKIPPABLE_CUTSCENES)
-bool does_GameOver_text_exists(void) {
-    if(D_8037DE40 != NULL){
-        return TRUE;
-    }
-    return FALSE;
-}
-#endif

@@ -66,11 +66,11 @@ void fxlifescore_free(s32 item_id, struct8s *arg1){
     };
 }
 
-#ifdef BUG_FIXES
+#ifdef BUG_AND_OVERSIGHT_FIXES
 f32 return_healthSprite_animFrame_with_cap(void) {
     if (D_80381EBC >= 20.0f
  #ifdef OPTIONS_MENU
-        && is_qol_feature_enabled(QOL_ID_BUG_FIXES)
+        && is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif
         ) {
         return 19.5f;
@@ -94,7 +94,7 @@ void fxlifescore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mtx,
     s32 spE0;
     s32 spDC;
     
-#ifdef BUG_FIXES
+#ifdef BUG_AND_OVERSIGHT_FIXES
     f32 animFrame = return_healthSprite_animFrame_with_cap();
 #endif
 
@@ -113,7 +113,7 @@ void fxlifescore_draw(enum item_e item_id, struct8s *arg1, Gfx **gfx, Mtx **mtx,
         gDPSetPrimColor((*gfx)++, 0, 0, 0x00, 0x00, 0x00, 0xFF);
         do{  
 // Fixes an issue where reloading from a death would show the wrong health sprite for the first frame of animation.
-#ifdef BUG_FIXES
+#ifdef BUG_AND_OVERSIGHT_FIXES
             func_80348044(gfx, D_80381EB0[D_80381EC4], (s32) animFrame % 4, 0, 0, 0, 0, 2, 2, &spF0, &spEC, &spE8, &spE4, &spE0, &spDC, &sp10C);
 #else
             func_80348044(gfx, D_80381EB0[D_80381EC4], (s32) D_80381EBC % 4, 0, 0, 0, 0, 2, 2, &spF0, &spEC, &spE8, &spE4, &spE0, &spDC, &sp10C);
@@ -153,7 +153,7 @@ void fxlifescore_update(enum item_e item_id, struct8s *arg1) {
     s32 sp1C;
     s32 sp18;
 
-#ifdef BUG_FIXES
+#ifdef BUG_AND_OVERSIGHT_FIXES
     f32 animFrame = return_healthSprite_animFrame_with_cap();
 #endif
 
@@ -166,9 +166,9 @@ void fxlifescore_update(enum item_e item_id, struct8s *arg1) {
  * However, fixing this creates another issue where dividing the max value of "D_80381EBC", which is 20.0f, will result in an index outside of the array, and cause a crash when trying to load from it.
  * Instead, create another variable where it's assigned "D_80381EBC" but with a max value of 19.5f.
  */
-#ifdef BUG_FIXES
+#ifdef BUG_AND_OVERSIGHT_FIXES
  #ifdef OPTIONS_MENU
-                if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+                if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
                     D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) animFrame / 4]);
                 } else {
                     D_80381EB0[D_80381EC4] = assetcache_get(D_8036A260[(s32) D_80381EBC / 5]);

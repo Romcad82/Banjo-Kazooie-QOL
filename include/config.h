@@ -78,11 +78,12 @@
  * -Yum-Yum Crash
  * -Collectible Flag Radius Bug
  * -Issues With Banjo-Kazooie Health Sprite Animations
+ * -Issue With Accidentally Reactivating Jigsaw Podium
  * -CCW Pink Jinjo Jiggy Despawn (Note: JINJO_SAVING also fixes this bug)
  * -Max Health Cheat Temporarily Removes Double Defense (Note: HEALTH_SYSTEM_REWORK also fixes this bug)
  * -Minor Game Over Cutscene Issues (Note: SKIPPABLE_CUTSCENES also fixes these issues)
  */
-#define BUG_FIXES
+#define BUG_AND_OVERSIGHT_FIXES
 
 /**
  * Fixes the following vanilla specific bugs and oversights:
@@ -217,6 +218,15 @@
 
 
 // EXPERIMENTAL DEFINES //
+
+/*
+ * BIN Files exported by Banjo's Backpack will automatically set the level collision to be able to activate the Jigsaw Podium. This makes it frustrating to simply walk off the podium since
+ * stepping on the ground will just trigger the podium again. If you import custom levels made with Banjo's Backpack into the Decomp and you didn't manually edit the files to fix this,
+ * then enable EXTREME_JIGSAW_PODIUM_FIX to make the radius to reset the Jigsaw Podium much larger.
+ * 
+ * NOTE: BUG_AND_OVERSIGHT_FIXES must be on for this define to function.
+ */
+// #define EXTREME_JIGSAW_PODIUM_FIX
 
 /**
  * Switches the Stop 'N' Swop item keys so that the game can recieve Stop 'N' Swop data from vanilla Banjo-Kazooie. The game also outputs data that vanilla Banjo-Kazooie can recieve.

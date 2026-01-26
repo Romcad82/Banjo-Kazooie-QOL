@@ -1423,10 +1423,10 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
     );
 #endif
 #ifndef HEALTH_SYSTEM_REWORK
- // Fixes oversight where Max Health Cheats temporarily removes Double Defense.
- #ifdef BUG_FIXES
+ // Fixes an oversight where Max Health Cheats temporarily removes Double Defense.
+ #ifdef BUG_AND_OVERSIGHT_FIXES
   #ifdef OPTIONS_MENU
-    if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+    if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
         __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, (8 * (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH) + 1)));
     } else {
         __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, 8);
@@ -1456,8 +1456,8 @@ static void __maCastle_checkSecretCheatCodeIndex(s32 secret_cheat_code_index)
             item_adjustByDiffWithHud(ITEM_14_HEALTH, 0);
         }
     } else {
-  #ifdef BUG_FIXES
-        if (is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+  #ifdef BUG_AND_OVERSIGHT_FIXES
+        if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
             __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, (8 * (fileProgressFlag_get(FILEPROG_B9_DOUBLE_HEALTH) + 1)));
         } else {
             __maCastle_setItemForSecretCheatCode(0, secret_cheat_code_index, VOLATILE_FLAG_94_SANDCASTLE_INFINITE_HEALTH, ITEM_15_HEALTH_TOTAL, 0, 8);

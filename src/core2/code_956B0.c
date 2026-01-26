@@ -88,11 +88,15 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
     }
 #endif
     if ((sp24 == 1) && fileProgressFlag_get(FILEPROG_E1_UNKNOWN) && !gctransition_8030BDC0()) {
-// Fixes a small issue where you have to press start twice when the Game Over text appears to skip the cutscene.
-#if defined(BUG_FIXES) || defined(SKIPPABLE_CUTSCENES)
-        if ((does_GameOver_text_exists() || mapSpecificFlags_get(1)) && !mapSpecificFlags_get(0xC)
+/*
+ * Fixes two small issues with the Game Over cutscene:
+ * -You have to press start twice when the Game Over text appears to skip the cutscene.
+ * -Pressing start after the Game Over text disappears will spawn the Game Over text again.
+ */
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(SKIPPABLE_CUTSCENES)
+        if (mapSpecificFlags_get(1) && !mapSpecificFlags_get(0xC)
  #ifdef OPTIONS_MENU
-            && (is_qol_feature_enabled(QOL_ID_BUG_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))
+            && (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))
  #endif
             ) {
             return TRUE;

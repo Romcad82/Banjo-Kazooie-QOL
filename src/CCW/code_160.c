@@ -147,9 +147,9 @@ void func_8038687C(Actor *this) {
     if ((s32)local->unk0 == 1) {
 /* 
  * Fixes a bug where the Jiggy spawned from the Pink Jinjo gets mistakenly assigned to the "other" variable and becomes uncollectible when you leave the beehive.
- * In vanilla, you can respawn the Jiggy by recollecting the Jinjos again, but it's needed with JINJO_SAVING enabled, because the Jiggy can become permanently uncollectible.
+ * In the vanilla game, you can respawn the Jiggy by recollecting the Jinjos again, but it's needed with JINJO_SAVING enabled since the Jiggy can become permanently uncollectible.
  */
-#if defined(BUG_FIXES) || defined(JINJO_SAVING)
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(JINJO_SAVING)
         other = (Actor *)(ccw_code160_assign_zubba_jiggy(this->position));
 #else
         other = actorArray_findActorFromActorId(0x46);

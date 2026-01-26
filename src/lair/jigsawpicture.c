@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "jigsawpicture.h"
 
+#include "config.h"
+
 extern void player_walkToPosition(f32[3], f32, void(*)(ActorMarker *), ActorMarker *);
 extern void func_80324CFC(f32, enum comusic_e, s32);
 extern void rand_seed(s32);
@@ -473,7 +475,10 @@ void updateJigsawPictureActor(Actor *this) {
     s32 side_buttons[2];
     f32 delta_time;
     s32 jiggiesPlaced;
-  
+#ifdef BUG_AND_OVERSIGHT_FIXES
+    bool deactivateJigsawPodium = FALSE;
+#endif
+
     local = (JigsawPictureActorData*)&this->local;
     delta_time = time_getDelta();
 
@@ -554,7 +559,34 @@ void updateJigsawPictureActor(Actor *this) {
 
     switch (this->state) {
         case JIGSAW_PICTURE_LEAVE_PODIUM:
-            if (!this->has_met_before && (!func_8028F20C() || !func_8028FB48(0x08000000))) {
+// Fixes an issue where you can accidentally activate the Jigsaw Podium again when you're trying walk off the podium.
+#ifdef BUG_AND_OVERSIGHT_FIXES
+ #ifdef OPTIONS_MENU
+            if (!is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
+                deactivateJigsawPodium = (!func_8028F20C() || !func_8028FB48(0x08000000));
+            } else {
+  #ifdef EXTREME_JIGSAW_PODIUM_FIX
+                deactivateJigsawPodium = !this->marker->isBanjoOnTop;
+  #else
+                deactivateJigsawPodium = ((!func_8028F20C() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
+  #endif
+            }
+ #else
+  #ifdef EXTREME_JIGSAW_PODIUM_FIX
+            deactivateJigsawPodium = !this->marker->isBanjoOnTop;
+  #else
+            deactivateJigsawPodium = ((!func_8028F20C() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
+  #endif
+ #endif
+#endif
+
+            if (!this->has_met_before
+#ifdef BUG_AND_OVERSIGHT_FIXES
+                && deactivateJigsawPodium
+#else
+                && (!func_8028F20C() || !func_8028FB48(0x08000000))
+#endif
+                ) {
                 this->has_met_before = TRUE;
             }
 

@@ -104,12 +104,12 @@ void CCW_func_8038DB0C(Actor *this){
  * For some reason, editing src/CCW/code_160.c can cause a crash when loading into MAP_22_CC_INSIDE_CLANKER.
  * How or why is beyond me, but arbitrarily moving the bug fix to a different file seems to avert the crash.
  */
-#if defined(BUG_FIXES) || defined(JINJO_SAVING)
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(JINJO_SAVING)
 Actor *ccw_code160_assign_zubba_jiggy(f32 actorPosition[3]) {
     Actor *other;
 
  #ifdef OPTIONS_MENU
-    if (!is_qol_feature_enabled(QOL_ID_JINJO_SAVING) && !is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+    if (!is_qol_feature_enabled(QOL_ID_JINJO_SAVING) && !is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
         other = actorArray_findActorFromActorId(0x46);
         return other;
     }

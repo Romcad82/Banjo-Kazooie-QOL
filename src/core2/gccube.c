@@ -1822,10 +1822,10 @@ s32 func_80307164(s32 position[3]) {
     for( phi_v1 = D_8036A9D4; phi_v1 < &D_8036A9D4[D_8036A9D0]; phi_v1++){
         for(phi_a0 = phi_v1->unk8; phi_a0 < &phi_v1->unk8[phi_v1->count]; phi_a0++){
             if ((SQ(position[0] - phi_a0->position[0]) + SQ(position[2] - phi_a0->position[2])) < SQ(phi_a0->radius)) {
-// Collectibles within the lateral radius of each other would mistakenly be assigned the same id. Accounting for Y position fixes it.
-#if defined(BUG_FIXES) && !defined(VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES)
+// Fixes an oversight where collectibles within the lateral radius of each other would mistakenly be assigned the same id.
+#if defined(BUG_AND_OVERSIGHT_FIXES) && !defined(VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES)
  #ifdef OPTIONS_MENU
-                if (!is_qol_feature_enabled(QOL_ID_BUG_FIXES)) {
+                if (!is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
                     return phi_v1 - D_8036A9D4;
                 } else
  #endif
@@ -1842,12 +1842,13 @@ s32 func_80307164(s32 position[3]) {
 }
 
 /*
- * There is a bug in the code that checks if the position of an item is within its flag's radius. The problem is that it doesn't check if the Y position of the item is within its radius. This can cause issues
- * such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they're within the lateral radius of each other. However, fixing this bug can cause other issues in the vanilla game. For example,
- * some jiggies are placed outside of their flag's radius on the Y axis, which causes them to not set their flags if they are collected.
+ * There is a bug in the code that checks if the position of an item is within its flag's radius. The problem is that it doesn't check if the Y position of the item is within its radius.
+ * This can cause issues such as 2 Mumbo Tokens in CCW being mistakenly assigned the same ID since they're within the lateral radius of each other.
+ * However, fixing this bug can cause other issues in the vanilla game. For example, some jiggies are placed outside of their flag's radius on the Y axis,
+ * which causes them to not set their flags if they are collected.
  * 
- * To fix this, if BUG_FIXES is enabled, then fix the radius bug for all collectibles. However, if VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES is also enabled, then undo the fix, and create a second function that
- * fixes the bug exclusively for Mumbo Tokens.
+ * To fix this, if BUG_AND_OVERSIGHT_FIXES is enabled, then fix the radius bug for all collectibles. However, if VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES is also enabled, then undo the fix,
+ * and create a second function that fixes the bug exclusively for Mumbo Tokens.
  */
 #ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
 s32 find_mumbo_token_id(s32 position[3]) {
