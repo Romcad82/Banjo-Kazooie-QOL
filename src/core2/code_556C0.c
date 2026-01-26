@@ -50,6 +50,16 @@ void func_802DC6E4(void) {
 void func_802DC748(s32 arg0, s32 arg1){
     if(D_8037DE50 == NULL){
         __spawnQueue_add_0(func_802DC6E4);
+
+#ifdef SKIPPABLE_CUTSCENES
+ #ifdef OPTIONS_MENU
+        if (is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)) {
+            mapSpecificFlags_set(1, TRUE);
+        }
+ #else
+        mapSpecificFlags_set(1, TRUE);
+ #endif
+#endif
     }
 }
 
@@ -60,12 +70,3 @@ void func_802DC780(s32 arg0, s32 arg1){
         func_80326310(marker_getActor(D_8037DE50));
     }
 }
-
-#ifdef SKIPPABLE_CUTSCENES
-bool check_if_TheEnd_text_exists(void) {
-    if(D_8037DE50 != NULL){
-        return TRUE;
-    }
-    return FALSE;
-}
-#endif

@@ -99,6 +99,7 @@ bool cutscene_skipGameOverCutsceneCheck(void) {
             && (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES))
  #endif
             ) {
+            func_802DC560(0, 0);
             return TRUE;
         } else
 #endif
@@ -141,7 +142,7 @@ bool cutscene_skipEndBeach2CutsceneCheck(void) {
 
 bool cutscene_skipEndSprialMountainCutscenesCheck(void) {
     if ((func_8024E698(0) == 1) && !gctransition_8030BDC0()) {
-        if (check_if_TheEnd_text_exists() && !mapSpecificFlags_get(0xC)) {
+        if (mapSpecificFlags_get(1) && !mapSpecificFlags_get(0xC)) {
             return TRUE;
         } else if (!mapSpecificFlags_get(0xC)) {
             f32 transitionTime = (gsworld_get_map() == MAP_98_CS_END_SPIRAL_MOUNTAIN_1) ? 11.7f : 8.8f;
