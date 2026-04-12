@@ -12,6 +12,11 @@ extern void func_803114D0(void );
 extern int gcdialog_hasCurrentTextId(void);
 extern char *dialogBin_get(enum asset_e text_id);
 
+#ifdef WARP_CAULDRON_MENU
+void check_and_replace_g_Dialog_string(void);
+
+u8 *DIALOG_F79_UNKNOWN_REPLACEMENT = "YOU'VE ACTIVATED A MAGIC CAULDRON! FIND MORE TO CREATE A SHORT CUT!";
+#endif
 s8 Y_POSITION_MODIFIERS[] = { 1, 0x1E, 0x14, 0xF, 0xB, 8, 6, 4, 3, 2, -1, -1 };
  
 /* .bss */
@@ -582,6 +587,10 @@ void dialog_update(void) {
                                 g_Dialog.string_index[g_Dialog.u8.active_zoombox]++;
                             }
         
+#ifdef WARP_CAULDRON_MENU
+                            check_and_replace_g_Dialog_string();
+#endif
+
                             dialog_setState(DIALOG_STATE_3);
                         }
 
@@ -1071,3 +1080,34 @@ void gcdialog_defrag(void) {
 void func_80311714(int next_state){
     g_Dialog.unk128_3 = next_state;
 }
+
+#ifdef WARP_CAULDRON_MENU
+char *check_for_text_to_replace(void) {
+ #ifdef OPTIONS_MENU
+    switch (gcdialog_getCurrentTextId()) {
+        case ASSET_F79_DIALOG_UNKNOWN:
+            if (!is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) {
+                return NULL;
+            }
+            break;
+    }
+ #endif
+
+    switch (gcdialog_getCurrentTextId()) {
+        case ASSET_F79_DIALOG_UNKNOWN:
+            return (&DIALOG_F79_UNKNOWN_REPLACEMENT)[code94620_func_8031B5B0()];
+    }
+
+    return NULL;
+}
+
+void check_and_replace_g_Dialog_string(void) {
+    char *replacementString = check_for_text_to_replace();
+    if (replacementString == NULL) {
+        return;
+    }
+
+    func_8031877C(g_Dialog.zoombox[g_Dialog.u8.active_zoombox]);
+    func_803183A4(g_Dialog.zoombox[g_Dialog.u8.active_zoombox], replacementString);
+}
+#endif

@@ -594,6 +594,10 @@ void func_803465E4(void){
         if( D_80385F30[ITEM_14_HEALTH] != 0
             && D_80385F30[ITEM_14_HEALTH] < 3
             && func_80347A4C()
+// Stops Health Bar from being forced to appear when in Warp Menu.
+#ifdef WARP_CAULDRON_MENU
+            && !get_warpMenuActive()
+#endif
         ){
             sp50 = TRUE;
         }
@@ -604,6 +608,14 @@ void func_803465E4(void){
     }
 
     if(sp54 == BS_24_FLY || sp54 == BS_23_FLY_ENTER){
+// Stops Red Feather count from being forced to appear when in Warp Menu.
+#ifdef WARP_CAULDRON_MENU
+        if ((!get_warpMenuActive() && !volatileFlag_get(VOLATILE_FLAG_1E))
+ #ifdef OPTIONS_MENU
+            || !is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)
+ #endif
+           )
+#endif
         item_adjustByDiffWithHud(ITEM_F_RED_FEATHER, 0);
     }
 
@@ -634,8 +646,27 @@ void func_803465E4(void){
             }
         }//L803469E4
     }//L803469E4
+// Refills Air when you enter a Cauldron underwater.
+#ifdef WARP_CAULDRON_MENU
+      else if (get_warpMenuActive()) {
+        if(!D_80385FE4 && D_80385F30[ITEM_17_AIR] < 3600){
+            D_80385FEC = 0.0f;
+            item_adjustByDiffWithoutHud(ITEM_17_AIR, (s32)(((time_getDelta()*60.0f)*100.0)*1.1));
+            D_80385F30[ITEM_17_AIR] = MIN(D_80385F30[ITEM_17_AIR], 3600);
+        }
+    }
+#endif
 
-    if(!volatileFlag_get(VOLATILE_FLAG_BF)){
+    if(!volatileFlag_get(VOLATILE_FLAG_BF)
+// Stops updating all Timers when in Warp Menu.
+#ifdef WARP_CAULDRON_MENU
+       && ((!get_warpMenuActive() && (get_inWarpCauldronCutscene() == 0) && !volatileFlag_get(VOLATILE_FLAG_1E))
+ #ifdef OPTIONS_MENU
+           || !is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)
+ #endif
+          )
+#endif
+       ){
         for(i = 0; i < 6; i++){
             if(D_80385F30[ITEM_6_HOURGLASS + i]){
                 func_80345EB0(ITEM_0_HOURGLASS_TIMER + i);

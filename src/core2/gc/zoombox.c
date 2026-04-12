@@ -424,6 +424,10 @@ gczoomboxPortraitInfo D_8036C6C0[] = {
 
 s32 D_8036D924[] = { 70, 35, 18, 9, 4, 2, 1};
 
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+scrollingMenuStruct scrollingMenu;
+#endif
+
 /* .bss */
 char D_803830B0[0x30];
 
@@ -796,13 +800,21 @@ void gczoombox_func_803160A8(GcZoombox *this) {
     }
 }
 
-void func_803162B4(GcZoombox *this){
-#ifdef OPTIONS_MENU
-     u8 red = MIN(this->textRGB[0], this->unk168);
-     u8 green = MIN(this->textRGB[1], this->unk168);
-     u8 blue = MIN(this->textRGB[2], this->unk168);
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+void set_rgb(u8 defaultColor, u8 modifiedColors[3], u8 combined_rgb[3]) {
+     f32 percentChange = (f32)defaultColor / 255.0f;
+     combined_rgb[0] = (u8)(modifiedColors[0] * percentChange);
+     combined_rgb[1] = (u8)(modifiedColors[1] * percentChange);
+     combined_rgb[2] = (u8)(modifiedColors[2] * percentChange);
+}
+#endif
 
-     func_802F7B90(red, green, blue);
+void func_803162B4(GcZoombox *this){
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+     u8 rgb[3];
+     set_rgb((u8)this->unk168, this->textRGB, rgb);
+
+     func_802F7B90(rgb[0], rgb[1], rgb[2]);
      func_802F7BA8(this->textAlpha);
 #else
      func_802F7B90(this->unk168, this->unk168, this->unk168);
@@ -819,7 +831,7 @@ void func_803162B4(GcZoombox *this){
  * Adds Y offset to text string to have a little more control where it displays. Don't use with scrolling text, it's very buggy.
  * Maybe work on this idea more to have better functionality and less visual errors, but for now it works.
  */
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
                print_dialog(this->unk16A, (this->unk16C + this->textYOffset), this->unk0);
 #else
                print_dialog(this->unk16A, this->unk16C, this->unk0);
@@ -830,7 +842,7 @@ void func_803162B4(GcZoombox *this){
           if(this->unk1A4_15){
                print_bold_spaced(this->unk16A, this->unk16E, this->unk30);
           }else{
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
                print_dialog(this->unk16A, (this->unk16E + this->textYOffset), this->unk30);
 #else
                print_dialog(this->unk16A, this->unk16E, this->unk30);
@@ -859,7 +871,7 @@ void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
     if (this->anim_ctrl != NULL) {
         anctrl_drawSetup(this->anim_ctrl, sp50, 1);
     }
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
     modelRender_setAlpha(this->zoomboxAlpha);
 #endif
     modelRender_draw(gfx, mtx, sp50, sp5C, this->unk198 * sp34, sp38, this->model);
@@ -872,7 +884,15 @@ void func_803164B0(GcZoombox *this, Gfx **gfx, Mtx **mtx, s32 arg3, s32 arg4, BK
     if (this->portrait_id == ZOOMBOX_SPRITE_46_TUMBLAR) {
         arg6 = 0.75f;
     }
+#if defined(WARP_CAULDRON_MENU) && defined(GENERIC_CAULDRON_NAMES)
+    {
+        u8 rgb[3];
+        set_rgb(0xFF, this->portraitRGB, rgb);
+        func_80338338(rgb[0], rgb[1], rgb[2]);
+    }
+#else
     func_80338338(0xFF, 0xFF, 0xFF);
+#endif
     func_803382FC(this->unk168 * arg6);
     func_803382E4(5);
     func_80335D30(gfx);
@@ -1423,9 +1443,12 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     this->unk166 = this->unk1A4_19;
     this->unk164 = y;
     this->unk168 = 0xFF;
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
     this->zoomboxAlpha = this->textAlpha = 0xFF;
     this->textRGB[0] = this->textRGB[1] = this->textRGB[2] = 0xFF;
+ #if defined(WARP_CAULDRON_MENU) && defined(GENERIC_CAULDRON_NAMES)
+    this->portraitRGB[0] = this->portraitRGB[1] = this->portraitRGB[2] = 0xFF;
+ #endif
     this->textYOffset = 0;
 #endif
     this->unk1A4_24 = arg3;
@@ -1496,7 +1519,7 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     return this;
 }
 
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
 void zoombox_setSprite(GcZoombox *this, GcZoomboxSprite portrait_id) {
      if (this->unkF8) {
           assetCache_free(this->unkF8);
@@ -1844,3 +1867,164 @@ void gczoombox_func_80318C48(GcZoombox *this, bool arg1) {
         }
     }
 }
+
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+void scrollingMenu_zoomboxDraw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
+    u8 i;
+
+    if (scrollingMenu.topZoombox) {
+        gczoombox_draw(scrollingMenu.topZoombox, gfx, mtx, vtx);
+    }
+
+    for (i = 0; i < 6; i++) {
+        if (scrollingMenu.zoombox[i]) {
+            gczoombox_draw(scrollingMenu.zoombox[i], gfx, mtx, vtx);
+        }
+    }
+}
+
+void scrollingMenu_zoomboxUpdate(void) {
+    u8 i;
+
+    if (scrollingMenu.topZoombox) {
+        gczoombox_update(scrollingMenu.topZoombox);
+    }
+
+    for (i = 0; i < 6; i++) {
+        if (scrollingMenu.zoombox[i]) {
+            gczoombox_update(scrollingMenu.zoombox[i]);
+        }
+    }
+}
+
+void scrollingMenu_zoomboxFree(void) {
+    u8 i;
+
+    if (scrollingMenu.topZoombox) {
+        gczoombox_free(scrollingMenu.topZoombox);
+        scrollingMenu.topZoombox = NULL;
+    }
+
+    for (i = 0; i < 6; i++) {
+        if (scrollingMenu.zoombox[i]) {
+            gczoombox_free(scrollingMenu.zoombox[i]);
+            scrollingMenu.zoombox[i] = NULL;
+        }
+    }
+}
+
+void set_menu_finished_displaying_state(bool setState) {
+     scrollingMenu.menuFinishedDisplaying = setState;
+}
+
+void close_scrollingMenu_zoomboxes(void) {
+    u8 i;
+
+    func_803188B4(scrollingMenu.topZoombox);
+    gczoombox_close(scrollingMenu.topZoombox);
+
+    for (i = 0; i < 6; i++) {
+        if (scrollingMenu.zoombox[i]) {
+            // Mute almost all zoomboxes so only one makes a sound when they all close at once.
+            if (i == 0) {
+                func_80318760(scrollingMenu.zoombox[i], 8000);
+            } else {
+                func_80318760(scrollingMenu.zoombox[i], 0);
+            }
+        
+            func_803188B4(scrollingMenu.zoombox[i]);
+            gczoombox_close(scrollingMenu.zoombox[i]);
+        }
+    }
+
+    scrollingMenu.menuFinishedDisplaying = FALSE;
+}
+
+void update_scrollingMenu_info(void) {
+    s8 nextOnScreenSelectionNumber = scrollingMenu.onScreenSelection + scrollingMenu.menuMoveDirection;
+    if ((nextOnScreenSelectionNumber < 0) || (4 < nextOnScreenSelectionNumber)) {
+        scrollingMenu.onLowerHalfOfMenu = (4 < nextOnScreenSelectionNumber);
+        scrollingMenu.movingMenu = TRUE;
+    } else {
+        scrollingMenu.movingMenu = FALSE;
+    }
+}
+
+void update_scrollingMenu_zoombox_highlights(void) {
+    if (scrollingMenu.movingMenu) {
+        if (!scrollingMenu.onLowerHalfOfMenu) {
+            scrollingMenu.zoombox[0]->unk168 = 0x80;
+            scrollingMenu.zoombox[1]->unk168 = 0xff;
+
+            gczoombox_highlight(scrollingMenu.zoombox[1], FALSE);
+            gczoombox_highlight(scrollingMenu.zoombox[0], TRUE);
+            gczoombox_func_803160A8(scrollingMenu.zoombox[0]);
+
+            scrollingMenu.zoombox[0]->zoomboxAlpha = scrollingMenu.zoombox[0]->textAlpha = 0x00;
+            scrollingMenu.zoombox[5]->zoomboxAlpha = scrollingMenu.zoombox[5]->textAlpha = 0xFF;
+        } else {
+            scrollingMenu.zoombox[4]->unk168 = 0xff;
+            scrollingMenu.zoombox[5]->unk168 = 0x80;
+
+            gczoombox_highlight(scrollingMenu.zoombox[4], FALSE);
+            gczoombox_highlight(scrollingMenu.zoombox[5], TRUE);
+            gczoombox_func_803160A8(scrollingMenu.zoombox[5]);
+
+            scrollingMenu.zoombox[0]->zoomboxAlpha = scrollingMenu.zoombox[0]->textAlpha = 0xFF;
+            scrollingMenu.zoombox[5]->zoomboxAlpha = scrollingMenu.zoombox[5]->textAlpha = 0x00;
+        }
+    } else {
+        u8 currZoombox = scrollingMenu.onScreenSelection + (u8)scrollingMenu.onLowerHalfOfMenu;
+        
+        gczoombox_highlight(scrollingMenu.zoombox[currZoombox], FALSE);
+        scrollingMenu.onScreenSelection += scrollingMenu.menuMoveDirection;
+        currZoombox += scrollingMenu.menuMoveDirection;
+        gczoombox_highlight(scrollingMenu.zoombox[currZoombox], TRUE);
+        gczoombox_func_803160A8(scrollingMenu.zoombox[currZoombox]);
+    }
+}
+
+void update_scrollingMenu_zoombox_y_pos(u8 zoomboxIndex) {
+    u8 baseYPos = 30 * zoomboxIndex + 24;
+    u8 topZoomboxOffset = 30 * (u8)(!scrollingMenu.onLowerHalfOfMenu);
+    s8 transitionOffset = 5 * (scrollingMenu.moveDelay + 1) * scrollingMenu.menuMoveDirection;
+
+    func_80318B7C(scrollingMenu.zoombox[zoomboxIndex], (baseYPos + topZoomboxOffset + transitionOffset));
+}
+
+void update_scrollingMenu_zoombox_transparency(u8 zoomboxIndex) {
+    u8 appearingZoomboxIndex = (scrollingMenu.onLowerHalfOfMenu) ? 5 : 0;
+    
+    if (zoomboxIndex == appearingZoomboxIndex) {
+        u8 alpha = MIN((37 * (7 - (scrollingMenu.moveDelay + 1))), 0xFF);
+
+        scrollingMenu.zoombox[zoomboxIndex]->zoomboxAlpha = alpha;
+        scrollingMenu.zoombox[zoomboxIndex]->unk168 = alpha;
+        scrollingMenu.zoombox[zoomboxIndex]->textAlpha = alpha;
+    } else {
+        u8 alpha = MAX((37 * (scrollingMenu.moveDelay + 1)), 0x00);
+
+        scrollingMenu.zoombox[zoomboxIndex]->zoomboxAlpha = alpha;
+        scrollingMenu.zoombox[zoomboxIndex]->unk168 = alpha / 2;
+        scrollingMenu.zoombox[zoomboxIndex]->textAlpha = alpha;
+    }
+}
+
+void reset_scrollingMenu_zoombox_y_pos_and_transparency(void) {
+    if ((scrollingMenu.moveDelay == 0) && scrollingMenu.movingMenu) {
+        u8 i;
+
+        scrollingMenu.moveDelay--;
+
+        for (i = 0; i < 6; i++) {
+            if (scrollingMenu.zoombox[i]) {
+                update_scrollingMenu_zoombox_y_pos(i);
+
+                if ((i == 0) || (i == 5)) {
+                    update_scrollingMenu_zoombox_transparency(i);
+                }
+            }
+        }
+    }
+}
+#endif

@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 typedef struct bounding_box_s {
     s16 x_min;
     s16 x_max;
@@ -185,6 +187,24 @@ void core1_ce60_setChanMaskFromWaterState(s32 chan_mask_underwater, s32 chan_mas
     }
 }
 
+#ifdef WARP_CAULDRON_MENU
+void core1_ce60_setChanMaskFromWaterState_withCauldron(s32 chan_mask_underwater, s32 chan_mask_surface) {
+    bool insideWarpCauldron = (get_warpMenuActive() || (volatileFlag_get(VOLATILE_FLAG_1E) && !func_8028F070()));
+    bool setUnderwaterChannelMask = (!insideWarpCauldron) ? (player_getWaterState() == BSWATERGROUP_2_UNDERWATER) : get_currCauldronUnderwater();
+    
+    if (setUnderwaterChannelMask) {
+        core1_ce60_setChanMask(chan_mask_underwater);
+        // Banjo's action state determines whether to muffle sound effects like the Warp Cauldron bubbles and squeaks.
+        if (insideWarpCauldron)
+            bs_setState(BS_2B_DIVE_IDLE);
+    } else {
+        core1_ce60_setChanMask(chan_mask_surface);
+        if (insideWarpCauldron)
+            bs_setState(BS_1_IDLE);
+    }
+}
+#endif
+
 void core1_ce60_func_8024AF48(void) {
     if (!D_802806F4 ||
         volatileFlag_get(VOLATILE_FLAG_1) ||
@@ -192,7 +212,16 @@ void core1_ce60_func_8024AF48(void) {
         func_802D686C() ||
         player_isDead() ||
         gctransition_8030BDC0() ||
-        getGameMode() == GAME_MODE_A_SNS_PICTURE)
+        getGameMode() == GAME_MODE_A_SNS_PICTURE
+// Prevents music from changing channels when in Warp Menu Cauldron Pair Cutscene.
+#ifdef WARP_CAULDRON_MENU
+        || ((get_inWarpCauldronCutscene() == 2)
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)
+ #endif
+            )
+#endif
+        )
     {
         return;
     }
@@ -542,7 +571,19 @@ void core1_ce60_func_8024AF48(void) {
             break;
 
         case MAP_77_GL_RBB_LOBBY:
+#ifdef WARP_CAULDRON_MENU
+ #ifdef OPTIONS_MENU
+            if (is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) {
+                core1_ce60_setChanMaskFromWaterState_withCauldron(0x8200, 0xf000);
+            } else {
+                core1_ce60_setChanMaskFromWaterState(0x8200, 0xf000);
+            }
+ #else
+            core1_ce60_setChanMaskFromWaterState_withCauldron(0x8200, 0xf000);
+ #endif
+#else
             core1_ce60_setChanMaskFromWaterState(0x8200, 0xf000);
+#endif
             break;
 
         case MAP_78_GL_RBB_AND_MMM_PUZZLE:

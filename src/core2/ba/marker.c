@@ -384,6 +384,15 @@ void __baMarker_resolveCollision(Prop *other_prop){
             case MARKER_231_WARP_CAULDRON: //L8028C104
             case MARKER_244_DINGPOT: //L8028C104
                 {
+#ifdef WARP_CAULDRON_MENU
+ #ifdef OPTIONS_MENU
+                    bool correspondingCauldronFlagCheck = (is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU))
+                                                           ? (fileProgressFlag_get(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET) && (actor->modelCacheIndex != ACTOR_2DB_DINGPOT))
+                                                           : fileProgressFlag_get(((actor->actorTypeSpecificField - 1) ^ 1) + 0x49);
+ #else
+                    bool correspondingCauldronFlagCheck = (fileProgressFlag_get(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET) && (actor->modelCacheIndex != ACTOR_2DB_DINGPOT));
+ #endif
+#endif
 
                     if(player_movementGroup() == BSGROUP_1_INTR)
                         return;
@@ -406,7 +415,11 @@ void __baMarker_resolveCollision(Prop *other_prop){
                      * FILEPROG_51_YELLOW_CAULDRON_1_ACTIVE
                      * FILEPROG_52_YELLOW_CAULDRON_2_ACTIVE
                      */
+#ifdef WARP_CAULDRON_MENU
+                    if (correspondingCauldronFlagCheck) {
+#else
                     if(fileProgressFlag_get(((actor->actorTypeSpecificField - 1) ^ 1) + 0x49)){
+#endif
                         actor->unk10_12 = 2;
                     }
                     else{

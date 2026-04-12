@@ -6,6 +6,8 @@
 #include "gc/gctransition.h"
 #include "time.h"
 
+#include "config.h"
+
 extern void func_802F5374(void);
 extern void func_802FA0F8(void);
 extern void timedFuncQueue_update(void);
@@ -60,6 +62,10 @@ struct{
     u8 unk1C;
 } D_8037E8E0;
 
+#ifdef WARP_CAULDRON_MENU
+bool warpMenuActive = FALSE;
+u8 inWarpCauldronCutscene = 0;
+#endif
 #ifdef SKIPPABLE_CUTSCENES
 s8 paradeHasBeenSetup = FALSE;
 #endif
@@ -155,6 +161,13 @@ void func_802E39D0(Gfx **gdl, Mtx **mptr, Vtx **vptr, s32 framebuffer_idx, s32 a
     if(!game_is_frozen()){
         itemPrint_draw(gdl, mptr, vptr);
     }
+
+#ifdef WARP_CAULDRON_MENU
+    if (warpMenuActive && (inWarpCauldronCutscene == 0)) {
+        scrollingMenu_zoomboxUpdate();
+        scrollingMenu_zoomboxDraw(gdl, mptr, vptr);
+    }
+#endif
 
     printbuffer_draw(gdl, mptr, vptr);
 
@@ -698,3 +711,30 @@ s32 func_802E4B24(s32 arg0){
 f32 func_802E4B38(void){
     return D_8037E8E0.unk8;
 }
+
+#ifdef WARP_CAULDRON_MENU
+void set_warpMenuActive(bool state) {
+    warpMenuActive = state;
+}
+
+bool get_warpMenuActive(void) {
+    return warpMenuActive;
+}
+
+/*
+ * The reason for having multiple states is because there are some silly audio and visual issues that trigger when you jump into a cauldron and the cutscene plays.
+ * However, these issues also appear when activating a cutscene from the Warp Menu, which looks strange.
+ * To keep both, have different states that determine whether to fix the bugs or not.
+ *
+ * State 0: Not in cutscene
+ * State 1: Activated Cauldron Pair Cutscene (Keep bugs)
+ * State 2: Activated Cutscene from Warp Menu (Fix bugs)
+ */
+void set_inWarpCauldronCutscene(u8 state) {
+    inWarpCauldronCutscene = state;
+}
+
+u8 get_inWarpCauldronCutscene(void) {
+    return inWarpCauldronCutscene;
+}
+#endif

@@ -5,6 +5,8 @@
 #include "core2/commonParticle.h"
 #include "core2/anim/sprite.h"
 
+#include "config.h"
+
 extern void func_80244D94(f32[3], f32[3], f32[3], u32, f32);
 
 extern f32 func_8033EA14(s32);
@@ -142,6 +144,17 @@ s32 func_803531C8(u8 projectile_indx, s32 arg1){
 bool fxegg_isCollidingWithPlayer(f32 arg0[3]){
     f32 sp2C[3];
     f32 sp20[3];
+
+// Don't let the player collect eggs when in Cauldron.
+#ifdef WARP_CAULDRON_MENU
+    if (get_warpMenuActive()
+ #ifdef OPTIONS_MENU
+        && is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)
+ #endif
+        ) {
+        return FALSE;
+    }
+#endif
 
     player_getPosition(sp2C);
     ml_vec3f_diff_copy(sp20, sp2C, arg0);

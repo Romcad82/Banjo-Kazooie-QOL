@@ -580,7 +580,18 @@ void func_802D4680(Actor *this){
     player_getPosition(sp1C);
     switch(this->state){
         case 0:
+/*
+ * This is needed when you watch the Enter Furnace Fun Cutscene and Banjo jumps out of the Yellow Cauldron in FF and lands in the middle of the Tooty Warp Pad.
+ * The player_isStable function prevents Banjo from warping out of FF in the middle of the cutscene.
+ * 
+ * NOTE: This is only possible if you have WARP_CAULDRON_MENU enabled and entered the VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS cheat code with ADDITIONAL_CHEATS enabled.
+ */
+#if defined(WARP_CAULDRON_MENU) && defined(ADDITIONAL_CHEATS)
+            if ((150.0f < ml_vec3f_horizontal_distance_zero_likely(this->position, sp1C))
+                && player_isStable()) {
+#else
             if(150.0f < ml_vec3f_horizontal_distance_zero_likely(this->position, sp1C)){
+#endif
                 subaddie_set_state(this, 1);
                 D_803676AC = 0;
             }
@@ -1078,7 +1089,16 @@ void func_802D5628(void){
                     && !fileProgressFlag_get(FILEPROG_FC_DEFEAT_GRUNTY)
                 ){
                     D_8037DE04 += time_getDelta();
-                    if(D_80367680 < D_8037DE04 && !volatileFlag_get(VOLATILE_FLAG_16)){
+                    if(D_80367680 < D_8037DE04 && !volatileFlag_get(VOLATILE_FLAG_16)
+// Prevents Grunty dialog from appearing while in Warp Cauldron.
+#ifdef WARP_CAULDRON_MENU
+                       && ((!get_warpMenuActive() && !volatileFlag_get(VOLATILE_FLAG_1E))
+ #ifdef OPTIONS_MENU
+                           || !is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)
+ #endif
+                          )
+#endif
+                       ){
                         if(fileProgressFlag_get(FILEPROG_A6_FURNACE_FUN_COMPLETE)){
                             sp4C = 0xF9D;
                         }
@@ -1154,7 +1174,27 @@ void func_802D6114(void){
     else{//L802D61DC
         func_80347A14(1);
         gcpausemenu_80314AC8(1);
+// Triggers when Warp Cauldron Cutscene is finished and both Cauldrons are in the same map.
+#ifdef WARP_CAULDRON_MENU
+        if (get_inWarpCauldronCutscene()) {
+            set_inWarpCauldronCutscene(0);
+            ncStaticCamera_exit();
+            if (!fileProgressFlag_get(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET)) {
+                gcdialog_showDialog(ASSET_F7A_DIALOG_UNKNOWN, 4, NULL, NULL, NULL, NULL);
+                fileProgressFlag_set(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET, 1);
+            }
+        }
+#endif
     }
+// Fixes an issue where you activate and enter a Cauldron and trigger the Cauldron Pair Cutscene, it won't set VOLATILE_FLAG_1E back to 0 when the cutscene is over.
+#ifdef WARP_CAULDRON_MENU
+    if ((get_inWarpCauldronCutscene() == 1)
+ #ifdef OPTIONS_MENU
+        && (is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU) || is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES))
+ #endif
+        )
+        volatileFlag_set(VOLATILE_FLAG_1E, 0);
+#endif
 }
 
 void func_802D61FC(enum map_e arg0){

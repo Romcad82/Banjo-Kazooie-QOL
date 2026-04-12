@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "core2/nc/camera.h"
 
+#include "config.h"
+
 Actor *func_803925B0(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
 void func_80392700(Actor *this);
 void func_80392918(Actor *this);
@@ -55,6 +57,10 @@ void func_80392690(ActorMarker *marker, enum asset_e text_id, s32 arg2){
 void func_80392700(Actor *this) {
     if (mapSpecificFlags_get(4)) {
         if (fileProgressFlag_get(FILEPROG_F4_ENTER_FF_CUTSCENE)) {
+// Prevents Grunty dialog from playing when the game returns to Furnace Fun after Warp Cauldron Cutscene.
+#ifdef WARP_CAULDRON_MENU
+            if (!get_warpMenuActive())
+#endif
             gcdialog_showDialog(0x1031, 0xF, this->position, this->marker, func_80392664, func_80392610);
         } else {
             func_802BC280();
@@ -92,7 +98,19 @@ void func_80392700(Actor *this) {
 
 void func_80392918(Actor *this) {
     if (!this->volatile_initialized) {
-        if (fileProgressFlag_get(FILEPROG_F4_ENTER_FF_CUTSCENE) && (func_8028E4A4() == 2)) {
+        if (fileProgressFlag_get(FILEPROG_F4_ENTER_FF_CUTSCENE) && 
+// Adds a check to see if you reentered FF from a Cauldron Warp. Plays Grunty dialog 0x1031 if you did.
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(WARP_CAULDRON_MENU)
+            ((func_8028E4A4() == 2) ||
+            (volatileFlag_get(VOLATILE_FLAG_1E)
+ #ifdef OPTIONS_MENU
+            && (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU))
+ #endif    
+            ))
+#else
+            (func_8028E4A4() == 2)
+#endif
+            ) {
             mapSpecificFlags_set(4, 1);
         }
         this->unk4C = 400.0f;

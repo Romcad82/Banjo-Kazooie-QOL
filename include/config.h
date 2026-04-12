@@ -73,6 +73,11 @@
 #define HEALTH_SYSTEM_REWORK
 
 /**
+ * Adds a Menu to the Warp Cauldrons, letting you warp to any cauldron you want.
+ */
+#define WARP_CAULDRON_MENU
+
+/**
  * Fixes the following bugs:
  * -Jinjo Statue Softlock
  * -Yum-Yum Crash
@@ -82,6 +87,8 @@
  * -CCW Pink Jinjo Jiggy Despawn (Note: JINJO_SAVING also fixes this bug)
  * -Max Health Cheat Temporarily Removes Double Defense (Note: HEALTH_SYSTEM_REWORK also fixes this bug)
  * -Minor Game Over Cutscene Issues (Note: SKIPPABLE_CUTSCENES also fixes these issues)
+ * -Minor Issues With The Cauldron Warps (Note: WARP_CAULDRON_MENU also fixes these issues)
+ * -Issues With FP Lobby Flight Pad (Note: WARP_CAULDRON_MENU also fixes these issues)
  */
 #define BUG_AND_OVERSIGHT_FIXES
 
@@ -227,6 +234,14 @@
  * NOTE: BUG_AND_OVERSIGHT_FIXES must be on for this define to function.
  */
 // #define EXTREME_JIGSAW_PODIUM_FIX
+
+/**
+ * Renames all the selections in the Warp Menu to be more generic.
+ * Also adds color to the portrait sprites to make them more distinguishable.
+ * 
+ * NOTE: WARP_CAULDRON_MENU must be on for this define to function.
+ */
+// #define GENERIC_CAULDRON_NAMES
 
 /**
  * Switches the Stop 'N' Swop item keys so that the game can recieve Stop 'N' Swop data from vanilla Banjo-Kazooie. The game also outputs data that vanilla Banjo-Kazooie can recieve.

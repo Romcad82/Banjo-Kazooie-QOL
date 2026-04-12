@@ -130,7 +130,7 @@ typedef struct {
     BKSprite *unk100;
     BKSpriteDisplayData *unk104;
     u8  unk108[5];  //sfx_indexes
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
     u8  textRGB[3];
 #else
     u8  pad10D[3];
@@ -151,7 +151,7 @@ typedef struct {
     u8 unk15C;
     u8 unk15D;
     u8 unk15E;
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
     s8 textYOffset;
 #else
     u8 pad15F[0x1];
@@ -170,7 +170,7 @@ typedef struct {
     s8  unk177;
     s8  unk178;
     s8  unk179;
-#ifdef OPTIONS_MENU
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
     u8  zoomboxAlpha;
     u8  textAlpha;
 #else
@@ -218,7 +218,44 @@ typedef struct {
     u32 unk1A4_11:1;
     u32 unk1A4_10:1;
     u32 pad1A4_9:10;
+#if defined(WARP_CAULDRON_MENU) && defined(GENERIC_CAULDRON_NAMES)
+    u8  portraitRGB[3];
+#endif
 }GcZoombox; //size 0x1A8
+
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+typedef struct {
+    u16              id;
+    u8              *firstStr;
+    u8              *secondStr;
+    GcZoomboxSprite  portrait;
+    u8              *information;
+} scrollingMenuZoomboxFormat;
+
+typedef struct {
+    u8 *one;
+    u8 *two;
+    u8 *three;
+    u8 *four;
+} scrollingMenuInstructionList;
+
+typedef struct {
+    u8                            selection;
+    u8                            onScreenSelection;
+    bool                          onLowerHalfOfMenu;
+    s8                            moveDelay;
+    u8                            selectDelay;
+    bool                          movingMenu;
+    s8                            menuMoveDirection;
+    bool                          menuFinishedDisplaying;
+    f32                           menuCycleInstructionsTimer;
+    bool                          textResetOnce;
+    bool                          bottomPortraitOpacityFix;
+    GcZoombox                    *topZoombox;
+    scrollingMenuInstructionList  instructions;
+    GcZoombox                    *zoombox[6];
+} scrollingMenuStruct;
+#endif
 
 
 void gczoombox_free(GcZoombox *this);

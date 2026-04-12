@@ -487,6 +487,25 @@ void func_80386D78(Actor *this) {
             this->position[1] = this->unk1C[1];
             this->scale = 1.0f;
         }
+// When you enter the map and the timer is active, activate the Flight Pad.
+#if defined(BUG_AND_OVERSIGHT_FIXES) || defined(WARP_CAULDRON_MENU)
+          else if (item_getCount(ITEM_6_HOURGLASS)
+ #ifdef OPTIONS_MENU
+                   && (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU))
+ #endif
+                   ) {
+            this->lifetime_value = 0.0f;
+            this->position[1] = this->unk1C[1];
+            this->scale = 1.0f;
+        } else 
+ #ifdef OPTIONS_MENU
+               if (is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES) || is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU))
+ #endif
+               {
+            mapSpecificFlags_set(0, FALSE);
+            mapSpecificFlags_set(1, FALSE);
+        }
+#endif
     }
     if ((this->unk1C[1] - 150.0f) <= this->position[1]) {
         if (!volatileFlag_get(VOLATILE_FLAG_8A_SANDCASTLE_FLIGHT_UNLOCKED)) {

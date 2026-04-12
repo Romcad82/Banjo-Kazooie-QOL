@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 
 void func_802CD898(Actor *);
 void func_802CD8C0(Actor *);
@@ -37,12 +39,30 @@ void func_802CD8C0(Actor *this){
         this->marker->unk2C_1 = 1;
         this->marker->collidable = FALSE;
         *(s32*)this->unkBC = 0; //TODO Make struct
+#if defined(WARP_CAULDRON_MENU) && defined(ADDITIONAL_CHEATS)
+        this->state = 0;
+#endif
         if(volatileFlag_get(VOLATILE_FLAG_1) || volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE)){
             marker_despawn(this->marker);
             return;
         }
+/*
+ * Adds a check to allow Cauldron Warps to trigger cutscenes. Also checks to make sure if you're not in a Warp Cauldron Cutscene.
+ * This is primarily used for the cutscene where you enter FF for the first time.
+ * Despawning the object if you enter from the incorrect entrance can prevent the cutscene from playing
+ * and the FILEPROG_F4_ENTER_FF_CUTSCENE flag from setting when you reenter FF from the correct entrance.
+ * Instead, set the state to 1 if you enter from the incorrect entrance and prevent the cutscene from playing.
+ * The state gets reset everytime the map loads, so the cutscene can play properly if you reenter from the correct entrance.
+ * 
+ * NOTE: This is only possible if you have WARP_CAULDRON_MENU enabled and entered the VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS cheat code with ADDITIONAL_CHEATS enabled.
+ */
+#if defined(WARP_CAULDRON_MENU) && defined(ADDITIONAL_CHEATS)
+        if (((this->actorTypeSpecificField != 0x32) && (func_8028E4A4() != this->actorTypeSpecificField) && !volatileFlag_get(VOLATILE_FLAG_1E)) || get_inWarpCauldronCutscene()) {
+            this->state = 1;
+#else
         if(this->actorTypeSpecificField != 0x32 && func_8028E4A4() != this->actorTypeSpecificField){
             marker_despawn(this->marker);
+#endif
             return;
         }
         if(gsworld_get_map() == MAP_26_MMM_NAPPERS_ROOM){
@@ -66,6 +86,12 @@ void func_802CD8C0(Actor *this){
             }
         }
     }//L802CDA00
+
+#if defined(WARP_CAULDRON_MENU) && defined(ADDITIONAL_CHEATS)
+        if (this->state == 1) {
+            return;
+        }
+#endif
 
     if(func_80343D50(this, func_80343654(this) + 1, 20, 20)){
         func_802CDAC4(this);
