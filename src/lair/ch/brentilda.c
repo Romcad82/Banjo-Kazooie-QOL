@@ -15,7 +15,12 @@ ActorAnimationInfo chBrentildaAnimations[] ={
     {0x26C, 4.0f},
     {0x26B, 4.0f},
 };
-ActorInfo chBrentilda = { 0x1E0, 0x348, 0x539, 0x1, chBrentildaAnimations, chBrentilda_update, actor_update_func_80326224, actor_draw, 2000, 0, 2.0f, 0};
+ActorInfo chBrentilda = {
+    MARKER_1E0_BRENTILDA, ACTOR_348_BRENTILDA, ASSET_539_MODEL_BRENTILDA,
+    0x1, chBrentildaAnimations,
+    chBrentilda_update, actor_update_func_80326224, actor_draw,
+    2000, 0, 2.0f, 0
+};
 
 /* .code */
 void func_8038BA30(ActorMarker *marker, enum asset_e text_id, s32 arg2){
@@ -116,8 +121,8 @@ void chBrentilda_update(Actor *this) {
     }
 
     func_8028E668(this->position, 280.0f, -40.0f, 160.0f);
-    this->yaw_ideal = (f32) func_80329784(this);
-    func_80328FB0(this, 3.0f);
+    this->yaw_ideal = (f32) subaddie_getYawToPlayer(this);
+    subaddie_turnToYaw(this, 3.0f);
     controller_copyFaceButtons(0, sp78);
     player_getPosition(sp64);
     temp_f0 = sp64[1] - this->position[1];

@@ -14,13 +14,13 @@
 #define MAX(s,t) ((s)<(t)?(t):(s))
 #endif
 
-void func_80328FB0(Actor *, f32);
+void subaddie_turnToYaw(Actor *, f32);
 
 void subaddie_set_state_with_direction(Actor*, s32, f32, s32);
 void bundle_setYaw(f32);
 void timed_exitStaticCamera(f32);
 Actor *actor_spawnWithYaw_s32(s32 actor_id, s32 position[3], s32 yaw);
-void MM_func_80387F44(void);
+void MM_checkMMChecksums(void);
 
 void chConga_update(Actor *);
 
@@ -59,7 +59,7 @@ bool __chConga_isPlayerNearCongaTree(Actor * this){
     f32 plyr_pos[3];
     f32 unused_tmpz;
 
-    if (gsworld_get_map() != MAP_2_MM_MUMBOS_MOUNTAIN) {
+    if (gsworld_getMap() != MAP_2_MM_MUMBOS_MOUNTAIN) {
         return FALSE;
     }
 
@@ -83,8 +83,8 @@ bool __chConga_isPlayerNearCongaTree(Actor * this){
 }
 
 void func_80386FB0(Actor *this){
-    subaddie_set_ideal_yaw(this, func_80329784(this));
-    func_80328FB0(this, 3.0f);
+    subaddie_set_ideal_yaw(this, subaddie_getYawToPlayer(this));
+    subaddie_turnToYaw(this, 3.0f);
 }
 
 void __chConga_playRandomNoise(void){
@@ -183,7 +183,7 @@ void __chConga_sendOrangeProjectile(ActorMarker *congaMarker){
     f32 simulated_velocity_y;
 
     congaPtr->unk10_12 -= (congaPtr->unk10_12 && ( conga_state == 7));
-    MM_func_80387F44();
+    MM_checkMMChecksums();
     congaPtr->actor_specific_1_f = 2.0f;
     orangePtr = actor_spawnWithYaw_s32(ACTOR_14_ORANGE_PROJECTILE, conga_localPtr->orangeSpawnPosition, congaPtr->yaw);
 
@@ -193,7 +193,7 @@ void __chConga_sendOrangeProjectile(ActorMarker *congaMarker){
         orangePtr->velocity_y = (60.0)*((conga_state == 7) ? 0.5: 1.0);
         orangePtr->velocity_z = plyr.pos_z - orangePtr->position_z;
 
-        if(SQ(plyr.pos_z - m->propPtr->z) + SQ(plyr.pos_x - m->propPtr->x) < 40000.0f ){
+        if(SQ(plyr.pos_z - m->propPtr->position_z) + SQ(plyr.pos_x - m->propPtr->position_x) < 40000.0f ){
             temp_f20 = randf2(2.4f, 4.4f); temp_f22 = randf2(2.4f, 4.4f); //f22
             orangePtr->velocity[0] *= (randf() < 0.5)? temp_f20 : -temp_f20;
             orangePtr->velocity[1] = randf2(1.8f, 2.2f) * 60.0;

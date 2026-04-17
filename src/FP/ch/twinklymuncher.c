@@ -76,7 +76,7 @@ Actor *func_8038DF34(Actor *this){
     this->marker->unk38[2] = sp18[2] - this->position[2];
     prop = func_80320EB0(this->marker, 75.0f, 1);
 
-    if(prop && prop->is_actor){
+    if(prop && prop->isActorProp){
         other = marker_getActor(prop->marker);
         marker_id = other->marker->id;
         if( marker_id == MARKER_200_TWINKLY_BLUE
@@ -222,8 +222,8 @@ void chTwinklyMuncher_update(Actor *this){
 
         case 6: //L8038E698
             this->marker->propPtr->unk8_3 = FALSE;
-            this->yaw_ideal = (f32)func_80329784(this);
-            func_80328FB0(this, 12.0f);
+            this->yaw_ideal = (f32)subaddie_getYawToPlayer(this);
+            subaddie_turnToYaw(this, 12.0f);
             break;
 
         case 7: //L8038E6D4

@@ -66,7 +66,7 @@ s32 func_803531C8(u8 projectile_indx, s32 arg1){
     projectile_getPosition(projectile_indx, egg_position);
     marker->unk38[1] = 0x1E;
     prop = func_80320EB0(marker, 30.0f, 1);
-    if(prop != NULL && prop->is_actor){
+    if(prop != NULL && prop->isActorProp){
         other_marker = prop->marker;
         sp34 =other_marker->id;
         if(!func_8033D410(marker, other_marker)){
@@ -184,7 +184,7 @@ void fxegg_head_spawn(void){
     func_8033EA40(0, 20.0f);
     func_8033EA40(1, 0.0f);
     func_8033EA40(2, 0.0f);
-    _player_getPosition(sp50);
+    playerPosition_get(sp50);
     sp50[1] += 80.0f;
     ml_vec3f_copy(sp68, sp50);
     player_getRotation(sp44);
@@ -254,9 +254,9 @@ void fxegg_head_update(void){
     if(ml_isZero_vec3f(sp88)){
         s0 = func_8033E840();
         projectile_getPosition(projectile_indx, sp60);
-        sp54[0] = (f32)s0->propPtr->x;
-        sp54[1] = (f32)s0->propPtr->y;
-        sp54[2] = (f32)s0->propPtr->z;
+        sp54[0] = (f32)s0->propPtr->position_x;
+        sp54[1] = (f32)s0->propPtr->position_y;
+        sp54[2] = (f32)s0->propPtr->position_z;
         commonParticle_setCurrentInUseFalse();
         fxegg_shatter(projectile_indx);
     }//L803539D4
@@ -292,7 +292,7 @@ void fxegg_ass_spawn(void) {
     func_8033EA40(1, 0);
     func_8033EA40(0, 20.0f);
     func_8033EA40(2, 0);
-    _player_getPosition(marker);
+    playerPosition_get(marker);
     player_getRotation(sp30);
     sp30[1] = mlNormalizeAngle(sp30[1] + 180.0f);
     func_80256E24(sp48, 0.0f, sp30[1], 0.0f, 0.0f, -18.0f);
@@ -383,7 +383,7 @@ void fxegg_collide(s32 arg0, ActorMarker *marker, s32 arg2) {
     Actor *actor;
 
     actor = marker_getActor(marker);
-    if (func_8033D5A4(arg2) != 0) {
+    if (collision_getHitsToTrigger(arg2) != 0) {
         commonParticle_setCurrentInUseFalse();
         if (actor->modelCacheIndex != 0x29D) {
             fxegg_shatter(commonParticle_getCurrentProjectileIndex());

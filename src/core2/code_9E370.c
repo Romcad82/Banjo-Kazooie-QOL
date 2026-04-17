@@ -11,7 +11,6 @@
 
 extern void func_802D7124(Actor *, f32);
 
-
 extern void func_8033A244(f32);
 
 f32 func_80257204(f32, f32, f32, f32);
@@ -24,19 +23,18 @@ extern void func_8032EE0C(GenFunction_2, s32);
 extern void func_8032EE20(void);
 extern void __spawnQueue_add_5(GenFunction_5, s32, s32, s32, s32, s32);
 
-
 void func_8032A6A8(Actor *arg0);
 void func_8032ACA8(Actor *arg0);
-void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, struct5Cs *arg2);
+void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, CollisionParams *arg2);
 void subaddie_set_state_with_direction(Actor * this, s32 arg1, f32 arg2, s32 arg3);
 void func_8032BB88(Actor *this, s32 arg1, s32 arg2);
 int  subaddie_playerIsWithinSphere(Actor *this, s32 dist);
 extern void func_8033A4A0(enum asset_e mode_id, f32, f32);
-extern void func_80338338(s32, s32, s32);
+extern void codeAEDA0_setPrimaryColorRGB(s32, s32, s32);
 extern void func_803382FC(s32);
-extern void func_803382E4(s32);
-extern void func_8033687C(Gfx **);
-extern void func_80335D30(Gfx **);
+extern void codeAEDA0_setSpriteDrawMode(s32);
+extern void codeAEDA0_postDrawSprite(Gfx **);
+extern void codeAEDA0_drawSprite(Gfx **);
 extern void func_80344138(s32, s32, s32, f32[3], f32[3], Gfx **, Mtx **);
 extern BKVertexList *vtxList_clone(BKVertexList *vtxList);
 
@@ -59,13 +57,10 @@ f32 D_8036E580[3] = {0.0f, -8.0f, 0.0f};
 f32 D_8036E58C[3] = {0.0f, -16.0f, 0.0f};
 f32 D_8036E598[4] = {1000.f, 20.0f, 10.5f, 1.0f};
 
-
-
 /* .bss */
 Actor *suLastBaddie;
 s32 D_80383394;
 Actor *suBaddieJiggyArray[14]; //array of jiggy actor ptrs
-
 
 Actor * marker_getActorAndRotation(ActorMarker *marker,f32 rotation[3])
 {   Actor *actor = &suBaddieActorArray->data[marker->actrArrayIdx];
@@ -223,7 +218,7 @@ Actor *actor_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     return this;
 }
 
-Actor *func_80325934(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
+Actor *fxTouchSparkle_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     Actor *this;
     f32 scale[3];
     BKSpriteDisplayData *sp3C;
@@ -236,19 +231,19 @@ Actor *func_80325934(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
         this->position[1] -= D_8036E58C[1];
         this->position[2] -= D_8036E58C[2];
     }
-    func_80338338(0xFF, 0xFF, 0xFF);
+    codeAEDA0_setPrimaryColorRGB(0xFF, 0xFF, 0xFF);
     if (this->unk124_11 != 0) {
         func_803382FC(this->alpha_124_19);
-        func_803382E4(0xC);
-    } else if (func_80344C20(sp3C) & 0xB00) {
-        func_803382E4(0xB);
+        codeAEDA0_setSpriteDrawMode(0xC);
+    } else if (codeBD100_getSpriteType(sp3C) & 0xB00) {
+        codeAEDA0_setSpriteDrawMode(0xB);
     } else {
-        func_803382E4(0xE);
+        codeAEDA0_setSpriteDrawMode(0xE);
     }
     func_80344C38(&func_803257A4, marker);
-    func_80335D30(gfx);
-    func_80344138(sp3C, marker->propPtr->unk8_15, marker->propPtr->unk8_5, this->position, scale, gfx, mtx);
-    func_8033687C(gfx);
+    codeAEDA0_drawSprite(gfx);
+    func_80344138(sp3C, marker->propPtr->frame, marker->propPtr->isMirrored, this->position, scale, gfx, mtx);
+    codeAEDA0_postDrawSprite(gfx);
     if (this->unk104 != NULL) {
         this->position[0] = this->position[0] + D_8036E58C[0];
         this->position[1] = this->position[1] + D_8036E58C[1];
@@ -274,19 +269,19 @@ Actor *func_80325AE0(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
         this->position[1] -= D_8036E58C[1];
         this->position[2] -= D_8036E58C[2];
     }
-    func_80338338(0xFF, 0xFF, 0xFF);
+    codeAEDA0_setPrimaryColorRGB(0xFF, 0xFF, 0xFF);
     if (this->unk124_11 != 0) {
         func_803382FC(this->alpha_124_19);
-        func_803382E4(0xC);
-    } else if (func_80344C20(sp40) & 0xB00) {
-        func_803382E4(0xB);
+        codeAEDA0_setSpriteDrawMode(0xC);
+    } else if (codeBD100_getSpriteType(sp40) & 0xB00) {
+        codeAEDA0_setSpriteDrawMode(0xB);
     } else {
-        func_803382E4(0xE);
+        codeAEDA0_setSpriteDrawMode(0xE);
     }
     func_80344C38(&func_803257A4, marker);
-    func_80335D30(gfx);
-    func_80344720(sp40, marker->propPtr->unk8_15, marker->propPtr->unk8_5, this->position, rotation, &scale, gfx, mtx);
-    func_8033687C(gfx);
+    codeAEDA0_drawSprite(gfx);
+    func_80344720(sp40, marker->propPtr->frame, marker->propPtr->isMirrored, this->position, rotation, &scale, gfx, mtx);
+    codeAEDA0_postDrawSprite(gfx);
     if (this->unk104 != NULL) {
         this->position[0] = this->position[0] + D_8036E58C[0];
         this->position[1] = this->position[1] + D_8036E58C[1];
@@ -311,20 +306,20 @@ Actor *func_80325CAC(ActorMarker *marker, Gfx **gfx, Gfx **mtx, Vtx **vtx) {
     }
     viewport_getRotation_vec3f(rotation);
     rotation[2] += this->roll;
-    func_80338338(0xFF, 0xFF, 0xFF);
+    codeAEDA0_setPrimaryColorRGB(0xFF, 0xFF, 0xFF);
     if (this->unk124_11 != 0) {
         func_803382FC(this->alpha_124_19);
-        func_803382E4(0xC);
-    } else if ((func_80344C20(sp40) & 0xB00) != 0) {
-        func_803382E4(0xB);
+        codeAEDA0_setSpriteDrawMode(0xC);
+    } else if ((codeBD100_getSpriteType(sp40) & 0xB00) != 0) {
+        codeAEDA0_setSpriteDrawMode(0xB);
     } else {
-        func_803382E4(0xE);
+        codeAEDA0_setSpriteDrawMode(0xE);
     }
     func_80344C38(&func_803257A4, marker);
-    func_80335D30(gfx);
-    func_80344720(sp40, marker->propPtr->unk8_15, marker->propPtr->unk8_5, this->position, rotation, scale, gfx, mtx);
+    codeAEDA0_drawSprite(gfx);
+    func_80344720(sp40, marker->propPtr->frame, marker->propPtr->isMirrored, this->position, rotation, scale, gfx, mtx);
     
-    func_8033687C(gfx);
+    codeAEDA0_postDrawSprite(gfx);
     if (this->unk104 != NULL) {
         this->position[0] = this->position[0] + D_8036E58C[0];
         this->position[1] = this->position[1] + D_8036E58C[1];
@@ -535,7 +530,7 @@ void func_803268B4(void) {
             marker = actor->marker;
             anim_ctrl = actor->anctrl;
             temp_s1 = actor->actor_info->unk18;
-            if (marker->propPtr->unk8_4) {
+            if (marker->propPtr->isNotFeatherEggOrNote) {
                 if(sp54){
                     if (  actor->actor_info->unk20 && volatileFlag_get( actor->actor_info->unk20)) {
                         marker_despawn(marker);
@@ -1308,12 +1303,12 @@ void subaddie_set_state_looped(Actor * this, u32 arg1){
 }
 
 /* actor - maybe plays actor's animation with set probability */
-int subaddie_maybe_set_state(Actor *this, s32 myAnimId, f32 chance){
+bool subaddie_maybe_set_state(Actor *this, s32 myAnimId, f32 chance){
     if(randf() < chance){
         subaddie_set_state(this, myAnimId);
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 void subaddie_set_state_with_direction(Actor * this, s32 state, f32 anim_start_position, s32 direction){
@@ -1396,7 +1391,7 @@ f32 func_80328DCC(Actor *this, f32 angle, f32 angle_ideal, s32 arg3) {
     return var_f2;
 }
 
-void func_80328FB0(Actor *this, f32 arg1){
+void subaddie_turnToYaw(Actor *this, f32 arg1){
     this->yaw = func_80328DCC(this, this->yaw, this->yaw_ideal, (s32)arg1);
 }
 
@@ -1467,17 +1462,17 @@ bool func_80329260(Actor *this, f32 p1[3]){
 bool func_803292E0(Actor *this){
     f32 player_position[3];
     if(this->unk10_25 == 0){
-        return 1;
+        return TRUE;
     }
 
-    _player_getPosition(player_position);
+    playerPosition_get(player_position);
     return func_80307258(player_position, this->unk10_25 - 1, this->unk10_18 - 1) != -1;
 }
 
 bool func_80329354(Actor *this){
     f32 sp1C[3];
 
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
     return func_80329260(this, sp1C);
 }
 
@@ -1487,7 +1482,7 @@ bool func_80329384(Actor *this, f32 arg1){
     if(this->unk10_25 == 0)
         return TRUE;
 
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
 
     return func_80307258(sp1C, this->unk10_25 - 1, this->unk10_18 - 1) != -1
         && (sp1C[1] < (this->position[1] + arg1))
@@ -1538,7 +1533,7 @@ bool subaddie_playerIsWithinSphere(Actor *this, s32 dist){
     f32 sp18[3];
 
     func_8028E964(sp24);
-    _player_getPosition(sp18);
+    playerPosition_get(sp18);
     sp24[1] = sp18[1];
     if( ( (this->position_x - sp24[0])*(this->position_x - sp24[0]) 
           + (this->position_y - sp24[1])*(this->position_y - sp24[1])
@@ -1580,29 +1575,29 @@ s32 func_8032970C(Actor *this){
     f32 plyr_pos[3];
 
     func_8028E964(sp24);
-    _player_getPosition(plyr_pos);
+    playerPosition_get(plyr_pos);
     sp24[1] = plyr_pos[1];
     return (s32) DIST_SQ_VEC3F(this->position, sp24);
 }
 
-s32 func_80329784(Actor *this){
+s32 subaddie_getYawToPlayer(Actor *this){
     f32 sp1C[3];
 
     func_8028E964(sp1C);
     return (s32)func_80257204(this->position[0], this->position[2], sp1C[0], sp1C[2]);
 }
 
-s32 func_803297C8(Actor *arg0, f32 arg1[3]){
+s32 subaddie_getYawToPosition(Actor *arg0, f32 arg1[3]){
     return (s32)func_80257204(arg0->position[0], arg0->position[2], arg1[0], arg1[2]);
 }
 
 void func_803297FC(Actor *arg0, f32 *o1, f32 *o2){
-    f32 sp2C[3];
+    f32 player_pos[3];
 
-    _player_getPosition(sp2C);
+    playerPosition_get(player_pos);
     func_8025727C(
         arg0->position[0], arg0->position[1], arg0->position[2],
-        sp2C[0], sp2C[1], sp2C[2],
+        player_pos[0], player_pos[1], player_pos[2],
         o1, o2
     );
     *o1 = 360.0f - *o1;
@@ -1666,7 +1661,7 @@ void func_803299B4(Actor *arg0) {
     arg0->marker->actorFreeFunc = arg0->backupFreeFunc;
     arg0->marker->unk5C = arg0->unk16C_31;
     arg0->marker->propPtr->unk8_3 = arg0->unkF4_28;
-    arg0->marker->propPtr->unk8_2 = arg0->unkF4_27;
+    arg0->marker->propPtr->isCollisionResolved = arg0->unkF4_27;
     arg0->marker->unk2C_1 = arg0->unkF4_26;
     arg0->marker->collidable = arg0->stored_marker_collidable;
 
@@ -1761,7 +1756,7 @@ void *actors_appendToSavestate(void * begin, u32 end){
                 s0->unkF4_26 = s1->marker->unk2C_1;
                 s0->stored_marker_collidable = s1->marker->collidable;
                 s0->unkF4_28 = s1->marker->propPtr->unk8_3;
-                s0->unkF4_27 = s1->marker->propPtr->unk8_2;
+                s0->unkF4_27 = s1->marker->propPtr->isCollisionResolved;
                 //80329F94
                 if(s0->anctrl){
                     s0->stored_anctrl_index = anctrl_getIndex(s0->anctrl);
@@ -1936,7 +1931,7 @@ void func_8032A82C(Actor *arg0, s32 arg1) {
     sp1C = &arg0->local;
     sp24 = nodeprop_findByActorIdAndActorPosition(arg1, arg0);
     if (sp24 != NULL) {
-        sp1C->unkC = nodeprop_getYaw(sp24);
+        sp1C->unkC = nodeProp_getYaw(sp24);
         nodeprop_getPosition(sp24, sp1C->unk0);
         sp1C->unkE = func_80341EC4(sp1C);
     }
@@ -1946,8 +1941,8 @@ void func_8032A88C(Actor *arg0) {
     Actorlocal_Core2_9E370 *sp20;
 
     sp20 = &arg0->local;
-    arg0->yaw_ideal = (f32) func_803297C8(arg0, sp20->unk0);
-    func_80328FB0(arg0, 6.0f);
+    arg0->yaw_ideal = (f32) subaddie_getYawToPosition(arg0, sp20->unk0);
+    subaddie_turnToYaw(arg0, 6.0f);
     func_80329030(arg0, 0);
     if ((((arg0->position[0] - sp20->unk0[0]) * (arg0->position[0] - sp20->unk0[0])) + ((arg0->position[2] - sp20->unk0[2]) * (arg0->position[2] - sp20->unk0[2]))) <= 144.0f) {
         arg0->unk44_14 = sp20->unkE;
@@ -1974,7 +1969,7 @@ bool func_8032A9E4(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 //actor_setScale
-void func_8032AA58(Actor *this, f32 scale){
+void suSetSpriteScale(Actor *this, f32 scale){
     this->scale = scale;
     this->marker->unk14_10 = 0;
 }
@@ -2197,7 +2192,7 @@ void func_8032B258(Actor *this, enum collision_e arg1) {
 }
 
 bool func_8032B38C(NodeProp *node, s32 arg1){
-    return node->unk8 == 0xF7;
+    return node->actorId == 0xF7;
 }
 
 void func_8032B3A0(Actor *this, ActorMarker *arg1) {
@@ -2234,13 +2229,13 @@ void func_8032B4DC(Actor *this, ActorMarker *arg1, s32 arg2) {
     }
 }
 
-void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, struct5Cs *arg2) {
+void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, CollisionParams *arg2) {
     Actor *this;
-    s32 sp70;
-    s32 sp6C;
-    s32 sp68;
+    s32 drop_bundle_num;
+    s32 unk_bit_7;
+    s32 hits_to_trigger;
     enum marker_collision_func_type_e sp64;
-    s32 var_v0;
+    s32 remaining_health;
     f32 player_yaw;
     f32 sp50[3];
     s32 sp4C;
@@ -2250,39 +2245,41 @@ void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, struct5Cs *arg2) {
     s32 pad;
 
     this = marker_getActor(arg0);
-    sp70 = func_8033D5B4(arg2);
-    sp6C = func_8033D584(arg2);
-    sp68 = func_8033D5A4(arg2);
-    sp64 = func_8033D574(arg2);
-    if (((baiFrame_getState() != 3) && func_8028F1E0()) || (func_8033D594(arg2) == 0)) {
+    drop_bundle_num = collision_getDropBundleNum(arg2);
+    unk_bit_7 = collision_getUnkBit7(arg2);
+    hits_to_trigger = collision_getHitsToTrigger(arg2);
+    sp64 = collision_getNextState(arg2);
+    if (((baiFrame_getState() != 3) && func_8028F1E0()) || (collision_getDamageToPlayer(arg2) == 0)) {
         if (sp64 == 0) {
-            if ((sp68 != 0) || (arg1->id == 0)) {
-                if (sp68 <= 0) {
-                    sp68 = 1;
+            if ((hits_to_trigger != 0) || (arg1->id == 0)) {
+                if (hits_to_trigger <= 0) {
+                    hits_to_trigger = 1;
                 }
             } else{
                 return;
             }
         }
 
-        if (sp68 != 0) {
-            var_v0 = MAX(0 , (this->unk164[sp64] - (100 / sp68)));
-            if ((this->unk164[sp64] = var_v0) && (sp68 >= 2)) {
-                sp6C /= 2;
+        if (hits_to_trigger != 0) {
+            remaining_health = MAX(0 , (this->unk164[sp64] - (100 / hits_to_trigger)));
+            if ((this->unk164[sp64] = remaining_health) && (hits_to_trigger >= 2)) {
+                unk_bit_7 /= 2;
             }
         }
-        if (sp6C != 0) {
-            bundle_setYaw(func_80257204(arg0->propPtr->x, arg0->propPtr->z, arg1->propPtr->x, arg1->propPtr->z) + 90.0f);
-            D_8036E564 = sp6C;
+        if (unk_bit_7 != 0) {
+            bundle_setYaw(func_80257204(arg0->propPtr->position_x, arg0->propPtr->position_z, arg1->propPtr->position_x, arg1->propPtr->position_z) + 90.0f);
+            D_8036E564 = unk_bit_7;
             if (this->unk138_25) {
-                __bundle_spawnFromFirstActor(sp6C + BUNDLE_21__ICECUBE_B, this);
+                __bundle_spawnFromFirstActor(unk_bit_7 + BUNDLE_21__ICECUBE_B, this);
             } else {
-                if ((this->marker->id < 0x1A1) || (this->marker->id >= 0x1A5)) {
-                    __bundle_spawnFromFirstActor(sp6C + BUNDLE_18__HONEYCOMB, this);
+                if ((this->marker->id < MARKER_1A1_BOSS_BOOM_BOX_LARGEST) ||
+                    (this->marker->id >= MARKER_1A5_SANDYBUTT_EGG_TOLL))
+                {
+                    __bundle_spawnFromFirstActor(unk_bit_7 + BUNDLE_18__HONEYCOMB, this);
                 }
             }
         }
-        if (sp68 != 0) {
+        if (hits_to_trigger != 0) {
             if ((sp64 == 2) && this->unk16C_1) {
                 func_8032B3A0(this, arg1);
             }
@@ -2297,7 +2294,7 @@ void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, struct5Cs *arg2) {
                 if (sp64 != 2) {
                     this->unk164[sp64] = 0x63;
                 }
-                if ((sp64 == 2) && (sp70 != 0)) {
+                if ((sp64 == 2) && (drop_bundle_num != 0)) {
                     player_yaw = player_getYaw();
                     sp3C[0] = (s32) this->position[0];
                     sp3C[1] = (s32) this->position[1];
@@ -2307,21 +2304,21 @@ void func_8032B5C0(ActorMarker *arg0, ActorMarker *arg1, struct5Cs *arg2) {
                     }
                     func_8032EE0C(func_8032B38C, this);
                     if (((s32)arg0->unk44 < 0) && ((sp50[0] != 0.0f) || (sp50[1] != 0.0f) || (sp50[2] != 0.0f))) {
-                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, sp70 + BUNDLE_15__JIGGY, reinterpret_cast(s32, sp50[0]), reinterpret_cast(s32, sp50[1]), reinterpret_cast(s32, sp50[2]), reinterpret_cast(s32, player_yaw));
+                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, drop_bundle_num + BUNDLE_15__JIGGY, reinterpret_cast(s32, sp50[0]), reinterpret_cast(s32, sp50[1]), reinterpret_cast(s32, sp50[2]), reinterpret_cast(s32, player_yaw));
                     } else if (this->unk16C_3 && func_803048E0(sp3C, &sp4C, &sp48, 3, (s32) (func_8033229C(arg0) * 4.0f))) {
-                        sp50[0] = (f32) sp48->x;
-                        sp50[1] = (f32) sp48->y;
-                        sp50[2] = (f32) sp48->z;
-                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, sp70 + BUNDLE_15__JIGGY, reinterpret_cast(s32, sp50[0]), reinterpret_cast(s32, sp50[1]), reinterpret_cast(s32, sp50[2]), reinterpret_cast(s32, player_yaw));
+                        sp50[0] = (f32) sp48->position_x;
+                        sp50[1] = (f32) sp48->position_y;
+                        sp50[2] = (f32) sp48->position_z;
+                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, drop_bundle_num + BUNDLE_15__JIGGY, reinterpret_cast(s32, sp50[0]), reinterpret_cast(s32, sp50[1]), reinterpret_cast(s32, sp50[2]), reinterpret_cast(s32, player_yaw));
                     } else {
                         sp38 = this->position[1] + func_8033229C(arg0);
-                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, sp70 + BUNDLE_15__JIGGY, reinterpret_cast(s32, this->position[0]), reinterpret_cast(s32, sp38), reinterpret_cast(s32, this->position[2]), reinterpret_cast(s32, player_yaw));
+                        __spawnQueue_add_5((GenFunction_5)spawnQueue_bundleWithYaw_f32, drop_bundle_num + BUNDLE_15__JIGGY, reinterpret_cast(s32, this->position[0]), reinterpret_cast(s32, sp38), reinterpret_cast(s32, this->position[2]), reinterpret_cast(s32, player_yaw));
                     }
                     func_8032EE20();
                 }
                 marker_callCollisionFunc(arg0, arg1, sp64);
             }
-            if ((sp64 != 0) && (sp6C != 0)) {
+            if ((sp64 != 0) && (unk_bit_7 != 0)) {
                 sfx_playFadeShorthandDefault(SFX_1D_HITTING_AN_ENEMY_1, 1.0f, 25984, this->position, (s32)((500.0f + func_8033229C(arg0)) * 0.5), (s32)((500.0f + func_8033229C(arg0)) * 5));
             }
         }

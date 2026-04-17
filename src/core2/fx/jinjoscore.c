@@ -404,7 +404,7 @@ bool respawn_jinjo_jiggy(enum marker_e marker_id){
  #endif
 
     if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
-        if (bitfield_get_n_bits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset(0) / 100) * 3), 3) == (((jinjoIndex - 1) % 5) + 1)) {
+        if (bitfieldarray_getNBits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset(0) / 100) * 3), 3) == (((jinjoIndex - 1) % 5) + 1)) {
             return TRUE;
         }
     }
@@ -422,7 +422,7 @@ void set_jinjo_jiggy_respawn(enum marker_e marker_id) {
  #endif
 
     if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
-        bitfield_set_n_bits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset(0) / 100) * 3), (((jinjoIndex - 1) % 5) + 1), 3);
+        bitfieldarray_setNBits(jinjojiggyrespawn.flags, ((return_noteIndex_worldOffset(0) / 100) * 3), (((jinjoIndex - 1) % 5) + 1), 3);
     }
 }
 

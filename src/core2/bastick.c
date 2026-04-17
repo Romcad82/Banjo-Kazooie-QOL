@@ -78,11 +78,11 @@ void bastick_reset(void) {
 }
 
 void bastick_update(void) {
-    controller_getJoystick(0, &bastick.value);
+    controller_getJoystick(0, (f32*)&bastick.value);
     if (bastick.locked_at_zero) {
         bastick.value[0] = bastick.value[1] = 0.0f;
     }
-    bastick.distance = gu_sqrtf(bastick.value[0]*bastick.value[0] + bastick.value[1]*bastick.value[1]);
+    bastick.distance = sqrtf(bastick.value[0]*bastick.value[0] + bastick.value[1]*bastick.value[1]);
     if (bastick.distance != 0.0f) {
         bastick.zeroed_count = 0;
         bastick.nonzero_count = (s32) (bastick.nonzero_count + 1);
@@ -139,7 +139,7 @@ void bastick_setZoneMax(s32 zone_id, f32 value){
 f32 bastick_getAngleRelativeToBanjo(void){
     f32 sp1C[3];
 
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
     return viewport_adjustAngleToRight(sp1C, bastick_getAngle());
 }
 

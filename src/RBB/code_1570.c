@@ -12,7 +12,8 @@ void RBB_func_803882F4(Actor *this);
 
 /* .data */
 ActorInfo D_80390270 = {
-    0x184, 0x174, 0x402, 0x0, NULL,
+    MARKER_184_RBB_EGG_TOLL, 0x174, ASSET_402_MODEL_EGG_TOLL,
+    0x0, NULL,
     RBB_func_803882F4, NULL, func_80325340,
     0, 0, 0.0f, 0
 };
@@ -232,7 +233,7 @@ void RBB_func_803882F4(Actor *this){
         }
         else {
             marker_setCollisionScripts(this->marker, NULL, func_803882B4, NULL);
-            func_8032AA58(this, 1.1f);
+            suSetSpriteScale(this, 1.1f);
             func_803881E8(this, 1);
         }
     }

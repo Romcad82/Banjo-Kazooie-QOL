@@ -145,7 +145,7 @@ bool cutscene_skipEndSprialMountainCutscenesCheck(void) {
         if (mapSpecificFlags_get(1) && !mapSpecificFlags_get(0xC)) {
             return TRUE;
         } else if (!mapSpecificFlags_get(0xC)) {
-            f32 transitionTime = (gsworld_get_map() == MAP_98_CS_END_SPIRAL_MOUNTAIN_1) ? 11.7f : 8.8f;
+            f32 transitionTime = (gsworld_getMap() == MAP_98_CS_END_SPIRAL_MOUNTAIN_1) ? 11.7f : 8.8f;
 
             mapSpecificFlags_set(0xC, TRUE);
             func_802DC748(0, 0);
@@ -160,7 +160,7 @@ bool cutscene_skipEndSprialMountainCutscenesCheck(void) {
 
 //checks is a cutscene can be inturrupted and performs take me there
 void cutscenetrigger_check(s32 cs_map, s32 arg1, s32 return_map, s32 return_exit, bool (* condFunc)(void)){
-    if(gsworld_get_map() != cs_map)
+    if(gsworld_getMap() != cs_map)
         return;
 
     if((condFunc && condFunc()) || mapSpecificFlags_get(arg1)){
@@ -218,7 +218,7 @@ s32 cutscenetrigger_update(void){
     cutscenetrigger_check(MAP_97_CS_END_BEACH_2,              0, MAP_99_CS_END_SPIRAL_MOUNTAIN_2, -1, cutscene_skipEndBeach2CutsceneCheck);
  #endif
 #endif
-    if(gsworld_get_map() == MAP_95_CS_END_ALL_100 && mapSpecificFlags_get(1)){
+    if(gsworld_getMap() == MAP_95_CS_END_ALL_100 && mapSpecificFlags_get(1)){
 // To prevent multiple transitions from MAP_95_CS_END_ALL_100 cutscene to Stop 'N' Swop Pictures.
 #ifdef SKIPPABLE_CUTSCENES
         if (!gctransition_8030BDC0()) {
@@ -236,7 +236,7 @@ void func_8031CB50(enum map_e map_id, s32 exit_id, s32 arg2) {
     s32 sp1C;
 
     if ((D_80383190 == 0) && (getGameMode() != GAME_MODE_8_BOTTLES_BONUS) && (getGameMode() != GAME_MODE_7_ATTRACT_DEMO)) {
-        sp1C = func_803226E8(gsworld_get_map());
+        sp1C = func_803226E8(gsworld_getMap());
         if ((func_803226E8(map_id) != sp1C) && (func_80322914() == 0)) {
             func_8025A388(0, 0x4E2);
             func_8025AB00();
@@ -249,7 +249,7 @@ void func_8031CB50(enum map_e map_id, s32 exit_id, s32 arg2) {
         } else {
             transitionToMap(map_id, exit_id, 1);
         }
-        func_80335110(arg2);
+        gsworld_setEnableUpdate(arg2);
     }
 }
 
@@ -334,15 +334,15 @@ void func_8031CE70(f32 *arg0, enum map_e arg1, s32 arg2) {
         if (phi_s0 != NULL) {
             nodeprop_getPosition(phi_s0, sp38);
             phi_f2 = 500.0f;
-            if (phi_s0->unk8 == 0x186) {
+            if (phi_s0->actorId == 0x186) {
                 phi_f2 = 1000.0f;
             }
             if (ml_vec3f_distance(arg0, sp38) < phi_f2) {
-                if (phi_s0->unk8 == 0x184) {
+                if (phi_s0->actorId == 0x184) {
                     ncDynamicCamera_setUpdateEnabled(0);
                     func_8031CB50(arg1, arg2, 1);
                     player_walkToPosition(sp38, 1.0f, NULL, NULL);
-                } else if (phi_s0->unk8 == 0x185) {
+                } else if (phi_s0->actorId == 0x185) {
                     func_8031CD44(arg1, arg2, sp38[1], (f32) phi_s0->yaw, phi_s0->scale);
                 } else {
                     func_8031CD44(arg1, arg2, playerPos[1], (f32) phi_s0->yaw, phi_s0->scale);
@@ -871,8 +871,8 @@ void func_8031E204(NodeProp *node, s32 arg1, s32 arg2){
     f32 sp28[3];
     f32 sp1C[3];
 
-    nodeprop_getPosition(nodeprop_findByActorIdAndPosition_s16(ACTOR_154_UNKNOWN, &node->x), sp34);
-    nodeprop_getPosition(nodeprop_findByActorIdAndPosition_s16(ACTOR_155_UNKNOWN, &node->x), sp28);
+    nodeprop_getPosition(nodeprop_findByActorIdAndPosition_s16(ACTOR_154_UNKNOWN, &node->position_x), sp34);
+    nodeprop_getPosition(nodeprop_findByActorIdAndPosition_s16(ACTOR_155_UNKNOWN, &node->position_x), sp28);
     player_getPosition(sp1C);
     if(sp28[1] < sp1C[1]){
         sp1C[1] = sp28[1];

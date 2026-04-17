@@ -172,10 +172,10 @@ void func_8038A730(Actor *this, f32 *arg1, enum sfx_e arg2, enum sfx_e arg3, u32
 void lair_func_8038A864(Actor *this) {
     switch (this->state) {
     case 2:
-        func_8038A730(this, D_80393670, SFX_3F_CAULDRON_SQEAK_1, SFX_40_CAULDRON_SQEAK_2, 11000);
+        func_8038A730(this, D_80393670, SFX_3F_CAULDRON_SQUEAK_1, SFX_40_CAULDRON_SQUEAK_2, 11000);
         break;
     case 3:
-        func_8038A730(this, D_80393688, SFX_3F_CAULDRON_SQEAK_1, SFX_40_CAULDRON_SQEAK_2, 11000);
+        func_8038A730(this, D_80393688, SFX_3F_CAULDRON_SQUEAK_1, SFX_40_CAULDRON_SQUEAK_2, 11000);
         break;
     case 5:
         if (actor_animationIsAt(this, 0.5f)) {
@@ -187,11 +187,11 @@ void lair_func_8038A864(Actor *this) {
         }
         break;
     case 4:
-        func_8038A730(this, D_803936A8, SFX_3F_CAULDRON_SQEAK_1, SFX_40_CAULDRON_SQEAK_2, 11000);
+        func_8038A730(this, D_803936A8, SFX_3F_CAULDRON_SQUEAK_1, SFX_40_CAULDRON_SQUEAK_2, 11000);
         break;
 #ifdef WARP_CAULDRON_MENU
     case 9:
-        func_8038A730(this, D_80393688, SFX_3F_CAULDRON_SQEAK_1, SFX_40_CAULDRON_SQEAK_2, 11000);
+        func_8038A730(this, D_80393688, SFX_3F_CAULDRON_SQUEAK_1, SFX_40_CAULDRON_SQUEAK_2, 11000);
         break;
 #endif
     }
@@ -323,7 +323,7 @@ u8 get_original_cauldron_order_index(u8 index) {
 }
 
 void set_cauldron_variables_if_different_destination(enum map_e destination, u32 currActorTypeSpecificField, u32 targetActorTypeSpecificField) {
-    if (gsworld_get_map() != destination) {
+    if (gsworld_getMap() != destination) {
         warpMenu_zoomboxFree();
         currCauldronID = currActorTypeSpecificField;
         targetCauldronID = targetActorTypeSpecificField;
@@ -531,7 +531,7 @@ void chWarpCauldron_update(Actor *this) {
                   && (func_802D67AC(-1) == MAP_16_GV_RUBEES_CHAMBER) 
                   && (func_802D680C(-1) == this->actorTypeSpecificField)
                 ) 
-                || (gsworld_get_exit() == D_80393620[this->actorTypeSpecificField - 1].unk2)
+                || (gsworld_getExit() == D_80393620[this->actorTypeSpecificField - 1].unk2)
             ) {
                 func_8028F85C(this->position);
                 this->unk10_12 = 1;
@@ -570,7 +570,7 @@ void chWarpCauldron_update(Actor *this) {
                 && fileProgressFlag_get(chWarpCauldron_getPairedFileProgressFlagIndex(this))
 #endif
                 ) {
-                if (func_802D677C(-1) != gsworld_get_map()) {
+                if (func_802D677C(-1) != gsworld_getMap()) {
                     gcdialog_showDialog(ASSET_F7A_DIALOG_UNKNOWN, 4, NULL, NULL, NULL, NULL);
                     fileProgressFlag_set(FILEPROG_F5_COMPLETED_A_WARP_CAULDRON_SET, 1);
                 }
@@ -731,7 +731,7 @@ void chWarpCauldron_update(Actor *this) {
  * NOTE: This is only possible if you have WARP_CAULDRON_MENU enabled and entered the VOLATILE_FLAG_15_SANDCASTLE_UNLOCK_ALL_CAULDRONS cheat code with ADDITIONAL_CHEATS enabled.
  */
 #if defined(WARP_CAULDRON_MENU) && defined(ADDITIONAL_CHEATS)
-                if ((gsworld_get_map() == MAP_8E_GL_FURNACE_FUN) && !fileProgressFlag_get(FILEPROG_F4_ENTER_FF_CUTSCENE)) {
+                if ((gsworld_getMap() == MAP_8E_GL_FURNACE_FUN) && !fileProgressFlag_get(FILEPROG_F4_ENTER_FF_CUTSCENE)) {
                     f32 updatedPlayerPos[3] = this->position;
                     // The object with the Actor ID of 0x242 is the one that warps the player into and out of Furnace Fun.
                     nodeprop_getPosition(nodeprop_findByActorIdAndActorPosition(0x242, this), sp54);
@@ -814,13 +814,13 @@ void chWarpCauldron_update(Actor *this) {
                 func_8038AB90(this, 7, 1, 0, 0.0f);
             }
             func_8038AC7C(this);
-            sp38 = func_80329784(this);
+            sp38 = subaddie_getYawToPlayer(this);
             if( lair_func_8038ADF0(sp38, (s32) this->velocity[0]) 
                 || lair_func_8038ADF0((s32) this->velocity[0], sp38)
             ) {
                 this->yaw_ideal = (f32) sp38;
             }
-            func_80328FB0(this, 3.0f);
+            subaddie_turnToYaw(this, 3.0f);
             if( actor_animationIsAt(this, 0.114f)
                 || actor_animationIsAt(this, 0.217f)
                 || actor_animationIsAt(this, 0.321f)

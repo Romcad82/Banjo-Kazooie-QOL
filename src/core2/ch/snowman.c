@@ -4,7 +4,7 @@
 
 extern void particleEmitter_func_802EFA20(ParticleEmitter *, f32, f32);
 extern void subaddie_set_state_with_direction(Actor *, s32, f32, s32);
-extern void func_80328FB0(Actor *, f32);
+extern void subaddie_turnToYaw(Actor *, f32);
 extern void func_803300C0(ActorMarker *, void *);
 
 
@@ -143,8 +143,8 @@ void __chSnowman_enterDeath(Actor *this){
 }
 
 void __chSnowman_setYawTarget(Actor *this, f32 max_rotation){
-    this->yaw_ideal = func_80329784(this);
-    func_80328FB0(this, 6.0f);
+    this->yaw_ideal = subaddie_getYawToPlayer(this);
+    subaddie_turnToYaw(this, 6.0f);
 }
 
 bool __chSnowman_isYawNearYawTarget(Actor *this, s32 max_angle_degree){
@@ -171,7 +171,7 @@ int __chSnowman_isPlayerInAttackRange(Actor *this, s32 min_distance, s32 max_dis
 
 int __chSnowman_func_802E1F70(ActorMarker *marker, s32 arg1){
     if(marker->unk40_31 == 0xB){
-        marker->id = 0x287;
+        marker->id = 0x287; // check collision_table for clues?
     }
     else{
         marker->id = MARKER_B1_SIR_SLUSH;
@@ -186,7 +186,7 @@ void __chSnowman_deathCallback(ActorMarker *marker, ActorMarker *other_marker){
     sfx_playFadeShorthandDefault(SFX_2F_ORANGE_SPLAT, 1.0f, 30000, actor->position, 1500, 4500);
 
     __spawnQueue_add_1((GenFunction_1)__chSnowman_spawnHat, (s32)actor->marker);
-    if(gsworld_get_map() == MAP_27_FP_FREEZEEZY_PEAK)
+    if(gsworld_getMap() == MAP_27_FP_FREEZEEZY_PEAK)
         maSnowy_decRemaining();
     __chSnowman_spawnSnowballParticles(actor->position, 0xC);
     marker_despawn(actor->marker);
@@ -195,7 +195,7 @@ void __chSnowman_deathCallback(ActorMarker *marker, ActorMarker *other_marker){
 int __chSnowman_CCW_playerInProtectedZone(void){
     static f32 ccw_no_attack_zone[3] = {350.0f, 600.0f, 65.0f};
     f32 player_position[3];
-    if(gsworld_get_map() == MAP_46_CCW_WINTER){
+    if(gsworld_getMap() == MAP_46_CCW_WINTER){
         player_getPosition(player_position);
         if(ml_vec3f_within_horizontal_distance(player_position, ccw_no_attack_zone, 900.0f))
             return 1;
@@ -222,12 +222,12 @@ void chSnowman_update(Actor *this){
         anctrl_setTransitionDuration(this->anctrl, 0.8f);
         anctrl_setAnimTimer(this->anctrl, randf());
         func_8032BC18(this);
-        if(gsworld_get_map() == MAP_27_FP_FREEZEEZY_PEAK){
+        if(gsworld_getMap() == MAP_27_FP_FREEZEEZY_PEAK){
             local->unk0 = actorArray_findActorFromActorId(0x336)->marker;
             maSnowy_incTotal();
         }
     }//L802E21D8
-    if(gsworld_get_map() == MAP_27_FP_FREEZEEZY_PEAK){
+    if(gsworld_getMap() == MAP_27_FP_FREEZEEZY_PEAK){
         if(maSlalom_isActive() || func_8038DD14()){
             actor_collisionOff(this);
             this->unk58_0 = 0;
@@ -254,7 +254,7 @@ void chSnowman_update(Actor *this){
                 __chSnowman_enterDeath(this);
             }
             else if( 
-                gsworld_get_map() != MAP_27_FP_FREEZEEZY_PEAK
+                gsworld_getMap() != MAP_27_FP_FREEZEEZY_PEAK
                 || preventSnowmanAttack(local->unk0) == 0
                 || fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME)
             ){//L802E2318

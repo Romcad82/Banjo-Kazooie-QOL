@@ -49,7 +49,7 @@ typedef struct {
     u8 next_state;
     // u8 pad3[1];
     f32 duration;
-    s32 model_index;
+    s32 modelId;
     s32 anim_index;
     f32 scale;
 }TransitionInfo;
@@ -183,8 +183,8 @@ void _gctranstion_changeState(s32 state, TransitionInfo *desc){
         s_current_transition.model_ptr = assetcache_get(0x7D2); //scene transition black
     else if(state == TRANSITION_STATE_6_LOADING_WHITE)
         s_current_transition.model_ptr = assetcache_get(0x7D3);  //scene transition white
-    else if(desc != NULL && desc->model_index != 0)
-        s_current_transition.model_ptr = assetcache_get(desc->model_index);
+    else if(desc != NULL && desc->modelId != 0)
+        s_current_transition.model_ptr = assetcache_get(desc->modelId);
 
     //load transistion animation
     if(desc != NULL && desc->anim_index != NULL){
@@ -196,7 +196,7 @@ void _gctranstion_changeState(s32 state, TransitionInfo *desc){
         if(state == TRANSITION_STATE_5_FADE_OUT){
             anctrl_setDirection(s_current_transition.anctrl, 0);
             func_8028F7C8(1); //player_noControl(true)
-            func_80335110(0); //objects_update(false)
+            gsworld_setEnableUpdate(FALSE); //objects_update(false)
         }
         else{
             osViBlack(1);
@@ -225,8 +225,8 @@ void _gctranstion_changeState(s32 state, TransitionInfo *desc){
         }
     }
     else if(state == TRANSITION_STATE_0_NONE){
-        func_80335128(1);
-        func_80335110(1);
+        gsworld_setEnableDraw(TRUE);
+        gsworld_setEnableUpdate(TRUE);
         if(func_8028F070())
             func_8028F7C8(0);
     }
@@ -373,7 +373,7 @@ void gctransition_draw(Gfx **gdl, Mtx **mptr, Vtx **vptr){
 void gctransition_8030BD4C(void){
     MapTransitionInfo *tmp_10s;
     TransitionInfo *tmp_a1;
-    tmp_10s = _gctranstion_get_map_transition_info(gsworld_get_map());
+    tmp_10s = _gctranstion_get_map_transition_info(gsworld_getMap());
     tmp_a1 = _gctranstion_8030B400(tmp_10s->in_index);
    _gctranstion_changeState(tmp_a1->state, tmp_a1);
 }
@@ -404,7 +404,7 @@ void gctransition_8030BE3C(void){
 
 void gctransition_8030BE60(void){
     TransitionInfo *tmp_a1;
-    tmp_a1 = _gctranstion_8030B400(_gctranstion_get_map_transition_info(gsworld_get_map())->out_index);
+    tmp_a1 = _gctranstion_8030B400(_gctranstion_get_map_transition_info(gsworld_getMap())->out_index);
    func_8030C180();
    _gctranstion_changeState(tmp_a1->state, tmp_a1);
 }
@@ -438,10 +438,10 @@ void gctransition_update(void){
                     break;
                 case 1:
                     func_8028F7C8(1);
-                    func_80335110(0);
+                    gsworld_setEnableUpdate(FALSE);
                     break;
                 case 2:
-                    func_80335128(0);
+                    gsworld_setEnableDraw(FALSE);
                     break;
                 case 3:
                     func_802FEF48(s_current_transition.model_ptr); //framebuffer to model texture list
@@ -463,7 +463,7 @@ void gctransition_update(void){
                 case 1:
                     break;
                 case 2:
-                    func_80335128(0); 
+                    gsworld_setEnableDraw(FALSE); 
                     func_802FEF48(s_current_transition.model_ptr); //framebuffer to model texture list
                     break;
                 

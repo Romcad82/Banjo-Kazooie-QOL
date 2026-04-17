@@ -17,7 +17,7 @@ enum mumbotoken_e func_802E0CB0(Actor *this);
  ActorInfo D_803685A0 = { 
     MARKER_39_MUMBO_TOKEN, ACTOR_2D_MUMBO_TOKEN, ASSET_41A_SPRITE_MUMBO_TOKEN,
     0, NULL, 
-    func_802E0B10, actor_update_func_80326224, func_80325934,
+    func_802E0B10, actor_update_func_80326224, fxTouchSparkle_draw,
     2000, 0, 0.0f, 0
 };
 
@@ -32,7 +32,7 @@ void chMumboToken_collect(ActorMarker *marker, ActorMarker *other_marker){
     mumboscore_set(func_802E0CB0(this), TRUE);
     func_8030E760(0x401, 1.0f, 0x7fff);
     timedFunc_set_1(0.75f, progressDialog_showDialogMaskZero, FILEPROG_4_MUMBO_TOKEN_TEXT);
-    fxSparkle_mumboToken(&marker->propPtr->x);
+    fxSparkle_mumboToken(&marker->propPtr->position_x);
     item_inc(ITEM_1C_MUMBO_TOKEN);
     marker_despawn(marker);
     
@@ -42,7 +42,7 @@ enum mumbotoken_e func_802E0A90(Actor *this){
     s32 id;
     s32 pos[3];
 
-    gsworld_get_map();
+    gsworld_getMap();
     pos[0] = (s32)this->position[0];
     pos[1] = (s32)this->position[1];
     pos[2] = (s32)this->position[2];
@@ -76,7 +76,7 @@ void func_802E0B10(Actor *this){
         this->initialized = TRUE;
 // Fixes an oversight in the vanilla game where two Mumbo Tokens in MMM were given the same ID.
 #ifdef VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
-        if (gsworld_get_map() == MAP_1D_MMM_CELLAR
+        if (gsworld_getMap() == MAP_1D_MMM_CELLAR
  #ifdef OPTIONS_MENU
             && is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif

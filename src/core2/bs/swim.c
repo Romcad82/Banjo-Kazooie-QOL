@@ -76,7 +76,7 @@ void __bsswim_updateVelocity(void) {
 void __bsswim_enteredWater(void) {
     if (level_get() == LEVEL_9_RUSTY_BUCKET_BAY) {
         progressDialog_showDialogMaskZero(FILEPROG_AB_SWIM_OILY_WATER);
-    } else if (gsworld_get_map() == MAP_46_CCW_WINTER) {
+    } else if (gsworld_getMap() == MAP_46_CCW_WINTER) {
         progressDialog_showDialogMaskZero(FILEPROG_DD_HAS_TOUCHED_CCW_ICY_WATER);
     }
     baphysics_set_gravity(100.0f);
@@ -246,7 +246,7 @@ void bsswim_swim_update(void) {
     if ((func_80294530() != 0) && (can_dive() != 0)) {
         func_802944D0(sp1C);
         if (sp1C[1] < -0.7) {
-            if ((floor_getCurrentFloorYPosition() - player_getYPosition()) > 90.0f) {
+            if ((floor_getCurrentFloorYPosition() - playerPosition_getY()) > 90.0f) {
                 next_state = BS_30_DIVE_ENTER;
             }
         }
@@ -273,7 +273,7 @@ void __bsswim_update_rotation(void) {
     f32 target_pos[3];
 
     if (balookat_getState() != 0) {
-        _player_getPosition(plyr_pos);
+        playerPosition_get(plyr_pos);
         if (balookat_try_get_position(target_pos) && func_80257F18(plyr_pos, target_pos, &rotation)) {
             yaw_setIdeal(rotation);
         }

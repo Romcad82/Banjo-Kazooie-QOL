@@ -66,9 +66,9 @@ Actor *func_8038C0B0(ActorMarker *marker, UNK_TYPE(s32) arg1, f32 arg2, UNK_TYPE
     f32 sp40[3];
     f32 sp3C;
 
-    sp4C[0] = (f32)marker->propPtr->x;
-    sp4C[1] = (f32)marker->propPtr->y;
-    sp4C[2] = (f32)marker->propPtr->z;
+    sp4C[0] = (f32)marker->propPtr->position_x;
+    sp4C[1] = (f32)marker->propPtr->position_y;
+    sp4C[2] = (f32)marker->propPtr->position_z;
 
     sp40[0] = (f32)marker->pitch;
     sp40[1] = this->lifetime_value;
@@ -123,7 +123,7 @@ void chTwinkly_decideShatterColor(f32 position[3], enum marker_e marker_id){
             break;
         
         case MARKER_202_TWINKLY_ORANGE:
-            sp1C = ASSET_49A_MODLE_TWINKLY_SHARD_ORANGE;
+            sp1C = ASSET_49A_MODEL_TWINKLY_SHARD_ORANGE;
             break;
 
         case MARKER_203_TWINKLY_RED:
@@ -154,7 +154,7 @@ void chTwinkly_hopToTree(Actor *arg0, f32 arg1[3], f32 arg2)
     sp7F = (arg2 == 0.0f) ? (0) : (1);
     var_f22 = arg1[0] - arg0->position[0];
     var_f24 = arg1[2] - arg0->position[2];
-    sp54 = gu_sqrtf((var_f22 * var_f22) + (var_f24 * var_f24));
+    sp54 = sqrtf((var_f22 * var_f22) + (var_f24 * var_f24));
     sp48[0] = var_f22 / sp54;
     sp48[2] = var_f24 / sp54;
     if (sp7F)
@@ -348,8 +348,8 @@ void chTwinkly_update(Actor *this){
             break;
 
         case 5:// 8038CE14
-            this->yaw_ideal = (f32)func_80329784(this);
-            func_80328FB0(this, 8.0f);
+            this->yaw_ideal = (f32)subaddie_getYawToPlayer(this);
+            subaddie_turnToYaw(this, 8.0f);
             if(!chTwinkly_hopOutBox(this, this->unk1C[1])){
                 this->velocity[1] = randf2(14.0f, 20.0f);
             }

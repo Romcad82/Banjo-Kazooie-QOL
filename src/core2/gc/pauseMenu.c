@@ -38,15 +38,15 @@ void func_802DC5B8(void);
 void func_802DC560(s32, s32);
 s32 controller_getStartButton(s32 controller_index);
 bool fileProgressFlag_get(enum file_progress_e);
-enum map_e gsworld_get_map(void);
+enum map_e gsworld_getMap(void);
 bool func_802FD2D4(void);
 bool func_802FC3C4(void);
 extern void func_8025A2B0(void);
 extern void func_8025A430(s32, s32, s32);
 extern void func_802DC528(s32, s32);
-extern void func_802F5060(enum asset_e);
-extern void func_802F5188(void);
-extern void func_802FACA4(enum item_e);
+extern void print_setBoldFontTexture(enum asset_e);
+extern void print_resetBoldFontTexture(void);
+extern void code_73640_printItemCount(enum item_e);
 extern void func_8033BD20(void *);
 
 enum gcpausemenu_state_e {
@@ -264,7 +264,7 @@ void gcpausemenu_80311A84(void) {
 
     itemPrint_reset();
     for (i = 0; i < 7; i++) {
-        func_802FACA4(D_8036C604[i]);
+        code_73640_printItemCount(D_8036C604[i]);
     }
 
     if (func_802FC3C4()) {
@@ -272,7 +272,7 @@ void gcpausemenu_80311A84(void) {
         func_802FAD64(ITEM_12_JINJOS);
     }
     else {
-        func_802FACA4(ITEM_12_JINJOS);
+        code_73640_printItemCount(ITEM_12_JINJOS);
     }
 
     if (func_802FD2D4()) {
@@ -280,7 +280,7 @@ void gcpausemenu_80311A84(void) {
         func_802FAD64(ITEM_16_LIFE);
     }
     else {
-        func_802FACA4(ITEM_16_LIFE);
+        code_73640_printItemCount(ITEM_16_LIFE);
     }
 }
 
@@ -508,7 +508,7 @@ void gcPauseMenu_setState(enum gcpausemenu_state_e next_state) {
             gcpausemenu_zoomboxes_initTotalsMenu();
 
             if (D_80383010.selection == gcpausemenu_levelToMenuPage(level_get())) {
-                func_802F5060(0x6e7);
+                print_setBoldFontTexture(SPRITE_BOLD_FONT_PINK_SPHERE_TEXTURE);
             }
 
             if (D_80383010.selection) {
@@ -554,7 +554,7 @@ void gcPauseMenu_setState(enum gcpausemenu_state_e next_state) {
 
         case PAUSE_STATE_B_TOTALS_DISPOSE:
             if (D_80383010.selection && D_80383010.selection == gcpausemenu_levelToMenuPage(level_get())) {
-                func_802F5188();
+                print_resetBoldFontTexture();
             }
 
             gcpausemenu_zoomboxes_free();
@@ -578,13 +578,13 @@ void gcPauseMenu_setState(enum gcpausemenu_state_e next_state) {
             D_80383010.unk3_5 = 1;
 
             if (D_80383010.selection && D_80383010.selection == gcpausemenu_levelToMenuPage(level_get())) {
-                func_802F5188();
+                print_resetBoldFontTexture();
             }
 
             D_80383010.selection = D_80383010.page;
 
             if (D_80383010.selection && D_80383010.selection == gcpausemenu_levelToMenuPage(level_get())) {
-                func_802F5060(0x6e7);
+                print_setBoldFontTexture(SPRITE_BOLD_FONT_PINK_SPHERE_TEXTURE);
             }
 
             if (D_80383010.selection) {
@@ -994,12 +994,12 @@ s32 gcPauseMenu_update(void) {
 
         case PAUSE_STATE_2_MENU: //open
             if (D_80383010.unk70_31 && !func_802FC3C4()) {
-                func_802FACA4(ITEM_12_JINJOS);
+                code_73640_printItemCount(ITEM_12_JINJOS);
                 D_80383010.unk70_31 = 0;
             }//L8031350C
 
             if (D_80383010.unk70_30 && !func_802FD2D4()) {
-                func_802FACA4(ITEM_16_LIFE);
+                code_73640_printItemCount(ITEM_16_LIFE);
                 D_80383010.unk70_30 = 0;
             }
 
@@ -1093,7 +1093,7 @@ s32 gcPauseMenu_update(void) {
                 case PAUSE_SELECTION_1_EXIT_TO_WITCH_S_LAIR://L80313908 //return to lair
                     volatileFlag_set(VOLATILE_FLAG_16, 1);
 
-                    if (gsworld_get_map() == MAP_8E_GL_FURNACE_FUN) {
+                    if (gsworld_getMap() == MAP_8E_GL_FURNACE_FUN) {
                         volatileFlag_set(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ, 0);
                         transitionToMap(MAP_80_GL_FF_ENTRANCE, 2, 1);
                     }
@@ -1335,8 +1335,8 @@ void __gcpausemenu_drawSprite(Gfx **gdl, Mtx **mptr, Vtx **vptr, BKSprite *sprit
     _frame = sprite_getFramePtr(sprite, frame);
     sp2C = _frame->w;
     sp28 = _frame->h;
-    func_803382E4(5);
-    func_80338338(0xFF, 0xFF, 0xFF);
+    codeAEDA0_setSpriteDrawMode(5);
+    codeAEDA0_setPrimaryColorRGB(0xFF, 0xFF, 0xFF);
     func_803382FC(a);
     func_8033837C(0);
     viewport_getPosition_vec3f(sp50);

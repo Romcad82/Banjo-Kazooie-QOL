@@ -16,7 +16,8 @@ ActorAnimationInfo D_80391000[] = {
     {ASSET_C9_ANIM_MAGIC_CARPET, 2.0f}
 };
 
-ActorInfo D_80391010 = { MARKER_A7_MAGIC_CARPET_1, ACTOR_119_MAGIC_CARPET_1, ASSET_3DC_MODEL_MAGIC_CARPET, 
+ActorInfo D_80391010 = {
+    MARKER_A7_MAGIC_CARPET_1, ACTOR_119_MAGIC_CARPET_1, ASSET_3DC_MODEL_MAGIC_CARPET, 
     0x1, D_80391000, 
     func_8038A948, GV_func_8038A9C0, func_8038A7A0, 
     2500, 0, 0.0f, 0
@@ -60,7 +61,7 @@ void func_8038A8CC(ActorMarker *this_marker){
     shadow->position_y = mapModel_getFloorY(this->position);
     shadow->unk1C[0] = func_8038A860(shadow, this);
     shadow->yaw = this->yaw;
-    func_8032AA58(shadow, this->scale);
+    suSetSpriteScale(shadow, this->scale);
 }
 
 void func_8038A948(Actor *this){

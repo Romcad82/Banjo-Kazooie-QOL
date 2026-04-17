@@ -205,7 +205,7 @@ bool func_8032BD88(Actor *arg0, f32 arg1[3], s32 arg2, s32 arg3) {
         ml_vec3f_copy(arg0->position, arg1);
     }
     else if (var_fp != NULL) {
-        temp_f20 = gu_sqrtf((sp284[0] * sp284[0]) + (sp284[1] * sp284[1]) + (sp284[2] * sp284[2]));
+        temp_f20 = sqrtf((sp284[0] * sp284[0]) + (sp284[1] * sp284[1]) + (sp284[2] * sp284[2]));
         arg0->position[0] = var_fp->unk0[0];
         arg0->position[1] = var_fp->unk0[1];
         arg0->position[2] = var_fp->unk0[2];
@@ -349,7 +349,7 @@ bool func_8032C850(Actor *actor, f32 arg1[3], s32 arg2, s32 arg3, bool nonactor)
     func_80320ED8(actor->marker, temp_f0 / 2, 2);
     actor->marker->collidable = stored_collidability;
     for (var_v1 = func_8032F528(); var_v1 != NULL; var_v1 = func_8032F528()) {
-        if (nonactor || (var_v1->is_actor && (var_v1->actorProp.marker->id == actor->marker->id))) {
+        if (nonactor || (var_v1->isActorProp && (var_v1->actorProp.marker->id == actor->marker->id))) {
             D_803833D0 = var_v1;
             actor->position[0] = (f32) arg1[0];
             actor->position[1] = (f32) arg1[1];
@@ -372,9 +372,9 @@ bool func_8032C9C0(Actor *actor, f32 arg1[3], s32 arg2, s32 arg3) {
 
 void func_8032C9E0(f32 arg0[3]) {
     if (D_803833D0 != NULL) {
-        arg0[0] = (f32) D_803833D0->unk4[0];
-        arg0[1] = (f32) D_803833D0->unk4[1];
-        arg0[2] = (f32) D_803833D0->unk4[2];
+        arg0[0] = (f32) D_803833D0->position_x;
+        arg0[1] = (f32) D_803833D0->position_y;
+        arg0[2] = (f32) D_803833D0->position_z;
     }
 }
 

@@ -23,7 +23,7 @@ extern void progressDialog_showDialogMaskFour(s32 arg0);
 extern void func_80291634(ActorMarker *, ActorMarker *);
 extern void func_80291610(ActorMarker *, ActorMarker *);
 extern Actor *baModel_80291AAC(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
-extern void baMarker_8028D7B8(s32 arg0, ActorMarker *arg1, struct5Cs *collision_flags);
+extern void baMarker_8028D7B8(s32 arg0, ActorMarker *arg1, CollisionParams *collision_flags);
 extern void func_80320ED8(ActorMarker *, f32, s32);
 extern NodeProp *cubeList_findNodePropByActorIdAndPosition_s32(enum actor_e actor_id, s32 position[3]);
 
@@ -113,10 +113,10 @@ void __baMarker_8028B7F4(void){
 
 void __baMarker_8028B848(void){
     s32 s0 = 0;
-    if(gsworld_get_map() == MAP_69_GL_MM_LOBBY){
+    if(gsworld_getMap() == MAP_69_GL_MM_LOBBY){
         s0 = ASSET_E57_DIALOG_FIRST_JIGGY;
     }
-    else if(gsworld_get_map() == MAP_2_MM_MUMBOS_MOUNTAIN){
+    else if(gsworld_getMap() == MAP_2_MM_MUMBOS_MOUNTAIN){
         s0 = ASSET_B45_DIALOG_JIGGY_COLLECT_10;
     }
 
@@ -181,7 +181,7 @@ void __baMarker_resolveMusicNoteCollision(Prop *arg0) {
         coMusicPlayer_playMusic(COMUSIC_9_NOTE_COLLECTED, 16000);
         timedFunc_set_1(0.75f, progressDialog_showDialogMaskZero, FILEPROG_3_MUSIC_NOTE_TEXT);
     }
-    fxSparkle_musicNote(arg0->unk4);
+    fxSparkle_musicNote(arg0->position);
 }
 
 void __baMarker_8028BAB0(enum jiggy_e jiggy_id, s32 arg1, s32 arg2, s32 arg3){
@@ -361,7 +361,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 }
                 break;
 
-            case 0x15F: //L8028C070
+            case MARKER_15F_RBB_HONEYCOMB_SWITCH: //L8028C070
                 if(plyr_hitbox_type == HITBOX_1_BEAK_BUSTER){
                     if(!mapSpecificFlags_get(0)){
                         mapSpecificFlags_set(0,1);
@@ -573,7 +573,10 @@ void __baMarker_resolveCollision(Prop *other_prop){
                             __baMarker_8028B8DC();
                         }
 
-                        __spawnQueue_add_4((GenFunction_4)__baMarker_8028B904, reinterpret_cast(u32, other_prop->actorProp.x), reinterpret_cast(u32, other_prop->actorProp.y), reinterpret_cast(u32, other_prop->actorProp.z), jiggy_id);
+                        __spawnQueue_add_4((GenFunction_4)__baMarker_8028B904,
+                            reinterpret_cast(u32, other_prop->actorProp.position_x),
+                            reinterpret_cast(u32, other_prop->actorProp.position_y),
+                            reinterpret_cast(u32, other_prop->actorProp.position_z), jiggy_id);
                         marker_despawn(marker);
                     }
                 }
@@ -594,7 +597,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
                         if(!(item_getCount(ITEM_13_EMPTY_HONEYCOMB) < 6)){
                             gcpausemenu_80314AC8(0);
                         }
-                        fxSparkle_emptyHoneycomb(&other_prop->actorProp.x);
+                        fxSparkle_emptyHoneycomb(&other_prop->actorProp.position_x);
                         marker_despawn(marker);
                     }
                 }
@@ -603,7 +606,10 @@ void __baMarker_resolveCollision(Prop *other_prop){
             case 0x54: //L8028C820
                 coMusicPlayer_playMusic(COMUSIC_19_LOW_PITCH_FLUTES, 28000);
                 func_803012F8();
-                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E, reinterpret_cast(u32, other_prop->actorProp.x), reinterpret_cast(u32, other_prop->actorProp.y), reinterpret_cast(u32, other_prop->actorProp.z));
+                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E,
+                    reinterpret_cast(u32, other_prop->actorProp.position_x),
+                    reinterpret_cast(u32, other_prop->actorProp.position_y),
+                    reinterpret_cast(u32, other_prop->actorProp.position_z));
                 marker_despawn(marker);
                 break;
 
@@ -611,7 +617,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 if(__baMarker_8028BC20(marker))
                     return;
                 
-                if( gsworld_get_map() == MAP_8E_GL_FURNACE_FUN
+                if( gsworld_getMap() == MAP_8E_GL_FURNACE_FUN
                     && volatileFlag_get(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ)
                     && !fileProgressFlag_get(FILEPROG_A6_FURNACE_FUN_COMPLETE)
                 ){
@@ -622,13 +628,13 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 coMusicPlayer_playMusic(COMUSIC_16_HONEYCOMB_COLLECTED, 28000);
                 timedFunc_set_1(0.75f, progressDialog_showDialogMaskZero, FILEPROG_A_HONEYCOMB_TEXT);
                 item_inc(ITEM_14_HEALTH);
-                fxSparkle_honeycomb(&other_prop->actorProp.x);
+                fxSparkle_honeycomb(&other_prop->actorProp.position_x);
                 marker_despawn(marker);
                 break;
 
             case MARKER_169_SNS_EGG: //L8028C908
                 { //ONLY THIS CASE DOESN'T MATCH
-                    switch (gsworld_get_map())
+                    switch (gsworld_getMap())
                     {
                     case MAP_1D_MMM_CELLAR: //L8028C95C
                         sns_set_item_and_update_payload(SNS_ITEM_EGG_CYAN, 0, 1);
@@ -664,12 +670,12 @@ void __baMarker_resolveCollision(Prop *other_prop){
                         for(i = 0 ; i < 3; i++){
                             sp88[i] = D_8036366C[tmp_v0_2 + i];
                         }
-                        func_802EE354(actor, 0x3ED, 0x23, sp78, 0.2f, tmp_f0, 3.0f, sp88, 0, &sp64);
+                        func_802EE354(actor, 0x3ED, 0x23, sp78, 0.2f, tmp_f0, 3.0f, (f32*)sp88, 0, (f32*)&sp64);
                         
                         for(i = 0 ; i < 3; i++){
                             sp88[i] = 0xFF;
                         }
-                        func_802EE354(actor, 0x3ED, 0xe, sp78, 0.2f, tmp_f0, 3.0f, sp88, 0, &sp64);
+                        func_802EE354(actor, 0x3ED, 0xe, sp78, 0.2f, tmp_f0, 3.0f, (f32*)sp88, 0, (f32*)&sp64);
                         
                         sp78 += 0x32;
                         tmp_f0 += -0.15;
@@ -726,7 +732,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
             case MARKER_61_EXTRA_LIFE: //L8028CD50
                 if(__baMarker_8028BC20(marker))
                     return;
-                if( gsworld_get_map() == MAP_8E_GL_FURNACE_FUN
+                if( gsworld_getMap() == MAP_8E_GL_FURNACE_FUN
                     && volatileFlag_get(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ)
                     && !fileProgressFlag_get(FILEPROG_A6_FURNACE_FUN_COMPLETE)
                 ){
@@ -735,7 +741,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 }
                 coMusicPlayer_playMusic(COMUSIC_15_EXTRA_LIFE_COLLECTED, 0x7FFF);
                 timedFunc_set_1(1.5f, progressDialog_showDialogMaskFour, FILEPROG_C_EXTRA_LIFE_TEXT);
-                fxSparkle_extraLife(&other_prop->actorProp.x);
+                fxSparkle_extraLife(&other_prop->actorProp.position_x);
                 item_inc(ITEM_16_LIFE);
                 marker_despawn(marker);
                 break;
@@ -779,7 +785,10 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 baflag_set(BA_FLAG_E_TOUCHING_WADING_BOOTS);
                 func_802A6388(chwadingboots_802D6E4C(actor));
                 bs_checkInterrupt(BS_INTR_1B);
-                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E, reinterpret_cast(u32, other_prop->actorProp.x), reinterpret_cast(u32, other_prop->actorProp.y), reinterpret_cast(u32, other_prop->actorProp.z));
+                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E,
+                    reinterpret_cast(u32, other_prop->actorProp.position_x),
+                    reinterpret_cast(u32, other_prop->actorProp.position_y),
+                    reinterpret_cast(u32, other_prop->actorProp.position_z));
                 chwadingboots_802D6E54(actor);
                 break;
 
@@ -803,7 +812,10 @@ void __baMarker_resolveCollision(Prop *other_prop){
                 baflag_set(BA_FLAG_10_TOUCHING_TURBO_TRAINERS);
                 set_turbo_duration(chtrainers_getDuration(actor));
                 bs_checkInterrupt(BS_INTR_1A);
-                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E, reinterpret_cast(u32, other_prop->actorProp.x), reinterpret_cast(u32, other_prop->actorProp.y), reinterpret_cast(u32, other_prop->actorProp.z));
+                __spawnQueue_add_4((GenFunction_4)spawnQueue_actor_s16, 0x4E,
+                    reinterpret_cast(u32, other_prop->actorProp.position_x),
+                    reinterpret_cast(u32, other_prop->actorProp.position_y),
+                    reinterpret_cast(u32, other_prop->actorProp.position_z));
                 chtrainers_pickup(actor);
                 break;
 
@@ -838,9 +850,9 @@ void __baMarker_resolveCollision(Prop *other_prop){
             func_8032B258(actor, obj_collision_type);
         }
     }
-    else if(other_prop->is_3d)//L8028D0B0 //ModelProp
+    else if(other_prop->isModelProp)//L8028D0B0 //ModelProp
     {
-        tmp2 = other_prop->modelProp.model_index + 0x2D1;
+        tmp2 = other_prop->modelProp.modelId + MODEL_ASSET_OFFSET;
         switch (tmp2)
         {
         case 0x2E8:
@@ -855,33 +867,33 @@ void __baMarker_resolveCollision(Prop *other_prop){
         }
     }
     else{//L8028D10C //SpriteProp
-        tmp3 = other_prop->spriteProp.sprite_index + 0x572;
+        tmp3 = other_prop->spriteProp.spriteId + SPRITE_ASSET_OFFSET;
         switch (tmp3)
         {
-        case 0x6D6: //L8028D144
+        case ASSET_6D6_SPRITE_MUSIC_NOTE: //L8028D144
             if(!__baMarker_8028BC60()){
-                other_prop->spriteProp.unk8_4 = 0;
+                other_prop->spriteProp.isNotFeatherEggOrNote = 0;
                 __baMarker_resolveMusicNoteCollision(other_prop);
 #ifdef NOTE_SAVING
                 set_note_collected(other_prop); // Default notes
 #endif
             }
             break;
-        case 0x6D7: //L8028D16C
+        case ASSET_6D7_SPRITE_BLUE_EGGS: //L8028D16C
             if(!__baMarker_8028BC60()){
-                other_prop->spriteProp.unk8_4 = 0;
+                other_prop->spriteProp.isNotFeatherEggOrNote = 0;
                 chCollectible_collectEgg(other_prop);
             }
             break;
-        case 0x580: //L8028D194
+        case ASSET_580_SPRITE_RED_FEATHER: //L8028D194
             if(!__baMarker_8028BC60()){
-                other_prop->spriteProp.unk8_4 = 0;
+                other_prop->spriteProp.isNotFeatherEggOrNote = 0;
                 chCollectible_collectRedFeather(other_prop);
             }
             break;
-        case 0x6D1: //L8028D1BC
+        case ASSET_6D1_SPRITE_GOLDFEATHER: //L8028D1BC
             if(!__baMarker_8028BC60()){
-                other_prop->spriteProp.unk8_4 = 0;
+                other_prop->spriteProp.isNotFeatherEggOrNote = 0;
                 chCollectible_collectGoldFeather(other_prop);
             }
             break;
@@ -894,7 +906,7 @@ void __baMarker_resolveCollision(Prop *other_prop){
 
 void baMarker_init(void){
     f32 sp1C[3];
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
     playerMarker = func_8032FBE4(sp1C, baModel_80291AAC, 1, 0);
     playerMarker->unk2C_1 = 1;
     marker_setCollisionScripts(playerMarker, NULL, func_80291634, func_80291610);
@@ -937,7 +949,7 @@ void baMarker_update(void){
         temp_s0_2 = __baMarker_8028B750();
         baflag_clear(BA_FLAG_1_ON_FLIGHT_PAD);
         baflag_clear(BA_FLAG_2_ON_SPRING_PAD);
-        _player_getPosition(sp168);
+        playerPosition_get(sp168);
         func_8032F64C(sp168, playerMarker);
         for(D_8037BF8C = NULL, i = 0, temp_s2 = 0; i < 2;i++){//L8028D3DC
             D_8037BF90 = i;
@@ -947,12 +959,12 @@ void baMarker_update(void){
             playerMarker->unk38[2] = sp174[2] - sp168[2];
             func_80320ED8(playerMarker, temp_s0_2[i], 1);
             while(other_prop = func_8032F528()){//L8028D480
-                if(!other_prop->unk8_2){
-                    if(!D_8037BF8C && other_prop->is_actor && other_prop->is_3d){
+                if(!other_prop->isCollisionResolved){
+                    if(!D_8037BF8C && other_prop->isActorProp && other_prop->isModelProp){
                         D_8037BF8C = other_prop->actorProp.marker;
                     }
                     __baMarker_resolveCollision(other_prop);
-                    other_prop->unk8_2 = 1;
+                    other_prop->isCollisionResolved = 1;
                     sp58[temp_s2] = other_prop;
                     temp_s2++;
                 }//L8028D4E0 
@@ -961,7 +973,7 @@ void baMarker_update(void){
         D_8037BF90 = 0xff;
 
         for(j = 0; j < temp_s2; j++){//L8028D55C
-            sp58[j]->unk8_2 = 0;
+            sp58[j]->isCollisionResolved = 0;
         }
     }
 }
@@ -1041,32 +1053,32 @@ void baMarker_8028D71C(void){
     dustEmitter_emit(sp3C, 0, D_80363680, 1, 0.75f, 0.0f, 0x7d, 0xfa, DUST_EMITTER_TYPE_DUST);
 }
 
-void baMarker_8028D7B8(s32 arg0, ActorMarker *arg1, struct5Cs *collision_flags){
+void baMarker_8028D7B8(s32 arg0, ActorMarker *arg1, CollisionParams *collision_flags){
     s32 sp24;
-    s32 sp20 = func_8033D594(collision_flags);
+    s32 sp20 = collision_getDamageToPlayer(collision_flags);
     s32 sp1C = 0;
     Actor *actor = marker_getActor(arg1);
     s32 tmp_v0;
 
-    if(func_8033D5A4(collision_flags))
+    if(collision_getHitsToTrigger(collision_flags))
         baflag_set(BA_FLAG_8);
 
     if((baiFrame_getState() != 3 && func_8028F1E0()) || !sp20){
         if(!func_8028F25C()){
-            sp24 = func_8033D564(collision_flags);
+            sp24 = collision_getPlayerInteraction(collision_flags);
             if(0 < sp24 && sp24 < 6){
                 sp1C = 2;
                 sp20 = MAX(0, sp20 - 1);
             }//L8028D884
 
             if(6 < sp24 && sp24 < 0xC){
-                if(!(1 < func_8033D5A4(collision_flags)) || (func_8033D574(collision_flags) != -1 && actor->unk164[func_8033D574(collision_flags)])){
+                if(!(1 < collision_getHitsToTrigger(collision_flags)) || (collision_getNextState(collision_flags) != -1 && actor->unk164[collision_getNextState(collision_flags)])){
                     sp1C = 1;
                 }//L8028D8E8
             }//L8028D8E8
 
             if(sp20){
-                if(func_8033D594(collision_flags) == 3){
+                if(collision_getDamageToPlayer(collision_flags) == 3){
                     item_adjustByDiffWithHud(ITEM_14_HEALTH, -item_getCount(ITEM_14_HEALTH));
                 }
                 else{//L8028D92C

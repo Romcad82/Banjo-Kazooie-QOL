@@ -321,7 +321,7 @@ void func_8029B73C(f32 arg0[3], f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     temp_f20 = (sp30[0]*sp30[0] + sp30[1]*sp30[1] + sp30[2]*sp30[2]);
 
     if (!((arg3 * arg3) < temp_f20)) {
-        temp_f20 = gu_sqrtf(temp_f20);
+        temp_f20 = sqrtf(temp_f20);
         ml_vec3f_set_length_copy(sp30, sp30, ml_min_f(time_getDelta() * arg4, arg3 - temp_f20));
         ml_vec3f_add(sp3C, sp3C, sp30);
         func_8028FAB0(sp3C);
@@ -361,7 +361,7 @@ void func_8029B984(f32 dst[3]){
     f32 plyr_pos[3];
     f32 sp18[3];
 
-    _player_getPosition(plyr_pos);
+    playerPosition_get(plyr_pos);
     viewport_getPosition_vec3f(sp18);
     ml_vec3f_diff_copy(dst, sp18, plyr_pos);
 }
@@ -377,14 +377,14 @@ f32 func_8029B9FC(void){
     f32 sp1C[3];
 
     func_8029B984(sp1C);
-    return gu_sqrtf(sp1C[0]*sp1C[0] + sp1C[1]*sp1C[1] + sp1C[2]*sp1C[2]);
+    return sqrtf(sp1C[0]*sp1C[0] + sp1C[1]*sp1C[1] + sp1C[2]*sp1C[2]);
 }
 
 f32 func_8029BA44(void){
     f32 sp1C[3];
 
     func_8029B984(sp1C);
-    return gu_sqrtf(sp1C[0]*sp1C[0] + sp1C[2]*sp1C[2]);
+    return sqrtf(sp1C[0]*sp1C[0] + sp1C[2]*sp1C[2]);
 }
 
 enum bs_e func_8029BA80(void){
@@ -581,7 +581,7 @@ enum bs_e bs_getIdleState(void){
                 return BS_26_LONGLEG_IDLE;
             }
             if (player_inWater()) {
-                if (player_getYPosition() > (floor_getCurrentFloorYPosition() - 80.0f)) {
+                if (playerPosition_getY() > (floor_getCurrentFloorYPosition() - 80.0f)) {
                     return BS_2D_SWIM_IDLE;
                 }
                 return BS_2B_DIVE_IDLE;
@@ -600,7 +600,7 @@ void func_8029C0D0(void) {
     f32 sp34;
 
     if (floor_isCurrentFloorunk59()) {
-        _player_getPosition(sp3C);
+        playerPosition_get(sp3C);
         sp3C[1] = sp34 = floor_getCurrentFloorYPosition();
         p_ctrl = func_802F4094(sp3C, 35.0f);
         fxRipple_802F3554(3, sp3C);
@@ -620,7 +620,7 @@ void func_8029C0D0(void) {
 
 void func_8029C22C(void) {
 
-    if(floor_isCurrentFloorunk59() && floor_getCurrentFloorYPosition() > player_getYPosition())
+    if(floor_isCurrentFloorunk59() && floor_getCurrentFloorYPosition() > playerPosition_getY())
         return;
 
     D_80364620 = D_80364620 ? FALSE : TRUE;
@@ -637,7 +637,7 @@ void func_8029C22C(void) {
 void func_8029C304(s32 arg0) {
     f32 sp1C[3];
 
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
     sp1C[1] = floor_getCurrentFloorYPosition();
     fxRipple_802F3584(arg0, sp1C, func_802946CC());
 }
@@ -645,7 +645,7 @@ void func_8029C304(s32 arg0) {
 void func_8029C348(void) {
     f32 sp1C[3];
 
-    _player_getPosition(sp1C);
+    playerPosition_get(sp1C);
     sp1C[0] += randf2(-30.0f, 30.0f);
     sp1C[1] += randf2(60.0f, 70.0f);
     sp1C[2] += randf2(-30.0f, 30.0f);
@@ -660,7 +660,7 @@ void func_8029C3E8(f32 arg0, f32 arg1) {
     f32 sp2C;
     f32 sp28;
 
-    _player_getPosition(sp30);
+    playerPosition_get(sp30);
     sp28 = ml_map_f(baphysics_get_horizontal_velocity(), 0.0f, 1000.0f, arg0, arg1);
     sp2C = player_getYaw();
     func_802589E4(sp3C, sp2C, sp28);
@@ -706,8 +706,8 @@ void update_void_return_Location(void) {
 
     level_id = level_get();
     if ((level_id == 0) || (level_id == LEVEL_6_LAIR)) {
-        map_id = gsworld_get_map();
-        exit_id = gsworld_get_exit();
+        map_id = gsworld_getMap();
+        exit_id = gsworld_getExit();
     } else {
         map_id = level_get_main_map(level_id);
         exit_id = level_get_main_exit(level_id);
@@ -772,7 +772,7 @@ void func_8029C7F4(enum baanim_update_type_e arg0, enum yaw_state_e yaw_state, s
     baphysics_set_type(arg3);
 }
 
-void func_8029C834(enum map_e map_id, s32 exit_id){
+void code_14420_setVoidOutLocation(enum map_e map_id, s32 exit_id){
     gVoidOutReturnLocation[0] = map_id;
     gVoidOutReturnLocation[1] = exit_id;
 }
@@ -933,7 +933,7 @@ void func_8029CDC0(void) {
     f32 sp2C[3];
     f32 sp20[3];
 
-    _player_getPosition(sp20);
+    playerPosition_get(sp20);
     sp20[0] += (randf() * 90.0f) - 45.0f;
     sp20[2] += (randf() * 90.0f) - 45.0f;
     sp2C[0]  = (randf() * 20.0f) - 10.0f;

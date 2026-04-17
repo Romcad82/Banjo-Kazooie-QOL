@@ -10,7 +10,7 @@ void func_802B3A50(void) {
     f32 sp1C[3];
 
     if (balookat_getState()) {
-        _player_getPosition(plyr_pos);
+        playerPosition_get(plyr_pos);
         if (balookat_try_get_position(sp1C) && func_80257F18(plyr_pos, sp1C, &sp34)) {
             yaw_setIdeal(sp34);
         }
@@ -160,7 +160,7 @@ void func_802B3E64(void) {
     if (func_802B3BB0()) {
         next_state = bs_getIdleState();
     }
-    if (gsworld_get_map() == MAP_27_FP_FREEZEEZY_PEAK && baflag_isTrue(BA_FLAG_14_LOSE_BOGGY_RACE)) {
+    if (gsworld_getMap() == MAP_27_FP_FREEZEEZY_PEAK && baflag_isTrue(BA_FLAG_14_LOSE_BOGGY_RACE)) {
         next_state = func_8029CA94(next_state);
     }
     bs_setState(next_state);

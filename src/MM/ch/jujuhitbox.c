@@ -5,7 +5,7 @@
 
 /* extern functions */
 void __chjujuhitbox_initialize_all(ActorMarker *, s32);
-s32 func_80329784(Actor *);
+s32 subaddie_getYawToPlayer(Actor *);
 void func_80353580(ActorMarker *);
 
 typedef struct juju_hitbox_s {
@@ -32,7 +32,7 @@ ActorInfo chjujuhitboxInfo = {
 bool func_80388B30(Actor *this, float arg1) {
     f32 yaw;
 
-    yaw = this->yaw - func_80329784(this);
+    yaw = this->yaw - subaddie_getYawToPlayer(this);
 
     if (180.0f <= yaw) {
         yaw -= 360.0f;
@@ -58,9 +58,9 @@ void func_80388BEC(NodeProp *node, ActorMarker *marker) {
     Actor *temp_v0;
     f32 position[3];
 
-    position[0] = (f32) node->x;
-    position[1] = (f32) node->y;
-    position[2] = (f32) node->z;
+    position[0] = (f32) node->position_x;
+    position[1] = (f32) node->position_y;
+    position[2] = (f32) node->position_z;
 
     closest_actor = actorArray_findClosestActorFromActorId(position, ACTOR_11_JUJU_CTRL, -1, &distance_to_closest_actor);
 

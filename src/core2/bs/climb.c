@@ -144,7 +144,7 @@ void bsclimb_move_update(void){
 
     bafalldamage_start();
     func_802AB5C0();
-    map = gsworld_get_map();
+    map = gsworld_getMap();
 
     if( map == MAP_B_CC_CLANKERS_CAVERN
         || map == MAP_1B_MMM_MAD_MONSTER_MANSION
@@ -167,7 +167,7 @@ void bsclimb_move_update(void){
     if(!func_802AB788() && baphysics_get_vertical_velocity() < 30.0f)
         next_state = BS_4F_CLIMB_IDLE;
 
-    _player_getPosition(plyr_pos);
+    playerPosition_get(plyr_pos);
     if(baphysics_get_target_vertical_velocity() < 0.0f && climbGetBottomY() == plyr_pos[1])
         next_state = BS_1_IDLE;
 

@@ -8,12 +8,6 @@
 #define INTERNAL_ROM_NAME "Banjo-Kazooie QOL   "
 
 /**
- * Removes the anti-piracy functionality that makes Banjo slide in TTC.
- * Doesn't remove the checks that delete moves or the bridge in SM since they have yet to be triggered by any changes so far.
- */
-#define REMOVE_ANTI_PIRACY_CHECK
-
-/**
  * Makes ROM region free by editing the header so Everdrive can automatically play on native system region.
  * If left undefined, the default region will be NTSC.
  */
@@ -226,7 +220,7 @@
 
 // EXPERIMENTAL DEFINES //
 
-/*
+/**
  * BIN Files exported by Banjo's Backpack will automatically set the level collision to be able to activate the Jigsaw Podium. This makes it frustrating to simply walk off the podium since
  * stepping on the ground will just trigger the podium again. If you import custom levels made with Banjo's Backpack into the Decomp and you didn't manually edit the files to fix this,
  * then enable EXTREME_JIGSAW_PODIUM_FIX to make the radius to reset the Jigsaw Podium much larger.

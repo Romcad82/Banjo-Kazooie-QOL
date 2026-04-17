@@ -9,7 +9,8 @@ void func_8038756C(Actor *this, s32 arg1);
 
 /* .data */
 ActorInfo D_80390200 = {
-    0x183, 0x173, 0x402, 0x0, NULL,
+    MARKER_183_RBB_EGG_TOLL, 0x173, ASSET_402_MODEL_EGG_TOLL,
+    0x0, NULL,
     func_803878B0, NULL, func_80325340,
     0, 0, 0.0f, 0
 };
@@ -202,7 +203,7 @@ void func_803878B0(Actor *this){
         this->volatile_initialized = TRUE;
         this->marker->actorFreeFunc = func_80387890;
         marker_setCollisionScripts(this->marker, NULL, func_80387850, NULL);
-        func_8032AA58(this, 1.1f);
+        suSetSpriteScale(this, 1.1f);
         func_8038756C(this, 1);
     }
 

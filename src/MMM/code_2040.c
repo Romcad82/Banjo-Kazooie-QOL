@@ -21,16 +21,16 @@ extern ActorInfo D_8038BD6C;
 extern ActorInfo D_8038BCB8;
 extern ActorInfo D_8038BD90;
 extern ActorInfo chNapper;
-extern ActorInfo D_8038BA68;
+extern ActorInfo chCemetaryPot;
 extern ActorInfo chMotzhand;
 extern ActorInfo chLoggo;
-extern ActorInfo D_8038BAD0;
-extern ActorInfo D_8038BE48;
-extern ActorInfo D_8038BE6C;
-extern ActorInfo D_8038BE90;
-extern ActorInfo D_8038BEB4;
-extern ActorInfo D_8038BED8;
-extern ActorInfo D_8038BEFC;
+extern ActorInfo chPortraitChompa;
+extern ActorInfo chPortraitGrunty;
+extern ActorInfo chPortraitBlackeye;
+extern ActorInfo chPortraitTower;
+extern ActorInfo chPortraitTreeAndMoon;
+extern ActorInfo chPortraitTeeHee;
+extern ActorInfo chPortraitMinion;
 
 extern ActorInfo D_80367E70;
 extern ActorInfo D_80372C3C;
@@ -62,98 +62,98 @@ ActorAnimationInfo D_8038BBE0[] = {
 };
 
 ActorInfo D_8038BC28 = {
-    0x9C, 0x109, 0x3CD,
+    MARKER_9C_SHACK_DOOR, ACTOR_109_SHACK_DOOR, ASSET_3CD_MODEL_SHACK_DOOR,
     0x1, NULL,
     func_802D3D54, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BC4C = {
-    0x9E, 0x10B, 0x3CF,
+    MARKER_9E_CELLAR_HATCH, ACTOR_10B_CELLAR_HATCH, ASSET_3CF_MODEL_CELLAR_HATCH,
     0x1, NULL,
     func_802D3D54, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BC70 = {
-    0x9A,  0xCB, 0x3CC,
+    MARKER_9A_1881_BARREL_TOP,  ACTOR_CB_1881_BARREL_TOP, ASSET_3CC_MODEL_1881_BARREL_TOP,
     0x1, NULL,
     func_802D3D54, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BC94 = {
-    0xA2, 0x114, 0x3D3,
+    MARKER_A2_CHURCH_DOOR, ACTOR_114_CHURCH_DOOR, ASSET_3D3_MODEL_CHURCH_DOOR,
     0x1, NULL,
     func_80388BDC, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BCB8 = {
-    0xE7, 0x265, 0x4DA,
+    MARKER_E7_DINING_DOOR, ACTOR_265_DINING_DOOR, ASSET_4DA_MODEL_DINING_DOOR,
     0x1, NULL,
     func_80389004, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BCDC = {
-    0x9D, 0x10A, 0x3CE,
+    MARKER_9D_MANSION_DOOR, ACTOR_10A_MANSION_DOOR, ASSET_3CE_MODEL_MANSION_DOOR,
     0x1, NULL,
     func_80389004, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BD00 = {
-    0xD3, 0x191, 0x50B,
+    MARKER_D3_X_BARREL_TOP, ACTOR_191_X_BARREL_TOP, ASSET_50B_MODEL_X_BARREL_TOP,
     0x1, NULL,
     func_80389060, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BD24 = {
-0x123, 0x2E8, 0x4C0,
+    MARKER_123_WINDOW, ACTOR_2E8_WINDOW, ASSET_4C0_MODEL_WINDOW,
     0x1, NULL,
     func_803890B8, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BD48 = {
-0x1F2, 0x2E9, 0x4C1,
+    MARKER_1F2_WIDE_WINDOW, ACTOR_2E9_WIDE_WINDOW, ASSET_4C1_MODEL_WIDE_WINDOW,
     0x1, NULL,
     func_803890B8, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BD6C = {
-0x1F3, 0x2EA, 0x4C2,
+    MARKER_1F3_TALL_WINDOW, ACTOR_2EA_TALL_WINDOW, ASSET_4C2_MODEL_TALL_WINDOW,
     0x1, NULL,
     func_803890B8, actor_update_func_80326224, actor_drawFullDepth,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BD90 = {
-    0xFE, 0x1FD, 0x43D, 
+    MARKER_FE_MMM_CLOCK_SWITCH, ACTOR_1FD_MMM_CLOCK_SWITCH, ASSET_43D_MODEL_MMM_CLOCK_SWITCH, 
     0x1, D_8038BBE0,
     func_80388FE4, actor_update_func_80326224, actor_draw,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BDB4 = {
-    0x9F, 0x10C, 0x3D0,
+    MARKER_9F_CHURCH_GATE_LEFT_LOCK, ACTOR_10C_CHURCH_GATE_LEFT_LOCK, ASSET_3D0_MODEL_CHURCH_GATE_LEFT_LOCK,
     0x1, NULL,
     func_803888B8, actor_update_func_80326224, func_80388994,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BDD8 = {
-    0xA0, 0x10D, 0x3D1,
+    MARKER_A0_HEDGE_GATE_RIGHT_LOCK_1, ACTOR_10D_HEDGE_GATE_RIGHT_LOCK_1, ASSET_3D1_MODEL_HEDGE_GATE_RIGHT_LOCK_1,
     0x1, NULL,
     func_803888B8, actor_update_func_80326224, func_80388994,
     0, 0, 0.0f, 0
 };
 
 ActorInfo D_8038BDFC = {
-    0xFF, 0x1FE, 0x43E,
+    MARKER_FF_HEDGE_GATE_RIGHT_LOCK_2, ACTOR_1FE_HEDGE_GATE_RIGHT_LOCK_2, ASSET_43E_MODEL_HEDGE_GATE_RIGHT_LOCK_2,
     0x1, NULL,
     func_803888B8, actor_update_func_80326224, func_80388994,
     0, 0, 0.0f, 0
@@ -392,7 +392,7 @@ void func_80389060(Actor *this){
 
 void func_803890B8(Actor *this) {
     func_802D3D54(this);
-    func_8038AC04();
+    chTumblar_checkMMMChecksums();
 }
 
 void MMM_func_803890E0(void){
@@ -411,16 +411,16 @@ void MMM_func_803890E0(void){
     spawnableActorList_add(&D_8038BCB8, actor_new, ACTOR_FLAG_UNKNOWN_9 | ACTOR_FLAG_UNKNOWN_10 | ACTOR_FLAG_UNKNOWN_15);
     spawnableActorList_add(&D_8038BD90, actor_new, ACTOR_FLAG_UNKNOWN_3);
     spawnableActorList_add(&chNapper,   actor_new, ACTOR_FLAG_UNKNOWN_5 | ACTOR_FLAG_UNKNOWN_7 | ACTOR_FLAG_UNKNOWN_11 | ACTOR_FLAG_UNKNOWN_12);
-    spawnableActorList_add(&D_8038BA68, actor_new, ACTOR_FLAG_UNKNOWN_8);
+    spawnableActorList_add(&chCemetaryPot, actor_new, ACTOR_FLAG_UNKNOWN_8);
     spawnableActorList_add(&chMotzhand, actor_new, ACTOR_FLAG_UNKNOWN_7 | ACTOR_FLAG_UNKNOWN_11 | ACTOR_FLAG_UNKNOWN_17);
     spawnableActorList_add(&D_80367E70, actor_new, ACTOR_FLAG_NONE);
     spawnableActorList_add(&chLoggo,    actor_new, ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_8);
-    spawnableActorList_add(&D_8038BAD0, actor_new, ACTOR_FLAG_UNKNOWN_5 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_11 | ACTOR_FLAG_UNKNOWN_23 | ACTOR_FLAG_UNKNOWN_25);
-    spawnableActorList_add(&D_8038BE48, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
-    spawnableActorList_add(&D_8038BE6C, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
-    spawnableActorList_add(&D_8038BE90, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
-    spawnableActorList_add(&D_8038BEB4, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
-    spawnableActorList_add(&D_8038BED8, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
-    spawnableActorList_add(&D_8038BEFC, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitChompa, actor_new, ACTOR_FLAG_UNKNOWN_5 | ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_11 | ACTOR_FLAG_UNKNOWN_23 | ACTOR_FLAG_UNKNOWN_25);
+    spawnableActorList_add(&chPortraitGrunty, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitBlackeye, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitTower, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitTreeAndMoon, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitTeeHee, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
+    spawnableActorList_add(&chPortraitMinion, actor_new, ACTOR_FLAG_UNKNOWN_6 | ACTOR_FLAG_UNKNOWN_23);
     spawnableActorList_add(&D_80372C3C, actor_new, ACTOR_FLAG_UNKNOWN_0 | ACTOR_FLAG_UNKNOWN_3 | ACTOR_FLAG_UNKNOWN_5 | ACTOR_FLAG_UNKNOWN_7 | ACTOR_FLAG_UNKNOWN_8 | ACTOR_FLAG_UNKNOWN_12 | ACTOR_FLAG_UNKNOWN_17 | ACTOR_FLAG_UNKNOWN_19);
 }

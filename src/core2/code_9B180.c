@@ -135,7 +135,7 @@ void func_8032236C(s32 arg0, s32 arg1, s32 *arg2) {
 
 void func_803223AC(void) {
     Struct_core2_9B180_0 *i_ptr;
-    s32 sp28;
+    s32 frame_divisor;
 
     func_80244A98(1);
     for(i_ptr = D_8036DE00; i_ptr != &D_8036DE00[6]; i_ptr++){
@@ -145,28 +145,28 @@ void func_803223AC(void) {
         }
     }
 
-    sp28 = 0;
+    frame_divisor = 0;
 #if defined(OPTIONS_MENU) && defined(IGNORE_FRAMERATE_ALTERING_OBJECTS)
     if (!is_qol_feature_enabled(QOL_ID_IGNORE_FRAMERATE_ALTERING_OBJECTS)) {
-        func_8032236C(0x19, 1, &sp28);
-        func_8032236C(0x1A, 2, &sp28);
-        func_8032236C(0x1B, 3, &sp28);
-        func_8032236C(0x1C, 4, &sp28);
-        func_8032236C(0x1D, 5, &sp28);
+        func_8032236C(ACTOR_19_FRAMERATE_60, 1, &frame_divisor);
+        func_8032236C(ACTOR_1A_FRAMERATE_30, 2, &frame_divisor);
+        func_8032236C(ACTOR_1B_FRAMERATE_20, 3, &frame_divisor);
+        func_8032236C(ACTOR_1C_FRAMERATE_15, 4, &frame_divisor);
+        func_8032236C(ACTOR_1D_FRAMERATE_12, 5, &frame_divisor);
     }
 #elif !defined(IGNORE_FRAMERATE_ALTERING_OBJECTS)
-    func_8032236C(0x19, 1, &sp28);
-    func_8032236C(0x1A, 2, &sp28);
-    func_8032236C(0x1B, 3, &sp28);
-    func_8032236C(0x1C, 4, &sp28);
-    func_8032236C(0x1D, 5, &sp28);
+    func_8032236C(ACTOR_19_FRAMERATE_60, 1, &frame_divisor);
+    func_8032236C(ACTOR_1A_FRAMERATE_30, 2, &frame_divisor);
+    func_8032236C(ACTOR_1B_FRAMERATE_20, 3, &frame_divisor);
+    func_8032236C(ACTOR_1C_FRAMERATE_15, 4, &frame_divisor);
+    func_8032236C(ACTOR_1D_FRAMERATE_12, 5, &frame_divisor);
 #endif
 #ifdef DEFAULT_FRAMERATE_MODIFIER
-    sp28 = (sp28 == 0) ?  DEFAULT_FRAMERATE_MODIFIER : sp28;
+    frame_divisor = (frame_divisor == 0) ?  DEFAULT_FRAMERATE_MODIFIER : frame_divisor;
 #else
-    sp28 = (sp28 == 0) ?  2 : sp28;
+    frame_divisor = (frame_divisor == 0) ?  2 : frame_divisor;
 #endif
-    viMgr_func_8024BF94(sp28);
+    viMgr_func_8024BF94(frame_divisor);
 }
 
 void func_80322490(void) {

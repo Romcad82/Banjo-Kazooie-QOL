@@ -10,7 +10,7 @@
 #include "config.h"
 
 extern void func_80344090(BKSpriteDisplayData *self, s32 frame, Gfx **gfx);
-BKSprite *func_8033B6C4(enum asset_e sprite_id, BKSpriteDisplayData **arg1);
+BKSprite *codeB3A80_getSprite(enum asset_e sprite_id, BKSpriteDisplayData **arg1);
 
 typedef struct struct_18_s{
     s16 sfx_id; /* enum sfx_e */
@@ -432,7 +432,7 @@ scrollingMenuStruct scrollingMenu;
 char D_803830B0[0x30];
 
 void sfxsource_freeSfxsourceByIndex(u8);
-void func_80338338(s32, s32, s32);
+void codeAEDA0_setPrimaryColorRGB(s32, s32, s32);
 void func_803382FC(u8);
 
 /* .code */
@@ -814,15 +814,15 @@ void func_803162B4(GcZoombox *this){
      u8 rgb[3];
      set_rgb((u8)this->unk168, this->textRGB, rgb);
 
-     func_802F7B90(rgb[0], rgb[1], rgb[2]);
-     func_802F7BA8(this->textAlpha);
+     text_setNormalTextColor(rgb[0], rgb[1], rgb[2]);
+     text_setNormalTextAlpha(this->textAlpha);
 #else
-     func_802F7B90(this->unk168, this->unk168, this->unk168);
+     text_setNormalTextColor(this->unk168, this->unk168, this->unk168);
 #endif
 
      if(this->unk1A4_30){
           if(this->unk1A4_17){
-               func_802F79D0(this->unk16A, this->unk16C, this->unk0, this->unk166, -1);
+               print_dialog_gradient2(this->unk16A, this->unk16C, this->unk0, this->unk166, -1);
           }
           else if(this->unk1A4_15){
                print_bold_spaced(this->unk16A, this->unk16C, this->unk0);
@@ -849,7 +849,7 @@ void func_803162B4(GcZoombox *this){
 #endif
           }
      }
-     func_802F7B90(0xff, 0xff, 0xff);
+     text_setNormalTextColor(0xff, 0xff, 0xff);
 }
 
 void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
@@ -888,14 +888,14 @@ void func_803164B0(GcZoombox *this, Gfx **gfx, Mtx **mtx, s32 arg3, s32 arg4, BK
     {
         u8 rgb[3];
         set_rgb(0xFF, this->portraitRGB, rgb);
-        func_80338338(rgb[0], rgb[1], rgb[2]);
+        codeAEDA0_setPrimaryColorRGB(rgb[0], rgb[1], rgb[2]);
     }
 #else
-    func_80338338(0xFF, 0xFF, 0xFF);
+    codeAEDA0_setPrimaryColorRGB(0xFF, 0xFF, 0xFF);
 #endif
     func_803382FC(this->unk168 * arg6);
-    func_803382E4(5);
-    func_80335D30(gfx);
+    codeAEDA0_setSpriteDrawMode(5);
+    codeAEDA0_drawSprite(gfx);
     viewport_setRenderViewportAndOrthoMatrix(gfx, mtx);
     mlMtxIdent();
     if (this->unk1A4_24) {
@@ -913,7 +913,7 @@ void func_803164B0(GcZoombox *this, Gfx **gfx, Mtx **mtx, s32 arg3, s32 arg4, BK
     gSPMatrix((*gfx)++, (*mtx)++, G_MTX_LOAD | G_MTX_MODELVIEW);
     modelRender_setDepthMode(MODEL_RENDER_DEPTH_NONE);
     func_80344090(arg5, this->unk186, gfx);
-    func_8033687C(gfx);
+    codeAEDA0_postDrawSprite(gfx);
     viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
 }
 
@@ -1383,9 +1383,9 @@ void gczoombox_update(GcZoombox *this){
 }
 
 void __gczoombox_load_sprite(GcZoombox *this, GcZoomboxSprite portrait_id){
-     this->unkF8 = func_8033B6C4(D_8036C6C0[portrait_id].spite_id, &this->unkFC);
+     this->unkF8 = codeB3A80_getSprite(D_8036C6C0[portrait_id].spite_id, &this->unkFC);
      this->frame_count = this->unkF8->frameCnt;
-     func_803382E4(-1);
+     codeAEDA0_setSpriteDrawMode(-1);
      
      func_80338308(sprite_getUnk8(this->unkF8), sprite_getUnkA(this->unkF8));
 }
