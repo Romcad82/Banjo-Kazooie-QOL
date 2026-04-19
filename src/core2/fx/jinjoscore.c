@@ -372,6 +372,11 @@ void remove_collected_jinjos(Actor *this, enum marker_e marker_id){
     }
  #endif
 
+    // Prevent Jinjos from despawning when you're in Furnace Fun.
+    if (volatileFlag_get(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ)) {
+        return;
+    }
+
     if ((0 < jinjoIndex) && (jinjoIndex <= 45)) {
         if ((jinjosaving.flags[(jinjoIndex - 1) / 8] & (1 << (jinjoIndex & 7))) != 0) {
             marker_despawn(this->marker);
