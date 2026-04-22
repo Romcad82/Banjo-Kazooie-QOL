@@ -12,10 +12,20 @@ extern void func_803114D0(void );
 extern int gcdialog_hasCurrentTextId(void);
 extern char *dialogBin_get(enum asset_e text_id);
 
-#ifdef WARP_CAULDRON_MENU
-void check_and_replace_g_Dialog_string(void);
+#if defined(WARP_CAULDRON_MENU) || defined(DONT_HOLD_Z_TO_USE_MOVES)
+#define REPLACE_DIALOG_STRINGS
+#endif
 
+#ifdef REPLACE_DIALOG_STRINGS
+ #ifdef WARP_CAULDRON_MENU
 u8 *DIALOG_F79_UNKNOWN_REPLACEMENT = "YOU'VE ACTIVATED A MAGIC CAULDRON! FIND MORE TO CREATE A SHORT CUT!";
+ #endif
+ #ifdef DONT_HOLD_Z_TO_USE_MOVES
+u8 *DIALOG_B49_TALON_TROT_LEARN_REPLACEMENT = "HOLD Z, THEN PRESS THE LEFT C BUTTON. YOU CAN MOVE KAZOOIE AROUND WITH THE CONTROL STICK. PRESS Z OR B TO STOP RUNNING. GO PRACTICE!";
+u8 *DIALOG_B4A_TALON_TROT_REFRESHER_REPLACEMENT = "TACKLE STEEP SLOPES WITH THE TALON TROT. HOLD Z, THEN PRESS THE LEFT C BUTTON. MOVE KAZOOIE AROUND WITH THE CONTROL STICK. PRESS Z OR B TO EXIT THE MOVE.";
+u8 *DIALOG_D35_DIALOG_WONDERWING_LEARN_REPLACEMENT = "SURE DOES! HOLD Z AND PRESS THE RIGHT C BUTTON. USE THE CONTROL STICK TO MOVE AROUND. PRESS Z OR B TO STOP THE WONDERWING. USE IT WISELY THOUGH, AS THIS MOVE REQUIRES GOLD FEATHERS AND YOU CAN ONLY CARRY 10 OF THEM!";
+u8 *DIALOG_D36_DIALOG_WONDERWING_REFRESHER_REPLACEMENT = "MAKE YOURSELF INVULNERABLE WITH THE WONDERWING BY HOLDING Z AND PRESSING THE RIGHT C BUTTON. USE THE CONTROL STICK TO MOVE AROUND. PRESS Z OR B TO EXIT THE MOVE.";
+ #endif
 #endif
 s8 Y_POSITION_MODIFIERS[] = { 1, 0x1E, 0x14, 0xF, 0xB, 8, 6, 4, 3, 2, -1, -1 };
  
@@ -586,10 +596,6 @@ void dialog_update(void) {
                                 func_803183A4(g_Dialog.zoombox[g_Dialog.u8.active_zoombox], g_Dialog.output);
                                 g_Dialog.string_index[g_Dialog.u8.active_zoombox]++;
                             }
-        
-#ifdef WARP_CAULDRON_MENU
-                            check_and_replace_g_Dialog_string();
-#endif
 
                             dialog_setState(DIALOG_STATE_3);
                         }
@@ -696,12 +702,71 @@ bool isDialogTop(s32 dialogIterator) {
     return dialogIterator ? TRUE : FALSE;
 }
 
+#ifdef REPLACE_DIALOG_STRINGS
+void check_and_replace_dialog_strings(s32 text_id) {
+ #ifdef OPTIONS_MENU
+    switch (text_id) {
+  #ifdef WARP_CAULDRON_MENU
+        case ASSET_F79_DIALOG_UNKNOWN:
+            if (!is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) {
+                return;
+            }
+            break;
+  #endif
+  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+        case ASSET_B49_DIALOG_TALON_TROT_LEARN:
+        case ASSET_B4A_DIALOG_TALON_TROT_REFRESHER:
+        case ASSET_D35_DIALOG_WONDERWING_LEARN:
+        case ASSET_D36_DIALOG_WONDERWING_REFRESHER:
+            if (!is_qol_feature_enabled(QOL_ID_DONT_HOLD_Z_TO_USE_MOVES)) {
+                return;
+            }
+            break;
+  #endif
+    }
+ #endif
+
+    /*
+     * You can replace specific strings after they load in by overwriting "g_Dialog.dialog[i][j].str".
+     *
+     * i: Bottom Zoombox = 0
+     *    Top Zoombox = 1
+     * 
+     * j: String Index
+     */
+    switch (text_id) {
+ #ifdef WARP_CAULDRON_MENU
+        case ASSET_F79_DIALOG_UNKNOWN:
+            g_Dialog.dialog[0][0].str = DIALOG_F79_UNKNOWN_REPLACEMENT;
+            break;
+ #endif
+ #ifdef DONT_HOLD_Z_TO_USE_MOVES
+        case ASSET_B49_DIALOG_TALON_TROT_LEARN:
+            g_Dialog.dialog[0][2].str = DIALOG_B49_TALON_TROT_LEARN_REPLACEMENT;
+            break;
+        case ASSET_B4A_DIALOG_TALON_TROT_REFRESHER:
+            g_Dialog.dialog[0][0].str = DIALOG_B4A_TALON_TROT_REFRESHER_REPLACEMENT;
+            break;
+        case ASSET_D35_DIALOG_WONDERWING_LEARN:
+            g_Dialog.dialog[0][2].str = DIALOG_D35_DIALOG_WONDERWING_LEARN_REPLACEMENT;
+            break;
+        case ASSET_D36_DIALOG_WONDERWING_REFRESHER:
+            g_Dialog.dialog[0][0].str = DIALOG_D36_DIALOG_WONDERWING_REFRESHER_REPLACEMENT;
+            break;
+ #endif
+    }
+}
+#endif
+
 void loadAndCreateDialogs(s32 text_id, s32 arg1, ActorMarker *marker, void(*callback)(ActorMarker *, s32, s32), void(*arg4)(ActorMarker *, s32, s32), s32 arg5) {
     s32 i, j;
 
     s32 temp_a2;
 
     loadDialogStrings(text_id);
+#ifdef REPLACE_DIALOG_STRINGS
+    check_and_replace_dialog_strings(text_id);
+#endif
     g_Dialog.unk12C_29 = 0;
     g_Dialog.unk12C_31 = (g_Dialog.unk12C_25 = g_Dialog.unk12C_29);
     g_Dialog.unk12C_27 = g_Dialog.unk12C_31;
@@ -1080,34 +1145,3 @@ void gcdialog_defrag(void) {
 void func_80311714(int next_state){
     g_Dialog.unk128_3 = next_state;
 }
-
-#ifdef WARP_CAULDRON_MENU
-char *check_for_text_to_replace(void) {
- #ifdef OPTIONS_MENU
-    switch (gcdialog_getCurrentTextId()) {
-        case ASSET_F79_DIALOG_UNKNOWN:
-            if (!is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) {
-                return NULL;
-            }
-            break;
-    }
- #endif
-
-    switch (gcdialog_getCurrentTextId()) {
-        case ASSET_F79_DIALOG_UNKNOWN:
-            return (&DIALOG_F79_UNKNOWN_REPLACEMENT)[code94620_func_8031B5B0()];
-    }
-
-    return NULL;
-}
-
-void check_and_replace_g_Dialog_string(void) {
-    char *replacementString = check_for_text_to_replace();
-    if (replacementString == NULL) {
-        return;
-    }
-
-    func_8031877C(g_Dialog.zoombox[g_Dialog.u8.active_zoombox]);
-    func_803183A4(g_Dialog.zoombox[g_Dialog.u8.active_zoombox], replacementString);
-}
-#endif

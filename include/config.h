@@ -68,6 +68,7 @@
 
 /**
  * Adds a Menu to the Warp Cauldrons, letting you warp to any cauldron you want.
+ * Also edits some dialog to better reflect any changes.
  */
 #define WARP_CAULDRON_MENU
 
@@ -144,6 +145,7 @@
 
 /**
  * When you use Talon Trot or Wonderwing, you don't need to hold Z to keep using the move. To exit, you can press Z or B.
+ * Also edits some dialog to better reflect any changes.
  */
 #define DONT_HOLD_Z_TO_USE_MOVES
 
