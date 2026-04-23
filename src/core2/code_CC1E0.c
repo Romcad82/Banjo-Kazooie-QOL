@@ -206,7 +206,14 @@ void fxegg_head_spawn(void){
     func_80344E18(sp77, 1);
     func_80344EE4(sp77, 0.0f, 0.0f);
     func_80344D94(sp77, sp50);
+// Fixes an issue where eggs fire at a slight angle to the left.
+#ifndef BUG_AND_OVERSIGHT_FIXES
     sp44[1] += 4.0;
+#elif defined(OPTIONS_MENU)
+    if (!is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
+        sp44[1] += 4.0;
+    }
+#endif
     func_80256E24(sp5C, 0.0f, sp44[1], 0.0f, 0.0f, 800.0f);
     sp5C[1] = 0.0f;
     func_80344E3C(sp77, sp5C);

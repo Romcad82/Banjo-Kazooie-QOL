@@ -78,6 +78,7 @@
  * -Yum-Yum Crash
  * -Collectible Flag Radius Bug
  * -Issues With Banjo-Kazooie Health Sprite Animations
+ * -Issue With Eggs Firing At A Slight Angle
  * -Issue With Accidentally Reactivating Jigsaw Podium
  * -CCW Pink Jinjo Jiggy Despawn (Note: JINJO_SAVING also fixes this bug)
  * -Max Health Cheat Temporarily Removes Double Defense (Note: HEALTH_SYSTEM_REWORK also fixes this bug)
