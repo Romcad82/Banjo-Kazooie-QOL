@@ -2,6 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
+#include "config.h"
+
 /* .data */
 s32 basfx_jumpIndex = 0;
 s16 basfx_owSfxList[8] = {
@@ -234,3 +236,18 @@ void basfx_80299E90(void){
 }
 
 void basfx_debug(void){}
+
+// Fixes an oversight where the alarm clock sound effect would constantly ring after you recollect Turbo Trainers while already wearing Turbo Trainers.
+#ifdef BUG_AND_OVERSIGHT_FIXES
+void stop_alarmclock_sfx(void) {
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
+        return;
+    }
+ #endif
+
+    if (check_if_sfx_uid_matches(basfx_timeUpSfxSource, SFX_1C_ALARMCLOCK)) {
+        sfxSource_triggerCallbackByIndex(basfx_timeUpSfxSource);
+    }
+}
+#endif

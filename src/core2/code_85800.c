@@ -4,6 +4,8 @@
 #include "variables.h"
 #include "n_libaudio.h"
 
+#include "config.h"
+
 extern void func_80335394(N_AL_Struct81s *, f32);
 extern f32 sfx_randf2(f32, f32);
 
@@ -1022,4 +1024,13 @@ void func_8030EDAC(f32 arg0, f32 arg1){
     D_80382E0C = arg0;
     D_80382E10 = arg1;
 }
+
+#ifdef BUG_AND_OVERSIGHT_FIXES
+bool check_if_sfx_uid_matches(u8 index, enum sfx_e uid) {
+    if (index)
+        return (sfxsource_at(index)->sfx_uid == uid);
+
+    return FALSE;
+}
+#endif
 

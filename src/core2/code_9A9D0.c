@@ -3,6 +3,9 @@
 #include "variables.h"
 
 #include "core2/statetimer.h"
+
+#include "config.h"
+
 extern f32 player_stateTimer_get(enum state_timer_e);
 
 void func_803219F4(s32 arg0);
@@ -41,6 +44,15 @@ void func_803219F4(s32 arg0){
         case 4: //L80321A6C
             core1_ce60_incOrDecCounter(TRUE);
             if(D_80383314 == COMUSIC_57_TURBO_TRAINERS){
+// Fixes an oversight where level music would play when you recollect Turbo Trainers while already wearing Turbo Trainers.
+#ifdef BUG_AND_OVERSIGHT_FIXES
+                // Check if Kazooie is wearing Turbo Trainers. If she is, then skip the function that plays the level music.
+                if (!func_8029DFE0()
+ #ifdef OPTIONS_MENU
+                    || !is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
+ #endif
+                    )
+#endif
                 func_8025A55C(-1, 4000, 7);
             }
             comusic_8025AB44(D_80383314, 0, 4000);

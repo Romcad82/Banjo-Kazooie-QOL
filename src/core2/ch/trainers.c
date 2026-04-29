@@ -3,6 +3,9 @@
 #include "variables.h"
 
 #include "core2/statetimer.h"
+
+#include "config.h"
+
 extern f32 player_stateTimer_get(enum state_timer_e);
 
 Actor *chtrainers_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
@@ -123,6 +126,10 @@ f32 chtrainers_getDuration(Actor *this){
 }
 
 void chtrainers_pickup(Actor *this){
+#ifdef BUG_AND_OVERSIGHT_FIXES
+    stop_alarmclock_sfx();
+#endif
+
     subaddie_set_state(this, 1);
     this->velocity[2] = 1.0f;
     this->unk10_12 = 0;
