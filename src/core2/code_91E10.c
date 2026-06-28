@@ -4,6 +4,8 @@
 
 #include "gc/zoombox.h"
 
+#include "config.h"
+
 extern void item_set(enum item_e, s32);
 extern void func_8025A55C(s32, s32, s32);
 
@@ -524,7 +526,12 @@ void gcquiz_func_80319EA4(void) {
         if (sD_803830E0->answer_cursor_cooldown > 0) {
             sD_803830E0->answer_cursor_cooldown--;
         } else {
+#ifdef DPAD_FUNCTIONALITY
+            if ((joystick_states[1] > 0.75)
+                || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+#else
             if (joystick_states[1] > 0.75) {
+#endif
                 if (sD_803830E0->answer_cursor_index >= 2) {
                     __gcquiz_set_box_highlight(sD_803830E0->answer_cursor_index, FALSE);
                     sD_803830E0->answer_cursor_index--;
@@ -532,7 +539,12 @@ void gcquiz_func_80319EA4(void) {
                     gczoombox_func_803160A8(sD_803830E0->zoomboxes[sD_803830E0->answer_cursor_index]);
                     sD_803830E0->answer_cursor_cooldown = 4U;
                 }
+#ifdef DPAD_FUNCTIONALITY
+            } else if ((joystick_states[1] < -0.75)
+                       || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+#else
             } else if (joystick_states[1] < -0.75) {
+#endif
                 if (sD_803830E0->answer_cursor_index < 3) {
                     __gcquiz_set_box_highlight(sD_803830E0->answer_cursor_index, FALSE);
                     sD_803830E0->answer_cursor_index++;

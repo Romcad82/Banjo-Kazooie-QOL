@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "core2/ba/physics.h"
 
+#include "config.h"
+
 extern f32 bastick_getX(void);
 
 /* .code */
@@ -54,7 +56,11 @@ void bsDroneLook_update(void) {
 
         exit_first_person = FALSE;
         // 1st person cancelled via input
-        if (bakey_pressed(BUTTON_B) || bakey_pressed(BUTTON_A) || bakey_pressed(BUTTON_C_UP)) {
+        if (bakey_pressed(BUTTON_B) || bakey_pressed(BUTTON_A) || bakey_pressed(BUTTON_C_UP)
+#ifdef DPAD_FUNCTIONALITY
+            || bainput_dpad_controls_valid(BUTTON_L)
+#endif
+            ) {
             exit_first_person = TRUE;
         }
         // 1st person cancelled via entering water

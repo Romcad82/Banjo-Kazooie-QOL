@@ -633,7 +633,12 @@ void updateJigsawPictureActor(Actor *this) {
                     addPieces(this, JIGSAW_PICTURE_ADD_ALL);
 
                 // Remove piece
+#ifdef DPAD_FUNCTIONALITY
+                } else if ((face_buttons[FACE_BUTTON(BUTTON_C_DOWN)] == TRUE)
+                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, FALSE)) {
+#else
                 } else if (face_buttons[FACE_BUTTON(BUTTON_C_DOWN)] == TRUE) {
+#endif
                     if (local->placedJiggyCount) {
                         jigsawPicture_setState(this, JIGSAW_PICTURE_REMOVE_PIECE);
                     } else { // No pieces to remove in picture, exit

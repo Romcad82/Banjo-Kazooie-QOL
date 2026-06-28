@@ -7,27 +7,22 @@
 #include "zoombox.h"
 
 #include "config.h"
+#include "src/core2/gc/dialogReplacements.h"
 
 extern void func_803114D0(void );
 extern int gcdialog_hasCurrentTextId(void);
 extern char *dialogBin_get(enum asset_e text_id);
 
-#if defined(WARP_CAULDRON_MENU) || defined(DONT_HOLD_Z_TO_USE_MOVES)
-#define REPLACE_DIALOG_STRINGS
-#endif
-
+s8 Y_POSITION_MODIFIERS[] = { 1, 0x1E, 0x14, 0xF, 0xB, 8, 6, 4, 3, 2, -1, -1 
+/*
+ * There seems to be an issue with the vanilla game where it accesses an index outside of the Y_POSITION_MODIFIERS array.
+ * This wasn't a problem before since the value it loaded ended up being 0, which does nothing. But with REPLACE_DIALOG_STRINGS, it changes the value
+ * which messes with the Y position of the g_Dialog zoomboxes when pausing. To fix this, an extra 0 is added to the array.
+ */
 #ifdef REPLACE_DIALOG_STRINGS
- #ifdef WARP_CAULDRON_MENU
-u8 *DIALOG_F79_UNKNOWN_REPLACEMENT = "YOU'VE ACTIVATED A MAGIC CAULDRON! FIND MORE TO CREATE A SHORT CUT!";
- #endif
- #ifdef DONT_HOLD_Z_TO_USE_MOVES
-u8 *DIALOG_B49_TALON_TROT_LEARN_REPLACEMENT = "HOLD Z, THEN PRESS THE LEFT C BUTTON. YOU CAN MOVE KAZOOIE AROUND WITH THE CONTROL STICK. PRESS Z OR B TO STOP RUNNING. GO PRACTICE!";
-u8 *DIALOG_B4A_TALON_TROT_REFRESHER_REPLACEMENT = "TACKLE STEEP SLOPES WITH THE TALON TROT. HOLD Z, THEN PRESS THE LEFT C BUTTON. MOVE KAZOOIE AROUND WITH THE CONTROL STICK. PRESS Z OR B TO EXIT THE MOVE.";
-u8 *DIALOG_D35_DIALOG_WONDERWING_LEARN_REPLACEMENT = "SURE DOES! HOLD Z AND PRESS THE RIGHT C BUTTON. USE THE CONTROL STICK TO MOVE AROUND. PRESS Z OR B TO STOP THE WONDERWING. USE IT WISELY THOUGH, AS THIS MOVE REQUIRES GOLD FEATHERS AND YOU CAN ONLY CARRY 10 OF THEM!";
-u8 *DIALOG_D36_DIALOG_WONDERWING_REFRESHER_REPLACEMENT = "MAKE YOURSELF INVULNERABLE WITH THE WONDERWING BY HOLDING Z AND PRESSING THE RIGHT C BUTTON. USE THE CONTROL STICK TO MOVE AROUND. PRESS Z OR B TO EXIT THE MOVE.";
- #endif
+, 0
 #endif
-s8 Y_POSITION_MODIFIERS[] = { 1, 0x1E, 0x14, 0xF, 0xB, 8, 6, 4, 3, 2, -1, -1 };
+};
  
 /* .bss */
 struct {
@@ -703,55 +698,234 @@ bool isDialogTop(s32 dialogIterator) {
 }
 
 #ifdef REPLACE_DIALOG_STRINGS
-void check_and_replace_dialog_strings(s32 text_id) {
+void replace_temp_tildes(char *finalOutput, char *originalString, char *replacementStringChunks[8]) {
+    s32 index = 0;
+    s32 i;
+    s32 j;
+    u8 stringCount = 0;
+
+    
+    for (i = 0; originalString[i] != '\0'; i++) {
+        if ((originalString[i] == '~') && (stringCount < 8)) {
+            for (j = 0; replacementStringChunks[stringCount][j] != '\0'; j++) {
+                finalOutput[index++] = replacementStringChunks[stringCount][j];
+            }
+            stringCount++;
+        } else {
+            finalOutput[index++] = originalString[i];
+        }
+    }
+
+    finalOutput[index] = '\0';
+}
+
+/*
+ * You can replace specific strings after they load in by overwriting "g_Dialog.dialog[i][j].str".
+ *
+ * i: Bottom Zoombox = 0
+ *    Top Zoombox = 1
+ * 
+ * j: String Index
+ */
+void replace_dialog_string(u8 zoomboxIndex, u8 stringIndex, u8 *replacementString) {
+    static u8 textString[2][6][0x100];
+    strcpy(textString[zoomboxIndex][stringIndex], "");
+    strcat(textString[zoomboxIndex][stringIndex], replacementString);
+
+    g_Dialog.dialog[zoomboxIndex][stringIndex].str = textString[zoomboxIndex][stringIndex];
+}
+
+/*
+ * Several Quality of Life features change the game to a point where some Dialog needs to be rewritten to better reflect those changes.
+ * This function checks and replaces any Dialog strings that need to be altered.
+ * 
+ * First, check which Dialog is going to play and store all the necessary text changes into the "replacementStringChunks" array in order.
+ * Depending on what Quality of Life features are enabled, it will either add the original text or the replacement text to the array.
+ * If all Quality of Life features that change a Dialog string are disabled, then don't replace anything at all.
+ * 
+ * Then, "replace_temp_tildes" loads a copy of the original string, but with the character "~" in place of the sections that need to be changed.
+ * The function searches the string for any "~" characters, which are then replaced by the text in "replacementStringChunks" one by one.
+ * The final output is assigned to the "replacementString" variable.
+ * 
+ * Finally, "replace_dialog_string" replaces the original dialog string loaded from the asset file with "replacementString".
+ * This is a bit overengineered and complicated, but it allows for the replacement string to be customized to fit any situation where
+ * Quality of Life features are turned off or removed, instead of writing different versions of the same string.
+ * All of the altered text can be found in "dialogReplacements.h".
+ */
+void check_dialog_id_for_replacement(s32 text_id) {
+    char replacementString[0x100];
+    u8 *replacementStringChunks[8] = {"", "", "", "", "", "", "", ""};
+
  #ifdef OPTIONS_MENU
+    u8 replaceDialogFlags = 0;
+    replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) ? 0x1 : 0x0;
+    replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)) ? 0x2 : 0x0;
+    replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_DONT_HOLD_Z_TO_USE_MOVES)) ? 0x4 : 0x0;
+
     switch (text_id) {
   #ifdef WARP_CAULDRON_MENU
         case ASSET_F79_DIALOG_UNKNOWN:
-            if (!is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) {
+            if (!(replaceDialogFlags & 0x1)) {
                 return;
             }
             break;
   #endif
-  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+  #ifdef DPAD_FUNCTIONALITY
+        case ASSET_DF4_DIALOG_BOTTLES_CAMERA_CONTROL_LEARN:
+        case ASSET_DF5_DIALOG_BOTTLES_CAMERA_CONTROL_REFRESHER:
+        case ASSET_F7C_DIALOG_BOTTLES_REMOVE_PIECE_INSTRUCTIONS:
+        case ASSET_E24_DIALOG_UNKNOWN:
+            if (!(replaceDialogFlags & 0x2)) {
+                return;
+            }
+            break;
+  #endif
+  #if defined(DPAD_FUNCTIONALITY) || defined(DONT_HOLD_Z_TO_USE_MOVES)
         case ASSET_B49_DIALOG_TALON_TROT_LEARN:
         case ASSET_B4A_DIALOG_TALON_TROT_REFRESHER:
         case ASSET_D35_DIALOG_WONDERWING_LEARN:
         case ASSET_D36_DIALOG_WONDERWING_REFRESHER:
-            if (!is_qol_feature_enabled(QOL_ID_DONT_HOLD_Z_TO_USE_MOVES)) {
+            if (!(replaceDialogFlags & 0x6)) {
                 return;
             }
             break;
   #endif
     }
  #endif
-
-    /*
-     * You can replace specific strings after they load in by overwriting "g_Dialog.dialog[i][j].str".
-     *
-     * i: Bottom Zoombox = 0
-     *    Top Zoombox = 1
-     * 
-     * j: String Index
-     */
+    
     switch (text_id) {
  #ifdef WARP_CAULDRON_MENU
         case ASSET_F79_DIALOG_UNKNOWN:
-            g_Dialog.dialog[0][0].str = DIALOG_F79_UNKNOWN_REPLACEMENT;
+            replacementStringChunks[0] = DIALOG_0F79_UNKNOWN_0_0_REPLACEMENT;
+            replace_temp_tildes(replacementString, DIALOG_0F79_UNKNOWN_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
             break;
  #endif
- #ifdef DONT_HOLD_Z_TO_USE_MOVES
+ #ifdef DPAD_FUNCTIONALITY
+        case ASSET_DF4_DIALOG_BOTTLES_CAMERA_CONTROL_LEARN:
+            replacementStringChunks[0] = DIALOG_0DF4_BOTTLES_CAMERA_CONTROL_LEARN_0_1_REPLACEMENT;
+            replace_temp_tildes(replacementString, DIALOG_0DF4_BOTTLES_CAMERA_CONTROL_LEARN_0_1_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 1, replacementString);
+
+            replacementStringChunks[0] = DIALOG_0DF4_BOTTLES_CAMERA_CONTROL_LEARN_0_5_REPLACEMENT;
+            replace_temp_tildes(replacementString, DIALOG_0DF4_BOTTLES_CAMERA_CONTROL_LEARN_0_5_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 5, replacementString);
+            break;
+        case ASSET_DF5_DIALOG_BOTTLES_CAMERA_CONTROL_REFRESHER:
+            replacementStringChunks[0] = DIALOG_0DF5_BOTTLES_CAMERA_CONTROL_REFRESHER_0_0_REPLACEMENT_A;
+            replacementStringChunks[1] = DIALOG_0DF5_BOTTLES_CAMERA_CONTROL_REFRESHER_0_0_REPLACEMENT_B;
+            replace_temp_tildes(replacementString, DIALOG_0DF5_BOTTLES_CAMERA_CONTROL_REFRESHER_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
+            break;
+        case ASSET_F7C_DIALOG_BOTTLES_REMOVE_PIECE_INSTRUCTIONS:
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A;
+            replace_temp_tildes(replacementString, DIALOG_0F7C_BOTTLES_REMOVE_PIECE_INSTRUCTIONS_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
+            break;
+        case ASSET_E24_DIALOG_UNKNOWN:
+            replacementStringChunks[0] = DIALOG_0E24_UNKNOWN_0_0_REPLACEMENT;
+            replace_temp_tildes(replacementString, DIALOG_0E24_UNKNOWN_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
+            break;
+ #endif
+ #if defined(DPAD_FUNCTIONALITY) || defined(DONT_HOLD_Z_TO_USE_MOVES)
         case ASSET_B49_DIALOG_TALON_TROT_LEARN:
-            g_Dialog.dialog[0][2].str = DIALOG_B49_TALON_TROT_LEARN_REPLACEMENT;
+  #ifdef DPAD_FUNCTIONALITY
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[0] = ((replaceDialogFlags & 0x2) ? DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A : DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A;
+   #endif
+  #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0B49_TALON_TROT_LEARN_0_2_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[1] = DIALOG_0B49_TALON_TROT_LEARN_0_2_REPLACEMENT;
+   #endif
+  #else
+            replacementStringChunks[1] = DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+            replace_temp_tildes(replacementString, DIALOG_0B49_TALON_TROT_LEARN_0_2_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 2, replacementString);
             break;
         case ASSET_B4A_DIALOG_TALON_TROT_REFRESHER:
-            g_Dialog.dialog[0][0].str = DIALOG_B4A_TALON_TROT_REFRESHER_REPLACEMENT;
+  #ifdef DPAD_FUNCTIONALITY
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[0] = ((replaceDialogFlags & 0x2) ? DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A : DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A;
+   #endif
+  #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0B4A_TALON_TROT_REFRESHER_0_0_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[1] = DIALOG_0B4A_TALON_TROT_REFRESHER_0_0_REPLACEMENT;
+   #endif
+  #else
+            replacementStringChunks[1] = DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+            replace_temp_tildes(replacementString, DIALOG_0B4A_TALON_TROT_REFRESHER_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
             break;
         case ASSET_D35_DIALOG_WONDERWING_LEARN:
-            g_Dialog.dialog[0][2].str = DIALOG_D35_DIALOG_WONDERWING_LEARN_REPLACEMENT;
+  #ifdef DPAD_FUNCTIONALITY
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[0] = ((replaceDialogFlags & 0x2) ? DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A : DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A;
+   #endif
+  #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0D35_WONDERWING_LEARN_0_2_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B);
+   #else
+            replacementStringChunks[1] = DIALOG_0D35_WONDERWING_LEARN_0_2_REPLACEMENT;
+   #endif
+  #else
+            replacementStringChunks[1] = DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B;
+  #endif
+            replace_temp_tildes(replacementString, DIALOG_0D35_WONDERWING_LEARN_0_2_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 2, replacementString);
             break;
         case ASSET_D36_DIALOG_WONDERWING_REFRESHER:
-            g_Dialog.dialog[0][0].str = DIALOG_D36_DIALOG_WONDERWING_REFRESHER_REPLACEMENT;
+  #ifdef DPAD_FUNCTIONALITY
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[0] = ((replaceDialogFlags & 0x2) ? DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A : DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A);
+   #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_REPLACEMENT_A;
+   #endif
+  #else
+            replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
+  #endif
+  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+   #ifdef OPTIONS_MENU
+            replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0D36_WONDERWING_REFRESHER_0_0_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B);
+   #else
+            replacementStringChunks[1] = DIALOG_0D36_WONDERWING_REFRESHER_0_0_REPLACEMENT;
+   #endif
+  #else
+            replacementStringChunks[1] = DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B;
+  #endif
+            replace_temp_tildes(replacementString, DIALOG_0D36_WONDERWING_REFRESHER_0_0_ORIGINAL, replacementStringChunks);
+
+            replace_dialog_string(0, 0, replacementString);
             break;
  #endif
     }
@@ -765,7 +939,7 @@ void loadAndCreateDialogs(s32 text_id, s32 arg1, ActorMarker *marker, void(*call
 
     loadDialogStrings(text_id);
 #ifdef REPLACE_DIALOG_STRINGS
-    check_and_replace_dialog_strings(text_id);
+    check_dialog_id_for_replacement(text_id);
 #endif
     g_Dialog.unk12C_29 = 0;
     g_Dialog.unk12C_31 = (g_Dialog.unk12C_25 = g_Dialog.unk12C_29);

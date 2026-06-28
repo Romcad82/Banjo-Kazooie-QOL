@@ -60,13 +60,17 @@ static const scrollingMenuZoomboxFormat optionsZoomboxData[] = {
     {QOL_ID_WARP_CAULDRON_MENU,                     "WARP CAULDRON",          "MENU: ",           ZOOMBOX_SPRITE_56_WARP_CAULDRON,
      "ADDS A MENU TO THE WARP CAULDRONS, LETTING YOU WARP TO ANY CAULDRON YOU WANT."},
  #endif
+ #ifdef DPAD_FUNCTIONALITY
+    {QOL_ID_DPAD_FUNCTIONALITY,                     "D-PAD FUNCTIONALITY: ",  "",                 ZOOMBOX_SPRITE_F_BOTTLES,
+     "ADDS FUNCTIONALITY TO THE D-PAD. USE IT TO TRIGGER C BUTTON MOVES, CONTROL THE CAMERA, NAVIGATE MENUS, AND ROTATE JIGSAW PIECES IN THE BOTTLE'S BONUS MINIGAME."},
+ #endif
+ #ifdef CAMERA_IMPROVEMENTS
+    {QOL_ID_CAMERA_IMPROVEMENTS,                    "CAMERA",                 "IMPROVEMENTS: ",   ZOOMBOX_SPRITE_4_BANJO_1,
+     "MAKES SLIGHT ADJUSTMENT TO IMPROVE THE CAMERA. IT DOESN'T DRASTICALLY CHANGE ANGLES WHEN ROTATING AROUND LEVEL GEOMETRY."},
+ #endif
  #if defined(BUG_AND_OVERSIGHT_FIXES) || defined(VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES)
     {QOL_ID_BUG_AND_OVERSIGHT_FIXES,                "BUG FIXES: ",            "",                 ZOOMBOX_SPRITE_34_TERMITE,
      "FIXES MANY BUGS AND ISSUES THROUGHOUT THE GAME."},
- #endif
- #ifdef BETTER_CAMERA
-    {QOL_ID_BETTER_CAMERA,                          "BETTER CAMERA: ",        "",                 ZOOMBOX_SPRITE_F_BOTTLES,
-     "THE CAMERA IS SLIGHTLY BETTER. IT DOESN'T DRASTICALLY CHANGE ANGLES WHEN ROTATING AROUND LEVEL GEOMETRY."},
  #endif
  #ifdef IGNORE_FRAMERATE_ALTERING_OBJECTS
     {QOL_ID_IGNORE_FRAMERATE_ALTERING_OBJECTS,      "DEFAULT TO 30 FPS: ",    "",                 ZOOMBOX_SPRITE_47_MUMMUM,
@@ -882,11 +886,22 @@ void gameSelect_update(Actor *this) {
                 }
 #endif
                   else {
+#ifdef DPAD_FUNCTIONALITY
+                    if (((0.7 < ((0.0f <= joystick) ? joystick : -joystick))
+                         || (pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, FALSE) || pfsManager_dpad_buttons_valid(BUTTON_D_RIGHT, FALSE)))
+                        && (isFileMoving == FALSE)) {
+#else
                     if ((0.7 < ((0.0f <= joystick) ? joystick : -joystick)) && isFileMoving == FALSE) {
+#endif
                         previous_game_number = gameNumber;
 
                         // Joystick went left
+#ifdef DPAD_FUNCTIONALITY
+                        if ((joystick < 0.0f)
+                            || pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, FALSE)) {
+#else
                         if (joystick < 0.0f) {
+#endif
                             isFileMoving = TRUE;
 
                             // Switch to file to the left
@@ -971,7 +986,12 @@ void gameSelect_update(Actor *this) {
                                 }
                             }
                         }
+ #ifdef DPAD_FUNCTIONALITY
+                    } else if ((0.75 < *joystick_y)
+                               || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+ #else
                     } else if (0.75 < *joystick_y) {
+ #endif
                         reset_scrollingMenu_zoombox_y_pos_and_transparency();
 
                         if ((s32) scrollingMenu.selection > 0) {
@@ -982,7 +1002,12 @@ void gameSelect_update(Actor *this) {
                             
                             scrollingMenu.moveDelay = 6;
                         }
+ #ifdef DPAD_FUNCTIONALITY
+                    } else if ((*joystick_y < -0.75)
+                               || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+ #else
                     } else if (*joystick_y < -0.75) {
+ #endif
                         reset_scrollingMenu_zoombox_y_pos_and_transparency();
 
                         if (optionsZoomboxData[(s32) scrollingMenu.selection + 1].id != QOL_ID_NONE) {

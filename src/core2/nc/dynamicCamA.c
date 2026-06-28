@@ -84,11 +84,11 @@ void ncDynamicCamA_update(void) {
     f32 sp44[3];
     f32 sp38[3];
     f32 sp2C[3];
-#if !defined(BETTER_CAMERA) || defined(OPTIONS_MENU)
+#if !defined(CAMERA_IMPROVEMENTS) || defined(OPTIONS_MENU)
     s32 phi_a0;
 #endif
 #ifdef OPTIONS_MENU
-    s32 cameraVariable; // I don't know what to name this variable.
+    s32 cameraVariable;
 #endif
 
     ncDynamicCamera_getPosition(sp6C);
@@ -116,9 +116,9 @@ void ncDynamicCamA_update(void) {
         D_80365DB4 = 0.0f;
         sp7C = 1;
     }
-#ifdef BETTER_CAMERA
+#ifdef CAMERA_IMPROVEMENTS
  #ifdef OPTIONS_MENU
-    if (is_qol_feature_enabled(QOL_ID_BETTER_CAMERA)) {
+    if (is_qol_feature_enabled(QOL_ID_CAMERA_IMPROVEMENTS)) {
         cameraVariable = sp7C;
     } else {
         phi_a0 = (mlDiffDegF(D_80365DA0, D_80365DA4) > 0.0f) ? 2 : 3;

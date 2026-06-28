@@ -426,3 +426,23 @@ void func_8024F450(void){
 void func_8024F4AC(void){
     osSendMesg(&D_802816E8, NULL, OS_MESG_NOBLOCK);
 }
+
+#ifdef DPAD_FUNCTIONALITY
+int pfsManager_dpad_buttons_valid(enum button_e button, bool held) {
+    bool active = FALSE;
+    s32 dpad_buttons[4];
+    func_8024E6E0(0, dpad_buttons);
+
+    if (held) {
+        active = dpad_buttons[DPAD_BUTTON(button)];
+    } else {
+        active = (dpad_buttons[DPAD_BUTTON(button)] == 1);
+    }
+
+    return (active
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)
+ #endif
+            );
+}
+#endif

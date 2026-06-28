@@ -101,6 +101,10 @@ void bsbwhirl_enter_init(void){
 
 void bsbwhirl_enter_update(void){
     enum bs_e sp1C = 0;
+// Prevents D-Pad camera from rotating when entering Wonderwing.
+#ifdef DPAD_FUNCTIONALITY
+    if (!bainput_dpad_controls_valid(BUTTON_D_RIGHT, TRUE))
+#endif
     bainput_enable(1,1);
     if(anctrl_isStopped(baanim_getAnimCtrlPtr()))
         sp1C = BS_1B_WONDERWING_IDLE;

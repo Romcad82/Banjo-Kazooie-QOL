@@ -3,6 +3,8 @@
 #include "variables.h"
 #include "core2/ba/timer.h"
 
+#include "config.h"
+
 void func_80291488(s32 arg0);
 void func_802914CC(s32 arg0);
 
@@ -19,6 +21,9 @@ s32 D_8037C078;
 s32 D_8037C07C;
 s32 D_8037C080;
 s32 D_8037C084;
+#ifdef DPAD_FUNCTIONALITY
+f32 dpadCameraRotationSpeed = 10.0f;
+#endif
 
 /* .code */
 void func_80290B60(s32 arg0){
@@ -117,6 +122,57 @@ int func_80290E8C(void){
     return TRUE;
 }
 
+#ifdef DPAD_FUNCTIONALITY
+bool dpad_should_change_camera_zoom(void) {
+ #ifdef OPTIONS_MENU
+    if (!is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)) {
+        return FALSE;
+    }
+ #endif
+
+    if (bainput_dpad_should_zoom_in_camera()) {
+        if (D_8037C061 == 1) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    if (bainput_dpad_should_zoom_out_camera()) {
+        if (D_8037C061 == 3) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+bool dpad_change_camera_zoom(void) {
+    if (bakey_pressed(BUTTON_D_UP)) {
+        D_8037C061--;
+        return TRUE;
+    }
+
+    if (bakey_pressed(BUTTON_D_DOWN)) {
+        D_8037C061++;
+        return FALSE;
+    }
+}
+
+void update_dpad_camera_rotation_speed(bool rotatingCamera) {
+    f32 velocity = 0.0f;
+    if (rotatingCamera) {
+        velocity = 45.0f * time_getDelta();
+        dpadCameraRotationSpeed = approach_target_f32(dpadCameraRotationSpeed, 25.0f, velocity, velocity);
+    } else {
+        velocity = 90.0f * time_getDelta();
+        dpadCameraRotationSpeed = approach_target_f32(dpadCameraRotationSpeed, 10.0f, velocity, velocity);
+    }
+}
+#endif
+
 void func_80290F14(void){
     if( !balookat_getState() 
         && player_movementGroup() != BSGROUP_4_LOOK
@@ -145,6 +201,35 @@ void func_80290F14(void){
         }
         batimer_set(0x7, 0.4f);
     }
+
+#ifdef DPAD_FUNCTIONALITY
+    if (!balookat_getState() 
+        && player_movementGroup() != BSGROUP_4_LOOK
+        && batimer_get(7) == 0.0f
+        && dpad_should_change_camera_zoom()
+        ) {
+        bool zoomIn = dpad_change_camera_zoom();
+        switch(D_8037C061){
+            case 1:
+                basfx_80299D2C(SFX_12D_CAMERA_ZOOM_CLOSEST, 1.0f, 12000);
+                func_80290B60(1);
+                break;
+            case 2:
+                if (zoomIn) {
+                    basfx_80299D2C(SFX_12D_CAMERA_ZOOM_CLOSEST, 0.9f, 12000);
+                } else {
+                    basfx_80299D2C(SFX_12E_CAMERA_ZOOM_MEDIUM, 1.0f, 12000);
+                }
+                func_80290B60(2);
+                break;
+            case 3:
+                basfx_80299D2C(SFX_12E_CAMERA_ZOOM_MEDIUM, 1.2f, 12000);
+                func_80290B60(3);
+                break;
+        }
+        batimer_set(0x7, 0.4f);
+    }
+#endif
 }
 
 void func_8029103C(void){
@@ -155,15 +240,39 @@ int func_8029105C(s32 arg0){
     if(balookat_getState())
         return FALSE;
 
+#ifdef DPAD_FUNCTIONALITY
+    if (bainput_dpad_should_rotate_camera_left() && !bainput_dpad_should_rotate_camera_right() && ncDynamicCamA_func_802C1DB0(-dpadCameraRotationSpeed)) {
+        func_80291488(arg0);
+        func_8029103C();
+        update_dpad_camera_rotation_speed(TRUE);
+        return TRUE;
+    }
+
+    if (bainput_dpad_should_rotate_camera_right() && !bainput_dpad_should_rotate_camera_left() && ncDynamicCamA_func_802C1DB0(dpadCameraRotationSpeed)) {
+        func_80291488(arg0);
+        func_8029103C();
+        update_dpad_camera_rotation_speed(TRUE);
+        return TRUE;
+    }
+
+    update_dpad_camera_rotation_speed(FALSE);
+#endif
+
     if(bainput_should_rotate_camera_left() && ncDynamicCamA_func_802C1DB0(-45.0f)){
         func_80291488(arg0);
         func_8029103C();
+#ifdef DPAD_FUNCTIONALITY
+        dpadCameraRotationSpeed = 35.0f;
+#endif
         return TRUE;
     }
     
     if(bainput_should_rotate_camera_right() && ncDynamicCamA_func_802C1DB0(45.0f)){
         func_80291488(arg0);
         func_8029103C();
+#ifdef DPAD_FUNCTIONALITY
+        dpadCameraRotationSpeed = 35.0f;
+#endif
         return TRUE;
     }
 

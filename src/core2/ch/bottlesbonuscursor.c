@@ -5,6 +5,8 @@
 
 #include "time.h"
 
+#include "config.h"
+
 #ifndef ABS
 #define	ABS(d)		((d) >= 0) ? (d) : -(d)
 #endif
@@ -199,6 +201,16 @@ void chBottlesBonusCursor_freeMethod(Actor *this) {
     chBottlesBonusCursorMarker = 0;
 }
 
+#ifdef DPAD_FUNCTIONALITY
+int osContPad_dpad_buttons_valid(u16 buttonInput, u16 buttonCheck) {
+    return ((buttonInput & buttonCheck)
+ #ifdef OPTIONS_MENU
+            && is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)
+ #endif
+            );
+}
+#endif
+
 void chBottlesBonusCursor_update(Actor *this) {
     OSContPad *sp5C;
     f32 sp58;
@@ -269,7 +281,12 @@ void chBottlesBonusCursor_update(Actor *this) {
         }
 
         if(this->state == 2 || this->state == 3 || this->state == 4){
+#ifdef DPAD_FUNCTIONALITY
+            if (((sp5C->button & L_CBUTTONS) || osContPad_dpad_buttons_valid(sp5C->button, L_JPAD))
+                && !((D_8037E5C0.prev_button & L_CBUTTONS) || osContPad_dpad_buttons_valid(D_8037E5C0.prev_button, L_JPAD))) {
+#else
             if((sp5C->button & L_CBUTTONS) && !(D_8037E5C0.prev_button & L_CBUTTONS)){ 
+#endif
                 held_piece->rotation = mlNormalizeAngle(held_piece->rotation - 90.0);
                 chBottlesBonusCursor_func_802DF928(D_8037E5C0.unk0);
                 chBottlesBonus_func_802DEA74(D_8037E5C0.unk0);
@@ -277,7 +294,12 @@ void chBottlesBonusCursor_update(Actor *this) {
                 subaddie_set_state_with_direction(this, 3, 0.0f, 1);
                 actor_playAnimationOnce(this);
             }
+#ifdef DPAD_FUNCTIONALITY
+            if (((sp5C->button & R_CBUTTONS) || osContPad_dpad_buttons_valid(sp5C->button, R_JPAD))
+                && !((D_8037E5C0.prev_button & R_CBUTTONS) || osContPad_dpad_buttons_valid(D_8037E5C0.prev_button, R_JPAD))) {
+#else
             if((sp5C->button & R_CBUTTONS) && !(D_8037E5C0.prev_button & R_CBUTTONS)){ 
+#endif
                 held_piece->rotation = mlNormalizeAngle(held_piece->rotation + 90.0);
                 chBottlesBonusCursor_func_802DF928(D_8037E5C0.unk0);
                 chBottlesBonus_func_802DEA74(D_8037E5C0.unk0);

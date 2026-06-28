@@ -1,6 +1,12 @@
 #ifndef BANJO_KAZOOIE_CORE1_ML_H
 #define BANJO_KAZOOIE_CORE1_ML_H
 
+#include "config.h"
+
+#ifdef DPAD_FUNCTIONALITY
+#define ADDITIONAL_MATH_FUNCS
+#endif
+
 f32 ml_acosf_deg(f32 x);
 void ml_vec3f_sub_and_rotate(f32 vec1[3], f32 rotation[3], f32 vec2[3], f32 dst[3]);
 f32 ml_vec3f_cos_between(f32 vec1[3], f32 vec2[3]);
@@ -118,5 +124,8 @@ void func_802596AC(f32 a0[3], f32 a1[3], f32 a2[3], f32 a3[3]);
 s32 ml_getViewportYawWithOffset(f32 x);
 bool ml_isViewportYawWithOffsetNormalized(f32 x);
 void ml_vec3f_interpolate(f32 dst[3], f32 start[3], f32 end[3], f32 t);
+#ifdef ADDITIONAL_MATH_FUNCS
+f32 approach_target_f32(f32 currValue, f32 target, f32 inc, f32 dec);
+#endif
 
 #endif

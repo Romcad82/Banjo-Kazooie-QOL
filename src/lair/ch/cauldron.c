@@ -884,7 +884,12 @@ void chWarpCauldron_update(Actor *this) {
                 } else if (scrollingMenu.selectDelay > 25) {
                     scrollingMenu.selectDelay--;
                     reset_scrollingMenu_zoombox_y_pos_and_transparency();
+ #ifdef DPAD_FUNCTIONALITY
+                } else if ((0.75 < joystick[JOYSTICK_Y])
+                           || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+ #else
                 } else if (0.75 < joystick[JOYSTICK_Y]) {
+ #endif
                     reset_scrollingMenu_zoombox_y_pos_and_transparency();
 
                     if (cauldronZoomboxData[(s32) scrollingMenu.selection].id != (enum file_progress_e)find_first_available_cauldron_flag(chWarpCauldron_getFileProgressFlagIndex(this), 0, 1, TRUE)) {
@@ -898,7 +903,12 @@ void chWarpCauldron_update(Actor *this) {
                             
                         scrollingMenu.moveDelay = 6;
                     }
+ #ifdef DPAD_FUNCTIONALITY
+                } else if ((joystick[JOYSTICK_Y] < -0.75)
+                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+ #else
                 } else if (joystick[JOYSTICK_Y] < -0.75) {
+ #endif
                     reset_scrollingMenu_zoombox_y_pos_and_transparency();
 
                     if (cauldronZoomboxData[(s32) scrollingMenu.selection].id != (enum file_progress_e)find_first_available_cauldron_flag(chWarpCauldron_getFileProgressFlagIndex(this), 9, -1, TRUE)) {

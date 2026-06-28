@@ -1380,3 +1380,15 @@ void ml_vec3f_interpolate(f32 dst[3], f32 start[3], f32 end[3], f32 t) {
         dst[i] = start[i] + (end[i] - start[i]) * t;
     }
 }
+
+#ifdef ADDITIONAL_MATH_FUNCS
+f32 approach_target_f32(f32 currValue, f32 target, f32 inc, f32 dec) {
+    if (currValue < target) {
+        return ml_min_f((currValue + inc), target);
+    } else if (target < currValue) {
+        return ml_max_f((currValue - dec), target);
+    }
+
+    return target;
+}
+#endif

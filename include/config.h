@@ -73,6 +73,23 @@
 #define WARP_CAULDRON_MENU
 
 /**
+ * Adds the following functionality to the D-Pad: 
+ * -Use the D-Pad to trigger C button moves
+ * -Adds Camera Functionality to the D-Pad (Emulates how XBLA Camera works):
+ *      -Left and Right D-Pad pans the camera left and right.
+ *      -Up and Down D-Pad zooms the camera in and out.
+ *      -L Button enters and exits First Person Camera.
+ * -Use the D-Pad to navigate menus
+ * -Use the D-Pad to rotate Jigsaw Pieces in the Bottle's Bonus Minigame
+ */
+#define DPAD_FUNCTIONALITY
+
+/**
+ * Makes slight adjustment to improve the camera. It doesn't drastically change angles when rotating around level geometry.
+ */
+#define CAMERA_IMPROVEMENTS
+
+/**
  * Fixes the following bugs:
  * -Jinjo Statue Softlock
  * -Yum-Yum Crash
@@ -98,11 +115,6 @@
  * Note: These fixes are hardcoded with the vanilla game in mind.
  */
 #define VANILLA_SPECIFIC_BUG_AND_OVERSIGHT_FIXES
-
-/**
- * Camera is slightly better. Doesn't drastically change angles when rotating around level geometry.
- */
-#define BETTER_CAMERA
 
 /**
  * Ignores any objects that alter the framerate.

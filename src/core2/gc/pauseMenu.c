@@ -1036,7 +1036,12 @@ s32 gcPauseMenu_update(void) {
                     D_80383010.unk3_6 = 1;
                 }
 
+#ifdef DPAD_FUNCTIONALITY
+                if ((0.75 < joystick[JOYSTICK_Y])
+                    || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+#else
                 if (0.75 < joystick[JOYSTICK_Y]) {
+#endif
                     if ((s32) D_80383010.selection > 0) {
                         gczoombox_highlight(D_80383010.zoombox[D_80383010.selection], FALSE);
                         D_80383010.selection--;
@@ -1048,8 +1053,13 @@ s32 gcPauseMenu_update(void) {
                         D_80383010.unk3_6 = 0;
                         D_80383010.unk7 = 6;
                     }
+#ifdef DPAD_FUNCTIONALITY
+                } else if ((joystick[JOYSTICK_Y] < -0.75)
+                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+#else
                 }
                 else if (joystick[JOYSTICK_Y] < -0.75) {
+#endif
                     if ((s32) D_80383010.selection < 3) {
                         gczoombox_highlight(D_80383010.zoombox[D_80383010.selection], 0);
                         D_80383010.selection++;
@@ -1187,13 +1197,23 @@ s32 gcPauseMenu_update(void) {
             }
             else if (face_button[FACE_BUTTON(BUTTON_B)] == 1) {
                 gcPauseMenu_setState(PAUSE_STATE_A_TOTALS_CLOSING);
+#ifdef DPAD_FUNCTIONALITY
+            } else if ((0.75 < joystick[JOYSTICK_X])
+                       || pfsManager_dpad_buttons_valid(BUTTON_D_RIGHT, TRUE)) {
+#else
             }
             else if (0.75 < joystick[JOYSTICK_X]) {
+#endif
                 if ((s32) D_80383010.selection < gcpausemenu_getMaxPage()) {
                     gcpausemenu_setNextPage(1);
                 }
+#ifdef DPAD_FUNCTIONALITY
+            } else if ((joystick[JOYSTICK_X] < -0.75)
+                       || pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
+#else
             }
             else if (joystick[JOYSTICK_X] < -0.75) {//L80313CCC
+#endif
                 if ((s32) D_80383010.selection > 0) {
                     gcpausemenu_setNextPage(-1);
                 }
@@ -1277,8 +1297,13 @@ s32 gcPauseMenu_update(void) {
             }//L80313EFC
             else if (face_button[FACE_BUTTON(BUTTON_B)] == 1) {
                 gcPauseMenu_setState(PAUSE_STATE_11_SNS_CLOSING);
+#ifdef DPAD_FUNCTIONALITY
+            } else if ((joystick[JOYSTICK_X] < -0.75)
+                       || pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
+#else
             }
             else if (joystick[JOYSTICK_X] < -0.75) {
+#endif
                 gcpausemenu_setNextPage(-1);
                 gcPauseMenu_setState(PAUSE_STATE_11_SNS_CLOSING);
             }
