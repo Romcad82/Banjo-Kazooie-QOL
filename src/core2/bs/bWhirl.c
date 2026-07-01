@@ -55,7 +55,7 @@ enum bs_e func_802AA510(enum bs_e arg0){
     if(bastick_getZone(arg0) > 0)
         arg0 = BS_1C_WONDERWING_WALK;
 
-#ifdef DONT_HOLD_Z_TO_USE_MOVES
+#ifdef TOGGLEABLE_MOVES
     if(exit_move_check())
 #else
     if(bakey_released(BUTTON_Z))
@@ -158,7 +158,7 @@ void bsbwhirl_walk_update(void){
     if(!bastick_getZone() && baphysics_is_slower_than(1.0f))
         sp1C = BS_1B_WONDERWING_IDLE;
 
-#ifdef DONT_HOLD_Z_TO_USE_MOVES
+#ifdef TOGGLEABLE_MOVES
     if(exit_move_check())
 #else
     if(bakey_released(BUTTON_Z))

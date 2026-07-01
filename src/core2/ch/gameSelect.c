@@ -84,8 +84,8 @@ static const scrollingMenuZoomboxFormat optionsZoomboxData[] = {
     {QOL_ID_REIMPLEMENT_EXIT_TO_WITCHS_LAIR,        "EXIT TO WITCH'S LAIR: ", "",                 ZOOMBOX_SPRITE_5_GRUNTILDA_2,
      "REIMPLEMENTS EXIT TO WITCH'S LAIR OPTION IN THE PAUSE MENU. YOU CAN ONLY USE IT IF YOU'RE IN A LEVEL."},
  #endif
- #ifdef DONT_HOLD_Z_TO_USE_MOVES
-    {QOL_ID_DONT_HOLD_Z_TO_USE_MOVES,               "DON'T HOLD Z",           "TO USE MOVES: ",   ZOOMBOX_SPRITE_D_KAZOOIE_1,
+ #ifdef TOGGLEABLE_MOVES
+    {QOL_ID_TOGGLEABLE_MOVES,                       "TOGGLEABLE MOVES: ",     "",                 ZOOMBOX_SPRITE_D_KAZOOIE_1,
      "WHEN YOU USE TALON TROT OR WONDERWING, YOU DON'T NEED TO HOLD Z TO KEEP USING THE MOVE. TO EXIT, YOU CAN PRESS Z OR B."},
  #endif
  #ifdef ONLY_B_BUTTON_SKIPS_DIALOG
@@ -515,7 +515,7 @@ void update_optionsMenu_zoombox_strings(u8 selectionIndex, u8 zoomboxIndex, bool
     static u8 upperTextLine[6][0x20];
     static u8 lowerTextLine[6][0x20];
     u8 *status;
-    bool printStatusOnLowerLine = (strcmp("", optionsZoomboxData[selectionIndex].secondStr) || (strlen(optionsZoomboxData[selectionIndex].firstStr) >= 19));
+    bool printStatusOnLowerLine = (strcmp("", optionsZoomboxData[selectionIndex].secondStr) || (strlen(optionsZoomboxData[selectionIndex].firstStr) >= 18));
 
     strcpy(upperTextLine[zoomboxIndex], "");
     strcat(upperTextLine[zoomboxIndex], optionsZoomboxData[selectionIndex].firstStr);

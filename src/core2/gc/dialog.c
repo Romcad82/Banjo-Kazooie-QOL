@@ -760,7 +760,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
     u8 replaceDialogFlags = 0;
     replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_WARP_CAULDRON_MENU)) ? 0x1 : 0x0;
     replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)) ? 0x2 : 0x0;
-    replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_DONT_HOLD_Z_TO_USE_MOVES)) ? 0x4 : 0x0;
+    replaceDialogFlags |= (is_qol_feature_enabled(QOL_ID_TOGGLEABLE_MOVES)) ? 0x4 : 0x0;
 
     switch (text_id) {
   #ifdef WARP_CAULDRON_MENU
@@ -780,7 +780,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
             }
             break;
   #endif
-  #if defined(DPAD_FUNCTIONALITY) || defined(DONT_HOLD_Z_TO_USE_MOVES)
+  #if defined(DPAD_FUNCTIONALITY) || defined(TOGGLEABLE_MOVES)
         case ASSET_B49_DIALOG_TALON_TROT_LEARN:
         case ASSET_B4A_DIALOG_TALON_TROT_REFRESHER:
         case ASSET_D35_DIALOG_WONDERWING_LEARN:
@@ -834,7 +834,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
             replace_dialog_string(0, 0, replacementString);
             break;
  #endif
- #if defined(DPAD_FUNCTIONALITY) || defined(DONT_HOLD_Z_TO_USE_MOVES)
+ #if defined(DPAD_FUNCTIONALITY) || defined(TOGGLEABLE_MOVES)
         case ASSET_B49_DIALOG_TALON_TROT_LEARN:
   #ifdef DPAD_FUNCTIONALITY
    #ifdef OPTIONS_MENU
@@ -845,7 +845,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
   #else
             replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
   #endif
-  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+  #ifdef TOGGLEABLE_MOVES
    #ifdef OPTIONS_MENU
             replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0B49_TALON_TROT_LEARN_0_2_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A);
    #else
@@ -868,7 +868,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
   #else
             replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
   #endif
-  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+  #ifdef TOGGLEABLE_MOVES
    #ifdef OPTIONS_MENU
             replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0B4A_TALON_TROT_REFRESHER_0_0_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_A);
    #else
@@ -891,7 +891,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
   #else
             replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
   #endif
-  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+  #ifdef TOGGLEABLE_MOVES
    #ifdef OPTIONS_MENU
             replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0D35_WONDERWING_LEARN_0_2_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B);
    #else
@@ -914,7 +914,7 @@ void check_dialog_id_for_replacement(s32 text_id) {
   #else
             replacementStringChunks[0] = DIALOG_DPAD_FUNCTIONALITY_GENERAL_ORIGINAL_CHUNK_A;
   #endif
-  #ifdef DONT_HOLD_Z_TO_USE_MOVES
+  #ifdef TOGGLEABLE_MOVES
    #ifdef OPTIONS_MENU
             replacementStringChunks[1] = ((replaceDialogFlags & 0x4) ? DIALOG_0D36_WONDERWING_REFRESHER_0_0_REPLACEMENT : DIALOG_DONT_HOLD_Z_GENERAL_ORIGINAL_CHUNK_B);
    #else

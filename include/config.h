@@ -68,7 +68,7 @@
 
 /**
  * Adds a Menu to the Warp Cauldrons, letting you warp to any cauldron you want.
- * Also edits some dialog to better reflect any changes.
+ * Also updates some dialog to better reflect the changes.
  */
 #define WARP_CAULDRON_MENU
 
@@ -81,6 +81,8 @@
  *      -L Button enters and exits First Person Camera.
  * -Use the D-Pad to navigate menus
  * -Use the D-Pad to rotate Jigsaw Pieces in the Bottle's Bonus Minigame
+ * 
+ * Also updates some dialog to better reflect the changes.
  */
 #define DPAD_FUNCTIONALITY
 
@@ -159,9 +161,9 @@
 
 /**
  * When you use Talon Trot or Wonderwing, you don't need to hold Z to keep using the move. To exit, you can press Z or B.
- * Also edits some dialog to better reflect any changes.
+ * Also updates some dialog to better reflect the changes.
  */
-#define DONT_HOLD_Z_TO_USE_MOVES
+#define TOGGLEABLE_MOVES
 
 /**
  * Instead of holding L, R, and B to skip dialog, you can just press B.
