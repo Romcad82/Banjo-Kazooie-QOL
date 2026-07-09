@@ -827,7 +827,7 @@ static SecretCheatCode sSecretsCheatCodes[] = {
     NULL
 };
 
-#ifdef ADDITIONAL_CHEATS
+#if defined(ADDITIONAL_CHEATS) && (!defined(SHORTER_CHEATS) || defined(OPTIONS_MENU))
 static SecretCheatCode sAdditionalCheats[] = {
     // THERES TOO MANY CHEATS TO NAME USE JUST ONE TO UNLOCK THE GAME
     {"dmj9j2d661nie0mjnd2d6in1jg2jpg2d6ijd6gib608dmj5n1j", 0, VOLATILE_FLAG_79_SANDCASTLE_UNLOCK_ALL + VOLATILE_FLAG_CHEAT_OFFSET, 00},

@@ -206,12 +206,6 @@
 #define ENTER_MORE_THAN_3_BANNED_CHEATS
 
 /**
- * Reworks the save flags for banned cheats. Instead of each cheat having their own individual progress flag (most of which will go unused), save the indexes of whatever cheats were used.
- * Only two cheats can be saved per file. 6 bits are used for each cheat (which can technically allow up to 63 different cheats to be saved, but you are limited to how many volatile flags there are).
- */
-#define CHEAT_FLAGS_REWORK
-
-/**
  * Adds additional cheats to use, which are:
  * -"THIS CHEAT IS NO LIE RAISE THE WATER LEVEL VERY HIGH" - Raises the water level in Grunty's Lair to the 2nd level.
  * -"THIS ONES SUCH A CHORE GET RID OF THE EIGHTH NOTE DOOR" - Unlocks the Eighth Note Door.
@@ -229,7 +223,7 @@
  * -"GRUNTY YOU MUST DISPATCH IF YOU WANT A REMATCH" - Lets you refight the Final Boss.
  * (Note: These cheats aren't banned, so input them as many times as you like.)
  *
- * NOTE: CHEAT_FLAGS_REWORK must be on to save properly.
+ * NOTE: This also reworks how the save flags function for banned cheats.
  * Note: These codes also work with SHORTER_CHEATS enabled.
  */
 #define ADDITIONAL_CHEATS

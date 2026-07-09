@@ -15,6 +15,14 @@
 #define SPRITE_TYPE_RGBA16 (1 << 10) ////0x400
 #define SPRITE_TYPE_RGBA32 (1 << 11)
 
+/*
+ * Reworks the save flags for banned cheats. Instead of each cheat having their own individual progress flag (most of which will go unused), save the indexes of whatever cheats were used.
+ * Only two cheats can be saved per file. 6 bits are used for each cheat (which can technically allow up to 63 different cheats to be saved, but you are limited to how many volatile flags there are).
+ */
+#ifdef ADDITIONAL_CHEATS
+#define CHEAT_FLAGS_REWORK
+#endif
+
 enum file_progress_e {
     FILEPROG_0_TIPTUP_MINIGAME_PROGRESS,
     // unused
@@ -235,12 +243,11 @@ enum file_progress_e {
 #ifdef CHEAT_FLAGS_REWORK
     FILEPROG_FF_SANDCASTLE_CHEAT_ONE = 0xFF, // 6 bits
     FILEPROG_105_SANDCASTLE_CHEAT_TWO = 0x105, // 6 bits
-    FILEPROG_10B_CHEAT_ENTERED = 0x10B
  #ifdef ADDITIONAL_CHEATS
-    ,
-    FILEPROG_10C_SANDCASTLE_REPLAY_FURNACE_FUN,
-    FILEPROG_10D_SANDCASTLE_FINAL_BOSS_REMATCH
+    FILEPROG_10B_SANDCASTLE_REPLAY_FURNACE_FUN = 0x10B,
+    FILEPROG_10C_SANDCASTLE_FINAL_BOSS_REMATCH,
  #endif
+    FILEPROG_123_CHEAT_ENTERED = 0x123
 #else
     FILEPROG_FF_SANDCASTLE_OPEN_DOOR_TWO = 0xFF, 
     FILEPROG_100_SANDCASTLE_OPEN_DOOR_THREE, 
