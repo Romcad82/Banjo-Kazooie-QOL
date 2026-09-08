@@ -12,7 +12,7 @@ extern void func_802EE354(Actor *, s32, s32, s32, f32, f32, f32, s32[4], s32, s3
 extern void func_80324CFC(f32, enum comusic_e, s32);
 extern void func_8034DF30(s32, f32[4], f32[4], f32);
 #ifdef WARP_CAULDRON_MENU
-extern void set_menu_finished_displaying_state(bool setState);
+extern void check_scrollingMenu_finished_displaying(void);
 extern  f32 func_80309B24(f32[3]);
 #endif
 
@@ -858,6 +858,7 @@ void chWarpCauldron_update(Actor *this) {
             controller_copySideButtons(0, side_buttons);
             controller_getJoystick(0, joystick);
             
+            check_scrollingMenu_finished_displaying();
             if (get_inWarpCauldronCutscene()) {
                 break;
             } else if (scrollingMenu.menuFinishedDisplaying) {
@@ -1128,8 +1129,6 @@ void open_warpMenu_zoomboxes(enum file_progress_e currFlag) {
 
         j++;
     }
-
-    timedFunc_set_1(31.0f * time_getDelta(), (GenFunction_1) set_menu_finished_displaying_state, TRUE);
 }
 
 void update_warpMenu_zoombox_data(enum file_progress_e currFlag) {

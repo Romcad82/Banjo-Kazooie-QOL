@@ -8,6 +8,10 @@
 
 #define ZOOMBOX_MAX_STRING_COUNT 8
 
+#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#define SCROLLING_MENU
+#endif
+
 typedef enum talk_pic_e {
     ZOOMBOX_SPRITE_0_GRUNTILDA_1,
     ZOOMBOX_SPRITE_1_VILE_1,
@@ -130,7 +134,7 @@ typedef struct {
     BKSprite *unk100;
     BKSpriteDisplayData *unk104;
     u8  unk108[5];  //sfx_indexes
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
     u8  textRGB[3];
 #else
     u8  pad10D[3];
@@ -151,7 +155,7 @@ typedef struct {
     u8 unk15C;
     u8 unk15D;
     u8 unk15E;
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
     s8 textYOffset;
 #else
     u8 pad15F[0x1];
@@ -170,7 +174,7 @@ typedef struct {
     s8  unk177;
     s8  unk178;
     s8  unk179;
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
     u8  zoomboxAlpha;
     u8  textAlpha;
 #else
@@ -223,7 +227,7 @@ typedef struct {
 #endif
 }GcZoombox; //size 0x1A8
 
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
 typedef struct {
     u16              id;
     u8              *firstStr;

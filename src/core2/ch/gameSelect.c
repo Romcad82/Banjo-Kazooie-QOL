@@ -29,7 +29,7 @@ extern void warp_lairEnterLairFromSMLevel(s32, s32);
 extern void warp_smExitBanjosHouse(s32, s32);
 extern void controller_getJoystick(s32, f32*);
 #ifdef OPTIONS_MENU
-extern void set_menu_finished_displaying_state(bool setState);
+extern void check_scrollingMenu_finished_displaying(void);
 #endif
 
 extern char *gcpausemenu_TimeToA(int);
@@ -492,8 +492,18 @@ void open_mainMenu_zoomboxes(Actor *this) {
     gczoombox_setStrings(chGameSelectTopZoombox, mainMenuStrCnt, (char **)&selectInstructions);
     gczoombox_open(chGameSelectTopZoombox);
     gczoombox_maximize(chGameSelectTopZoombox);
+}
 
-    timedFunc_set_2(30.0f * time_getDelta(), (GenFunction_2) subaddie_set_state, (s32)this, GAME_SELECT_IDLE);
+void check_mainMenu_started_displaying(GcZoombox *topZoombox, Actor *this) {
+    if (scrollingMenu.menuFinishedDisplaying) {
+        return;
+    }
+
+    if (topZoombox) {
+        if (topZoombox->state == 0x2) {
+            subaddie_set_state(this, GAME_SELECT_IDLE);
+        }
+    }
 }
 
 void open_optionsMenu_zoomboxes(void) {
@@ -538,8 +548,6 @@ void open_optionsMenu_zoomboxes(void) {
             break;
         }
     }
-
-    timedFunc_set_1(31.0f * time_getDelta(), (GenFunction_1) set_menu_finished_displaying_state, TRUE);
 }
 
 void close_mainMenu_zoomboxes(void) {
@@ -890,6 +898,7 @@ void gameSelect_update(Actor *this) {
             
 #ifdef OPTIONS_MENU
             case GAME_SELECT_OPTIONS_MENU:
+                check_scrollingMenu_finished_displaying();
                 if (scrollingMenu.menuFinishedDisplaying) {
                     if (scrollingMenu.moveDelay > 0) {
                         scrollingMenu.moveDelay--;
@@ -984,6 +993,7 @@ void gameSelect_update(Actor *this) {
                 } else if (scrollingMenu.bottomPortraitOpacityFix) {
                     scrollingMenu.zoombox[5]->unk168 = 0x00;
                 }
+                check_mainMenu_started_displaying(chGameSelectTopZoombox, this);
 
                 scrollingMenu_zoomboxUpdate();
                 break;

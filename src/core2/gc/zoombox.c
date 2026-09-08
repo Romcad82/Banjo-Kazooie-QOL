@@ -424,7 +424,7 @@ gczoomboxPortraitInfo D_8036C6C0[] = {
 
 s32 D_8036D924[] = { 70, 35, 18, 9, 4, 2, 1};
 
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
 scrollingMenuStruct scrollingMenu;
 #endif
 
@@ -800,7 +800,7 @@ void gczoombox_func_803160A8(GcZoombox *this) {
     }
 }
 
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
 void set_rgb(u8 defaultColor, u8 modifiedColors[3], u8 combined_rgb[3]) {
      f32 percentChange = (f32)defaultColor / 255.0f;
      combined_rgb[0] = (u8)(modifiedColors[0] * percentChange);
@@ -810,7 +810,7 @@ void set_rgb(u8 defaultColor, u8 modifiedColors[3], u8 combined_rgb[3]) {
 #endif
 
 void func_803162B4(GcZoombox *this){
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
      u8 rgb[3];
      set_rgb((u8)this->unk168, this->textRGB, rgb);
 
@@ -831,7 +831,7 @@ void func_803162B4(GcZoombox *this){
  * Adds Y offset to text string to have a little more control where it displays. Don't use with scrolling text, it's very buggy.
  * Maybe work on this idea more to have better functionality and less visual errors, but for now it works.
  */
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
                print_dialog(this->unk16A, (this->unk16C + this->textYOffset), this->unk0);
 #else
                print_dialog(this->unk16A, this->unk16C, this->unk0);
@@ -842,7 +842,7 @@ void func_803162B4(GcZoombox *this){
           if(this->unk1A4_15){
                print_bold_spaced(this->unk16A, this->unk16E, this->unk30);
           }else{
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
                print_dialog(this->unk16A, (this->unk16E + this->textYOffset), this->unk30);
 #else
                print_dialog(this->unk16A, this->unk16E, this->unk30);
@@ -871,7 +871,7 @@ void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
     if (this->anim_ctrl != NULL) {
         anctrl_drawSetup(this->anim_ctrl, sp50, 1);
     }
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
     modelRender_setAlpha(this->zoomboxAlpha);
 #endif
     modelRender_draw(gfx, mtx, sp50, sp5C, this->unk198 * sp34, sp38, this->model);
@@ -1443,7 +1443,7 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     this->unk166 = this->unk1A4_19;
     this->unk164 = y;
     this->unk168 = 0xFF;
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
     this->zoomboxAlpha = this->textAlpha = 0xFF;
     this->textRGB[0] = this->textRGB[1] = this->textRGB[2] = 0xFF;
  #if defined(WARP_CAULDRON_MENU) && defined(GENERIC_CAULDRON_NAMES)
@@ -1519,7 +1519,7 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     return this;
 }
 
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
 void zoombox_setSprite(GcZoombox *this, GcZoomboxSprite portrait_id) {
      if (this->unkF8) {
           assetCache_free(this->unkF8);
@@ -1868,7 +1868,7 @@ void gczoombox_func_80318C48(GcZoombox *this, bool arg1) {
     }
 }
 
-#if defined(OPTIONS_MENU) || defined(WARP_CAULDRON_MENU)
+#ifdef SCROLLING_MENU
 void scrollingMenu_zoomboxDraw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     u8 i;
 
@@ -1913,8 +1913,24 @@ void scrollingMenu_zoomboxFree(void) {
     }
 }
 
-void set_menu_finished_displaying_state(bool setState) {
-     scrollingMenu.menuFinishedDisplaying = setState;
+void check_scrollingMenu_finished_displaying(void) {
+     GcZoombox *currZoombox = NULL;
+     
+     if (scrollingMenu.menuFinishedDisplaying) {
+          return;
+     }
+
+     if (scrollingMenu.zoombox[1]) {
+          currZoombox = scrollingMenu.zoombox[1];
+     } else if (scrollingMenu.zoombox[0]) {
+          currZoombox = scrollingMenu.zoombox[0];
+     }
+
+     if (currZoombox) {
+          if (currZoombox->state == 0x4) {
+               scrollingMenu.menuFinishedDisplaying = TRUE;
+          }
+     }
 }
 
 void close_scrollingMenu_zoomboxes(void) {
