@@ -2,8 +2,8 @@
 #include "functions.h"
 #include "variables.h"
 
-#include "../core2/gc/zoombox.h"
-#include "../core2/code_C9E70.h"
+#include "core2/gc/zoombox.h"
+#include "core2/code_C9E70.h"
 #include "core2/nc/camera.h"
 
 
@@ -63,10 +63,7 @@ extern void code_7060_setVoidOutLocation(enum map_e, s32);
 extern void quizQuestionAskedBitfield_set(u32, int); // ff_isAsked_flag_set
 extern int quizQuestionAskedBitfield_get(u32); // ff_isAsked_flag_get
 
-extern void BKModel_getMeshCenter(BKModel *model, s32 mesh_id, s16 [3]); //! $a2 type unk
-
-extern void ability_setAllLearned(s32);  // set unlocked moves bitfield
-extern s32  ability_getAllLearned(void); // get unlocked moves bitfield
+extern void model_getMeshCenter(BKModel *model, s32 mesh_id, s16 [3]); //! $a2 type unk
 
 extern s32  item_getCount(s32); // item count get
 extern void item_adjustByDiffWithoutHud(s32, s32); // item count set
@@ -476,7 +473,7 @@ bool ff_hasQuestionBeenAskedAlready(enum ff_question_type_e type, s32 questionId
 }
 
 // i love stupid shit like this. these 3 lines of C compile into 150 lines of asm for type handling
-void func_8038C3A0(u32 a0, BKVtxRef *a1, Vtx *a2, Furnace_Fun_Board *a3)
+void func_8038C3A0(u32 a0, BKModelVtxRef *a1, Vtx *a2, Furnace_Fun_Board *a3)
 {
     a2->v.cn[0] = a1->v.v.cn[0] * a3->unk10;
     a2->v.cn[1] = a1->v.v.cn[1] * a3->unk10;
@@ -544,11 +541,11 @@ void lair_func_8038C6BC(void)
             ff_board_ptr->unk10 = 0.45f;
         }
 
-        BKModel_getMeshCenter(ffStorage->unk0, s1, &ff_board_ptr->unkA);
+        model_getMeshCenter(ffStorage->unk0, s1, &ff_board_ptr->unkA);
     }
 }
 
-void func_8038C7A0(u32 a0, BKVtxRef *a1, Vtx *a2, Furnace_Fun_Board *a3)
+void func_8038C7A0(u32 a0, BKModelVtxRef *a1, Vtx *a2, Furnace_Fun_Board *a3)
 {
     a2->v.cn[0] = a1->v.v.cn[0] * ffStorage->unk14;
     a2->v.cn[1] = a1->v.v.cn[1] * ffStorage->unk14;
@@ -566,11 +563,11 @@ void func_8038C9D0(void) {
         } else if ((ff_board_ptr->unk9 != 0) && (ff_board_ptr->unk10 < 0.95)) {
             ff_board_ptr->unk10 = MIN(ff_board_ptr->unk10 + 0.05, 0.95);
         }
-        BKModel_transformMesh(ffStorage->unk0, current_tile_id, func_8038C3A0, (s32) ff_board_ptr);
+        model_transformMesh(ffStorage->unk0, current_tile_id, func_8038C3A0, (s32) ff_board_ptr);
         ff_board_ptr++;
     }
 
-    BKModel_transformMesh(ffStorage->unk0, 0x1F1, func_8038C7A0, (s32) ff_board_ptr);
+    model_transformMesh(ffStorage->unk0, 0x1F1, func_8038C7A0, (s32) ff_board_ptr);
     if ( !((ffStorage->currFfMode != FFA_3_TRIGGER_QUESTION) && (ffStorage->currFfMode != FFA_4_UNK)) 
          && (0.5 < ffStorage->unk14)
     ) {
@@ -607,10 +604,10 @@ void lair_func_8038CC9C(void)
 
 void func_8038CCEC(void)
 {
-    free(ffStorage->unk48);
+    bk_free(ffStorage->unk48);
     ffStorage->unk48 = NULL;
 
-    free(ffStorage);
+    bk_free(ffStorage);
     ffStorage = NULL;
 
     gcquiz_free();
@@ -656,7 +653,7 @@ void ff_setup(void)
     s32 i;
 
     gcquiz_init();
-    ffStorage = malloc(sizeof(struct FF_StorageStruct));
+    ffStorage = bk_malloc(sizeof(struct FF_StorageStruct));
     quizQuestionAskedBitfield_init();
 
     // dump currently unlocked moves to storage
@@ -674,7 +671,7 @@ void ff_setup(void)
     ffStorage->unk14            = 1.f;
     ffStorage->UNK_18           = 0;
     ffStorage->currFfMode       = 1;
-    ffStorage->unk48            = malloc(0x90);
+    ffStorage->unk48            = bk_malloc(0x90);
 
     gzquiz_initGruntyQuestions();
 }
@@ -776,7 +773,7 @@ void func_8038D16C(s32 music_id, u16 a1)
 {
     coMusicPlayer_playMusic(music_id, 0);
     comusic_8025AB44(music_id, 28000, 500);
-    func_80250530(func_8025ADD4(music_id), a1, 0);
+    musicSlot_stepToChannelMask(comusic_getTrackPosition(music_id), a1, 0);
 }
 
 void func_8038D1BC(void)
@@ -988,7 +985,7 @@ void ff_setState(enum FF_Action next_state) {
                         timedFunc_set_0(1.5f, func_8038D1BC);
                         break;
                     case FFPA_1_UNK: //L8038D870
-                         if (func_8025AD7C(FF_SoundQuestionTable[ffStorage->questionTypeTableIndex].soundId)) {
+                         if (comusic_isTrackQueued(FF_SoundQuestionTable[ffStorage->questionTypeTableIndex].soundId)) {
                             comusic_8025AB44(FF_SoundQuestionTable[ffStorage->questionTypeTableIndex].soundId, 0, 0x1F4);
                             timedFunc_set_0(1.5f, func_8038D1BC);
                         } else {
@@ -1233,7 +1230,7 @@ void lair_func_8038E0B0(void) {
         controller_copySideButtons(0, joystick);
         if (ffStorage->currFfMode < 3) {
             player_getPosition(ffStorage->playerPosition);
-            ff_tile_id = func_8033F3E8(ffStorage->unk0, ffStorage->playerPosition, FF_QNF_START, FF_QNF_END);
+            ff_tile_id = model_func_8033F3E8(ffStorage->unk0, ffStorage->playerPosition, FF_QNF_START, FF_QNF_END);
             if ((ff_tile_id != ffStorage->currentTileId) && (ffStorage->currentTileId != 0)) {
                 if (ffStorage->currentBoardTile->unk9 == 2) {
                     ffStorage->currentBoardTile->unk9 = 0U;
@@ -1244,7 +1241,7 @@ void lair_func_8038E0B0(void) {
         }
         // If you see FFTT_8_JOKER in the table, use FFTT_7_JOKER instead
         ff_tile_type = MIN((ffStorage->currentTileId != 0) ? ffStorage->currentBoardTile->tileType : -1, FFTT_7_JOKER);
-        if ((ffStorage->currentTileId != 0) && (ffStorage->currentBoardTile->unk9 == 0) && func_8028F20C()) {
+        if ((ffStorage->currentTileId != 0) && (ffStorage->currentBoardTile->unk9 == 0) && player_isStableWithExtraSteps()) {
             ffStorage->currentBoardTile->unk9 = 2;
             if (ffStorage->unk11) {
                 switch(ff_tile_type){
@@ -1287,7 +1284,7 @@ void lair_func_8038E0B0(void) {
         ) {
             code_73640_printItemCount(ITEM_27_JOKER_CARD);
         }
-        code_7060_setVoidOutLocation(MAP_8E_GL_FURNACE_FUN, 2);
+        code_7060_setVoidOutLocation(MAP_8E_GL_FURNACE_FUN, WARP_GL_FURNACE_FUN_2_ENTRANCE_PAD);
         switch(ffStorage->currFfMode){
             case 1://L8038E388
                 if(ffStorage->currentTileId != 0){
@@ -1385,7 +1382,7 @@ void lair_func_8038E0B0(void) {
                 break;
 
             case 9://L8038E738
-                if (!func_8025AD7C(0x78)) {
+                if (!comusic_isTrackQueued(0x78)) {
                     mapSpecificFlags_set(6, TRUE);
                     ff_setState(FFA_0_NIL);
                 }

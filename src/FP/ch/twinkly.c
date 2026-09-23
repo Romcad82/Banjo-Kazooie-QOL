@@ -2,7 +2,7 @@
 #include "functions.h"
 #include "variables.h"
 
-extern Actor *func_802EBAE0(UNK_TYPE(s32), f32 position[3], f32 rotation[3], f32 scale, UNK_TYPE(s32), UNK_TYPE(s32), UNK_TYPE(s32), f32, UNK_TYPE(s32));
+extern Actor *bkmodelunk14list_func_802EBAE0(UNK_TYPE(s32), f32 position[3], f32 rotation[3], f32 scale, UNK_TYPE(s32), UNK_TYPE(s32), UNK_TYPE(s32), f32, UNK_TYPE(s32));
 
 Actor *func_8038C0B0(ActorMarker *marker, UNK_TYPE(s32) arg1, f32 arg2, UNK_TYPE(s32) arg3);
 Actor *chTwinkly_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
@@ -11,12 +11,12 @@ void chTwinkly_update(Actor *this);
 /* .data */
 ActorAnimationInfo D_80391F50[] = {
     {0x000, 0.0f},
-    {0x178, 1e+08f},
-    {0x17C, 1e+08f},
-    {0x178, 1e+08f},
-    {0x17C, 2.0f},
-    {0x17C, 1.0f},
-    {0x17C, 2.0f}
+    {ASSET_178_ANIM_TWINKLY_SPAWNING, 100000000},
+    {ASSET_17C_ANIM_TWINKLY_IDLE,     100000000},
+    {ASSET_178_ANIM_TWINKLY_SPAWNING, 100000000},
+    {ASSET_17C_ANIM_TWINKLY_IDLE,     2.0f},
+    {ASSET_17C_ANIM_TWINKLY_IDLE,     1.0f},
+    {ASSET_17C_ANIM_TWINKLY_IDLE,     2.0f}
 };
 
 ActorInfo gChTwinklyBlue = { MARKER_200_TWINKLY_BLUE, ACTOR_332_TWINKLY_BLUE, ASSET_448_MODEL_TWINKLY_BLUE,
@@ -60,7 +60,7 @@ s32 D_803920B0[4] =  {0xFF, 0xFF, 0xFF, 0x00};
 
 /* .code */
 Actor *func_8038C0B0(ActorMarker *marker, UNK_TYPE(s32) arg1, f32 arg2, UNK_TYPE(s32) arg3){
-    UNK_TYPE(s32) sp5C = func_8033A12C(marker_loadModelBin(marker));
+    UNK_TYPE(s32) sp5C = modelbin_getUnk14List(marker_loadModelBin(marker));
     Actor *this = marker_getActor(marker);
     f32 sp4C[3];
     f32 sp40[3];
@@ -74,8 +74,8 @@ Actor *func_8038C0B0(ActorMarker *marker, UNK_TYPE(s32) arg1, f32 arg2, UNK_TYPE
     sp40[1] = this->lifetime_value;
     sp40[2] = (f32)marker->roll;
     sp3C = this->scale;
-    if(animMtxList_len(marker->unk20)){
-        return func_802EBAE0(sp5C, sp4C, sp40, sp3C, NULL, marker->unk20, arg1, arg2, arg3);
+    if(animMtxList_getLength(marker->unk20)){
+        return bkmodelunk14list_func_802EBAE0(sp5C, sp4C, sp40, sp3C, NULL, marker->unk20, arg1, arg2, arg3);
     }
     else{
         return NULL;
@@ -84,8 +84,8 @@ Actor *func_8038C0B0(ActorMarker *marker, UNK_TYPE(s32) arg1, f32 arg2, UNK_TYPE
 
 Actor *chTwinkly_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     Actor *this = marker_getActor(marker);
-    func_8033A45C(2, this->unk38_31);
-    func_8033A45C(1, func_8033A0F0(2) ^ 1);
+    modelRender_setAppendageVisibility(2, this->unk38_31);
+    modelRender_setAppendageVisibility(1, modelRender_func_8033A0F0(2) ^ 1);
     return actor_draw(marker, gfx, mtx, vtx);
 }
 
@@ -336,11 +336,11 @@ void chTwinkly_update(Actor *this){
             if(this->unk1C[1] <= this->position_y){
                 this->position_y = this->unk1C[1];
                 if(!fileProgressFlag_get(FILEPROG_82_MET_TWINKLIES)){
-                    gcdialog_showDialog(ASSET_C12_DIALOG_TWINKLIE_MINIGAME_START, 0x2a, this->position, this->marker, chTwinkly_setUpMinigame, NULL);
+                    gcdialog_showDialog(VER_SELECT(ASSET_C12_DIALOG_TWINKLIE_MINIGAME_START, 0x98C, 0, 0), 0x2a, this->position, this->marker, chTwinkly_setUpMinigame, NULL);
                     fileProgressFlag_set(FILEPROG_82_MET_TWINKLIES, TRUE);
                 }
                 else{
-                    gcdialog_showDialog(ASSET_C25_DIALOG_TWINKLIE_MINIGAME_RETRY, 0x2b, this->position, this->marker, chTwinkly_setUpMinigame, NULL);
+                    gcdialog_showDialog(VER_SELECT(ASSET_C25_DIALOG_TWINKLIE_MINIGAME_RETRY, 0x99F, 0, 0), 0x2b, this->position, this->marker, chTwinkly_setUpMinigame, NULL);
                 }
                 subaddie_set_state(this, 5);
                 this->pitch -= 3.0f;

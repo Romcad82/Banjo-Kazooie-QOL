@@ -3,6 +3,7 @@
 #include "variables.h"
 
 #include "core2/ba/physics.h"
+#include "core2/yaw.h"
 
 /* .bss */
 u8 D_8037D4B0;
@@ -30,9 +31,9 @@ void bsjig_jiggy_init(void){
     anctrl_setPlaybackType(aCtrl, ANIMCTRL_ONCE);
     anctrl_start(aCtrl, "bsjig.c", 0x7f);
     yaw_setIdeal(func_8029B41C()); //face camera
-    func_8029C7F4(1,1,3, BA_PHYSICS_NORMAL);
+    code_14420_setUpdateTypes(1, YAW_STATE_1_DEFAULT, 3, BA_PHYSICS_NORMAL);
     baphysics_set_target_horizontal_velocity(0.0f);
-    core1_ce60_incOrDecCounter(FALSE);
+    midichannel_incOrDecCounter(FALSE);
     func_8025A2FC(0,0xfa0);
     tmp = (item_getCount(ITEM_E_JIGGY) == 9); 
     if(tmp == 0) //weird if...
@@ -40,7 +41,7 @@ void bsjig_jiggy_init(void){
     D_8037D4B1 =  tmp;
     coMusicPlayer_playMusic(COMUSIC_D_JINGLE_JIGGY_COLLECTED, -1);
     func_8029151C(0xC);
-    func_8029E070(1);
+    modelAppendages_setKazooiesUpperHalfVisibility(TRUE);
     func_8030E6D4(SFX_33_BANJO_AHOO);
     baflag_clear(BA_FLAG_7_TOUCHING_JIGGY);
     baflag_clear(BA_FLAG_F);
@@ -101,12 +102,12 @@ void bsjig_jiggy_end(void){
         item_inc(ITEM_E_JIGGY);
 
     func_802B0CD8();
-    func_8029E070(0);
+    modelAppendages_setKazooiesUpperHalfVisibility(FALSE);
     func_80291548();
 
     if(bs_getNextState() != BS_34_JIG_NOTEDOOR){
         func_8025A2FC(-1, 0xfa0);
-        core1_ce60_incOrDecCounter(TRUE);
+        midichannel_incOrDecCounter(TRUE);
     }
     baMarker_collisionOn();
     if( jiggyscore_total() == 100 
@@ -154,8 +155,8 @@ void bsjig_jiggy_interrupt(void){
 void bsjig_notedoor_end(void){
     baMarker_collisionOn();
     func_8025A2FC(-1, 0xfa0);
-    core1_ce60_incOrDecCounter(TRUE);
-    func_8029E070(0);
+    midichannel_incOrDecCounter(TRUE);
+    modelAppendages_setKazooiesUpperHalfVisibility(FALSE);
     func_80291548();
     if( D_8037D4B2 
         && jiggyscore_total() == 100
@@ -177,15 +178,15 @@ void bsjig_notedoor_init(void){
     anctrl_setPlaybackType(aCtrl, ANIMCTRL_ONCE);
     anctrl_start(aCtrl, "bsjig.c", VER_SELECT(0x14d, 0x14f, 0, 0));
     yaw_setIdeal(func_8029B41C());
-    func_8029C7F4(1,1,3, BA_PHYSICS_NORMAL);
+    code_14420_setUpdateTypes(1, YAW_STATE_1_DEFAULT, 3, BA_PHYSICS_NORMAL);
     baphysics_set_target_horizontal_velocity(0.0f);
     if(bs_getPrevState() != BS_44_JIG_JIGGY){
-        core1_ce60_incOrDecCounter(FALSE);
+        midichannel_incOrDecCounter(FALSE);
         func_8025A2FC(0,0xfa0);
     }
     coMusicPlayer_playMusic(COMUSIC_42_NOTEDOOR_OPENING_FANFARE,-1);
     func_8029151C(0xc);
-    func_8029E070(1);
+    modelAppendages_setKazooiesUpperHalfVisibility(TRUE);
     func_8030E6D4(SFX_33_BANJO_AHOO);
     baMarker_collisionOff();
 }

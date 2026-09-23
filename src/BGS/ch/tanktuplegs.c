@@ -12,8 +12,8 @@ void chTanktupLeg_update(Actor *);
 
 ActorAnimationInfo chTanktupLegFrontLeftAnimations[3] = {
     {0, 0.0f},
-    {0x103, 8000000.0f},
-    {0x103, 0.75f}
+    {ASSET_103_ANIM_TANKTUP_LEGS_FRONT_LEFT, 8000000.0f},
+    {ASSET_103_ANIM_TANKTUP_LEGS_FRONT_LEFT, 0.75f}
 };
 
 ActorInfo gChTanktupLegFrontLeft = {
@@ -26,8 +26,8 @@ u8 pad_80390CCC[4] = {0};
 
 ActorAnimationInfo chTanktupLegBackLeftAnimations[3] = {
     {0, 0.0f},
-    {0x104, 8000000.0f},
-    {0x104, 0.75f}
+    {ASSET_104_ANIM_TANKTUP_LEGS_BACK_LEFT, 8000000.0f},
+    {ASSET_104_ANIM_TANKTUP_LEGS_BACK_LEFT, 0.75f}
 };
 
 ActorInfo gChTanktupLegBackLeft = {
@@ -40,8 +40,8 @@ u8 pad_80390CEC[4] = {0};
 
 ActorAnimationInfo chTanktupLegFrontRightAnimations[3] = {
     {0, 0.0f},
-    {0x105, 8000000.0f},
-    {0x105, 0.75f}
+    {ASSET_105_ANIM_TANKTUP_LEGS_FRONT_RIGHT, 8000000.0f},
+    {ASSET_105_ANIM_TANKTUP_LEGS_FRONT_RIGHT, 0.75f}
 };
 
 ActorInfo gChTanktupLegFrontRight = {
@@ -54,8 +54,8 @@ u8 pad_80390C2C[4] = {0};
 
 ActorAnimationInfo chTanktupLegBackRightAnimations[3] = {
     {0, 0.0f},
-    {0x106, 8000000.0f},
-    {0x106, 0.75f}
+    {ASSET_106_ANIM_TANKTUP_LEGS_BACK_RIGHT, 8000000.0f},
+    {ASSET_106_ANIM_TANKTUP_LEGS_BACK_RIGHT, 0.75f}
 };
 
 ActorInfo gChTanktupLegBackRight = {
@@ -65,22 +65,26 @@ ActorInfo gChTanktupLegBackRight = {
     0, 0x166, 0.0f, 0
 };
 
+enum chTanktupLegState {
+    CH_TANKTUP_LEG_STATE_2_OW = 2
+};
+
 /* .code */
-void func_8038FB40(ActorMarker *this, s32 arg1){
+void chTanktupLeg_retractLeg(ActorMarker *this, s32 arg1){
     Actor * thisActor;
 
     thisActor = marker_getActor(this);
-    subaddie_set_state(thisActor, 2);
+    subaddie_set_state(thisActor, CH_TANKTUP_LEG_STATE_2_OW);
     actor_playAnimationOnce(thisActor);
     FUNC_8030E624(SFX_A_BANJO_LANDING_05, 0.8f, 32750);
 }
 
-void BGS_func_8038FB84(ActorMarker *this, ActorMarker *other_marker){
+void chTanktupLeg_despawn(ActorMarker *this, ActorMarker *other_marker){
     Actor *thisActor;
 
     thisActor = marker_getActor(this);
     sfx_playFadeShorthandDefault( SFX_87_TANKTUP_OOOHW, 1.0f, 32750, thisActor->position, 1000, 3000);
-    timedFunc_set_2(0.65f, (GenFunction_2) func_8038FB40, (s32) this, (s32) other_marker);
+    timedFunc_set_2(0.65f, (GenFunction_2) chTanktupLeg_retractLeg, (s32) this, (s32) other_marker);
     func_8038F51C(thisActor);
     this->collidable = FALSE;
 }
@@ -89,9 +93,9 @@ void chTanktupLeg_update(Actor *this){
     if(!this->initialized){
         this->initialized = TRUE;
         this->marker->propPtr->unk8_3 = 1;
-        marker_setCollisionScripts(this->marker, NULL, NULL, BGS_func_8038FB84);
+        marker_setCollisionScripts(this->marker, NULL, NULL, chTanktupLeg_despawn);
     }
-    if(this->state == 2){
+    if(this->state == CH_TANKTUP_LEG_STATE_2_OW){
         if(anctrl_isAt(this->anctrl, 0.65f)){
             gcsfx_play(SFX_7C_CHEBOOF);
         }

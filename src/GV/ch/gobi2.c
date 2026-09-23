@@ -85,7 +85,7 @@ void chGobi2_setState(Actor *this, s32 next_state){
         timed_playSfx(0.8f, SFX_4B_GULPING, 0.8f, 28000);
         timed_playSfx(1.4f, SFX_4B_GULPING, 0.8f, 28000);
         timed_playSfx(2.0f, SFX_4B_GULPING, 0.8f, 28000);
-        func_80324DBC(3.0f, ASSET_A72_DIALOG_TRUNKER_HELPED, 0x2A, D_80390CEC, this->marker, func_80387A2C, NULL);
+        func_80324DBC(3.0f, VER_SELECT(ASSET_A72_DIALOG_TRUNKER_HELPED, 0x92E, 0, 0), 0x2A, D_80390CEC, this->marker, func_80387A2C, NULL);
     }//L80387C94
 
     if(next_state == 4){
@@ -125,13 +125,13 @@ Actor *chGobi2_draw(ActorMarker *this_marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     }
 
     if(this->state == 6)
-        func_8033A280(2.0f);
+        modelRender_func_8033A280(2.0f);
 
     sp3C[0] = this->pitch;
     sp3C[1] = this->yaw;
     sp3C[2] = this->roll;
     modelRender_setBoneTransformList(skeletalAnim_getBoneTransformList(this->unk148));
-    modelRender_preDraw((GenFunction_1)actor_predrawMethod, (s32)this);
+    modelRender_setPreDrawCallback((GenFunction_1)actor_predrawMethod, (s32)this);
     modelRender_draw(gfx, mtx, this->position, sp3C, 1.0f, NULL, marker_loadModelBin(this_marker));
 
     if(this->state == 4){
@@ -203,7 +203,7 @@ void chGobi2_update(Actor *this){
         if(!this->has_met_before){
             if(subaddie_playerIsWithinSphereAndActive(this, 0xFA) && !subaddie_playerIsWithinSphereAndActive(this, 0x50)){
                 if(func_8028F2A0()){
-                    if(gcdialog_showDialog(ASSET_A75_DIALOG_GOBI2_MEET, 0, this->position, NULL, NULL, NULL))
+                    if(gcdialog_showDialog(VER_SELECT(ASSET_A75_DIALOG_GOBI2_MEET, 0x931, 0, 0), 0, this->position, NULL, NULL, NULL))
                         this->has_met_before = TRUE;
                 }
             }

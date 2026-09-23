@@ -39,12 +39,6 @@ extern f32 fabsf(f32);
 
 void func_80241304(Mtx *m, float x, float y, float z);
 
-void _guMtxIdentF_80245D44(float mf[4][4]); //static should NOT be here
-
-void * malloc(s32 size);
-void free(void*);
-void *realloc(void* ptr, s32 size);
-
 
 
 bool  baanim_isAt(f32);
@@ -69,7 +63,7 @@ u32 bakey_held(s32);
 void pitch_setIdeal(f32);
 f32 pitch_get(void);
 
-void climbGetBottom(f32 dst[3]);
+void climb_getBottom(f32 dst[3]);
 
 void yaw_setIdeal(f32);
 
@@ -90,22 +84,6 @@ void bs_updateState(void);
 s32 bs_checkInterrupt(enum bs_interrupt_e arg0);
 void bs_setInterruptResponse(s32 arg0);
 enum bs_interrupt_e bs_getInterruptType(void);
-
-/* vla - variable length array*/
-void    vector_clear(VLA *this);
-void *  vector_getBegin(VLA *this);
-void *  vector_at(VLA *this, u32 n);
-s32     vector_getIndex(VLA *this, void *element);
-s32     vector_size(VLA *this);
-void *  vector_getEnd(VLA *this);
-void *  vector_pushBackNew(VLA **thisPtr);
-void *  vector_insertNew(VLA **thisPtr, s32 indx);
-void    vector_free(VLA *this);
-VLA *   vector_new(u32 elemSize, u32 cnt);
-void    vector_remove(VLA *this, u32 indx);
-void    vector_popBack_n(VLA *this, u32 n);
-void    vector_assign(VLA *this, s32 indx, void* value);
-VLA *   vector_defrag(VLA *this);
 
 
 void actor_collisionOff(Actor *);
@@ -209,14 +187,12 @@ void particleEmitter_setParticleVelocityRange(ParticleEmitter *, f32, f32, f32, 
 void func_802EFF50(ParticleEmitter *, f32);
 void particleEmitter_setRGB(ParticleEmitter *this, s32 arg1[3]);
 void particleEmitter_setSpawnInterval(ParticleEmitter *, f32);
-OSContPad *func_8024F3F4(void);
-OSMesgQueue *pfsManager_getFrameReplyQ(void);
-
-void baMotor_80250D94(f32, f32, f32);
+OSContPad *joy_getInputsPrimary(void);
+OSMesgQueue *si_getReplyQueue(void);
 
 void coMusicPlayer_playMusic(enum comusic_e, s32);
 void comusic_playTrack(enum comusic_e);
-void comusic_8025AB44(enum comusic_e comusic_id, s32 arg1, s32 arg2);
+void comusic_8025AB44(enum comusic_e track_id, s32 arg1, s32 arg2);
 
 f32  cosf(f32);
 
@@ -250,7 +226,7 @@ void bafalldamage_start(void);
 void func_80293D48(f32, f32);
 f32  func_80294438(void);
 f32  floor_getCurrentFloorYPosition(void);
-BKCollisionTri *func_802946F0(void);
+BKCollisionTriangle *func_802946F0(void);
 void func_80294980(f32 arg0[3]);
 f32  get_slope_timer(void);
 f32  get_turbo_duration(void);
@@ -291,11 +267,11 @@ f32  func_8029B41C(void);
 ParticleEmitter *func_8029B950(f32[3],f32);
 void func_8029C3E8(f32, f32);
 void func_8029CF48(s32, s32, f32);
-f32  func_8029DFC8(void);
-f32  func_8029DFD4(void);
-void func_8029E090(bool, f32);
-void func_8029E0C4(f32);
-void func_8029E0D0(f32);
+f32  modelAppendages_showBanjosLeftEye(void);
+f32  modelAppendages_showBanjosRightEye(void);
+void modelAppendages_setKazooiesUpperHalfVisibilityAndTimer(bool, f32);
+void modelAppendages_setBanjosLeftEyeVisibility(f32);
+void modelAppendages_setBanjosRightEyeVisibility(f32);
 void func_802BD8A4(f32, f32, f32);
 f32  func_802BD8D4(void);
 void func_802BE244(f32, f32);
@@ -358,7 +334,6 @@ void func_8030EBC8(enum sfx_e uid, f32 arg1, f32 arg2, s32 arg3, s32 arg4);
 void func_8030EC20(enum sfx_e uid, f32 arg1, f32 arg2, u32 arg3, u32 arg4);
 u8 func_8030ED2C(enum sfx_e uid, s32 arg1);
 
-void fileProgressFlag_setN(enum file_progress_e, s32, s32);
 Actor *marker_getActorAndRotation(ActorMarker *marker, f32 rotation[3]);
 Actor *fxTouchSparkle_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
 Actor *actor_drawFullDepth(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
@@ -382,7 +357,7 @@ int  func_80329078(Actor *, s32, s32);
 int  func_80329480(Actor *);
 s32  subaddie_getYawToPlayer(Actor *);
 void func_80329878(Actor *, f32);
-struct5Bs *func_80329934(void);
+Vec3fArray *func_80329934(void);
 Actor *func_8032A7AC(Actor *);
 Prop *func_8032F528(void);
 ActorMarker *func_8032FBE4(f32 *pos, MarkerDrawFunc arg1, int arg2, enum asset_e model_id);
@@ -393,11 +368,10 @@ BKModelBin *  func_80330B1C(ActorMarker *marker);
 BKVertexList *func_80330C74(Actor *actor);
 BKModelBin *  func_80330DE4(ActorMarker *marker);
 BKModelBin *modelRender_draw(Gfx**, Mtx**, f32 [3], f32[3], f32, f32*, BKModelBin*);
-void func_8033A280(f32);
+
 
 void func_80346C10(enum bs_e *retVal, enum bs_e fail_state, enum bs_e success_state, enum item_e item_id, int use_item);
 void func_80347A14(s32);
-void func_8034A174(struct5Bs *this, s32 indx,f32 dst[3]);
 Struct70s *func_8034C528(s32);
 Struct70s *func_8034C5AC(s32);
 void func_8034DC08(Struct6Ds *, f32[3], f32[3], f32, s32);
@@ -432,8 +406,6 @@ void timed_setStaticCameraToNode(f32, s32);
 void timed_exitStaticCamera(f32 time);
 int actor_animationIsAt(Actor*, f32);
 
-void baMotor_80250E94(f32, f32, f32, f32, f32, f32);
-
 
 void bundle_setYaw(f32);
 void func_802F9DB8(s32, f32, f32, f32);
@@ -451,7 +423,6 @@ void levelSpecificFlags_set(s32, s32);
 void musicKeepsPlaying(void);
 
 void actor_predrawMethod(Actor *);
-void mapSpecificFlags_set(s32, s32);
 
 struct0 *func_8031B9D8(void);
 
@@ -464,8 +435,8 @@ void actor_update_func_80326224(Actor *this);
 void func_802F9FD0(s32, f32, f32, f32);
 void func_80324D54(f32, enum sfx_e, f32, s32, f32 [3], f32, f32);
 
-f32 climbGetBottomY(void);
-f32 climbGetTopY(void);
+f32 climb_getBottomY(void);
+f32 climb_getTopY(void);
 void func_802596AC(f32 a0[3], f32 a1[3], f32 a2[3], f32 a3[3]);
 
 void controller_copyFaceButtons(s32, s32 [6]);
@@ -476,7 +447,7 @@ void __spawnQueue_add_1(GenFunction_1, s32);
 void func_802FAD64(enum item_e);
 void nodeprop_getPosition(NodeProp *, f32[3]);
 bool gcdialog_showDialog(s32 text_id, s32 arg1, f32 *pos, ActorMarker *marker, void(*callback)(ActorMarker *, enum asset_e, s32), void(*arg5)(ActorMarker *, enum asset_e, s32));
-void ability_unlock(enum ability_e);
+void player_unlockAbility(enum ability_e);
 
 extern void func_802EE278(Actor *, s32, s32, s32, f32, f32);
 extern void fxSparkle_chTreasure(s16[3]);
@@ -494,11 +465,6 @@ extern void marker_setActorUpdateFunc(ActorMarker *marker, ActorUpdateFunc metho
 extern void marker_setActorUpdate2Func(ActorMarker *marker, ActorUpdateFunc method);
 extern void marker_callCollisionFunc(ActorMarker *, ActorMarker *, enum marker_collision_func_type_e);
 extern enum marker_collision_func_type_e collision_getNextState(CollisionParams *arg0);
-extern s32  volatileFlag_get(enum volatile_flags_e);
-extern s32 volatileFlag_getN(enum volatile_flags_e index, s32 numBits);
-extern s32 volatileFlag_getAndSet(enum volatile_flags_e index, s32 arg1);
-extern void volatileFlag_set(enum volatile_flags_e index, s32 set);
-extern void volatileFlag_setN(enum volatile_flags_e startIndex, s32 set, s32 length);
 
 extern void itemscore_noteScores_clear(void);
 extern s32 itemscore_noteScores_get(enum level_e lvl_id);
@@ -511,8 +477,10 @@ extern void baflag_set(enum misc_flag_e arg0);
 extern void baflag_clear(enum misc_flag_e arg0);
 extern void baflag_toggle(enum misc_flag_e arg0);
 
-extern void piMgr_read(void *vaddr, s32 devaddr, s32 size);
-
 s32 game_defrag(void);
+
+void bkmemcpy64(void *dest, void *src, s32 size); // handwritten assembly code that performs an optimized 8 byte memcpy
+void bkmemset64(void *dest, s32 value, s32 size); // handwritten assembly code that performs an optimized 8 byte memset
+u32 bkGetSR(void); // handwritten assembly code that replicates the __osGetSR function
 
 #endif

@@ -178,7 +178,7 @@ void func_803898EC() {
 }
 
 void func_80389910() {
-    gcdialog_showDialog(ASSET_AD5_DIALOG_MOTZAND_COMPLETE, 0xE, NULL, NULL, MMM_func_80389810, NULL);
+    gcdialog_showDialog(VER_SELECT(ASSET_AD5_DIALOG_MOTZAND_COMPLETE, 0x947, 0, 0), 0xE, NULL, NULL, MMM_func_80389810, NULL);
     timedFunc_set_2(0.0f, (GenFunction_2)coMusicPlayer_playMusic, COMUSIC_2D_PUZZLE_SOLVED_FANFARE, 0x7FFF);
     timed_setStaticCameraToNode(2.0f, 0);
     timedFunc_set_0(2.1f, MMM_func_803898A0);
@@ -199,10 +199,10 @@ void organMinigame_setState(s32 next_state){
     if (next_state == 2) {
         if (Me.pattern == 0) {
             Me.pattern = 1;
-            gcdialog_showDialog(ASSET_AD3_DIALOG_MOTZAND_MEET, 4, NULL, NULL, MMM_func_80389810, NULL);
+            gcdialog_showDialog(VER_SELECT(ASSET_AD3_DIALOG_MOTZAND_MEET, 0x945, 0, 0), 4, NULL, NULL, MMM_func_80389810, NULL);
         }
         else {//L80389A84
-            gcdialog_showDialog(ASSET_AD6_DIALOG_MOTZAND_RETRY, 4, NULL, NULL, MMM_func_80389810, NULL);
+            gcdialog_showDialog(VER_SELECT(ASSET_AD6_DIALOG_MOTZAND_RETRY, 0x948, 0, 0), 4, NULL, NULL, MMM_func_80389810, NULL);
         }
     }//L80389A9C
 
@@ -219,13 +219,13 @@ void organMinigame_setState(s32 next_state){
     }//L80389AF4
 
     if(next_state == 4){
-        gcdialog_showDialog(ASSET_ADD_DIALOG_MOTZAND_MISS, 4, NULL, NULL, MMM_func_80389810, NULL);
+        gcdialog_showDialog(VER_SELECT(ASSET_ADD_DIALOG_MOTZAND_MISS, 0x94F, 0, 0), 4, NULL, NULL, MMM_func_80389810, NULL);
         func_80387720(Me.motzhand_marker);
     }
 
     if(next_state == 5){
         Me.pattern++;
-        gcdialog_showDialog(ASSET_AD4_DIALOG_MOTZAND_HALFWAY, 4, NULL, NULL, MMM_func_80389810, NULL);
+        gcdialog_showDialog(VER_SELECT(ASSET_AD4_DIALOG_MOTZAND_HALFWAY, 0x946, 0, 0), 4, NULL, NULL, MMM_func_80389810, NULL);
         func_80387720(Me.motzhand_marker);
     }
 
@@ -316,7 +316,7 @@ void code3420_handleOrganGame(s32 arg0, s32 arg1) {
     bool is_black_key;
 
     Me.unk8 = D_8038BF20;
-    func_80250170(0, 0x6A, 0);
+    musicSlot_func_80250170(0, 0x6A, 0);
     Me.state = 0;
 
     if ((gsworld_getMap() == MAP_1C_MMM_CHURCH) && (arg1 == 2)) {
@@ -357,7 +357,7 @@ void code3420_handleOrganGame(s32 arg0, s32 arg1) {
 
 
 void maOrgan_update(void){
-    UNK_TYPE(u32) sp4C;
+    s32 chan;
     f32 motzhand_dist;
     Actor *motzhand;
     f32 sp38[3];
@@ -368,8 +368,8 @@ void maOrgan_update(void){
         return;
     }
 
-    if(func_802501A0(0, 0x6A, &sp4C)){
-        func_80250170(0, 0x6A, 0);
+    if(musicSlot_func_802501A0(0, 0x6A, &chan)){
+        musicSlot_func_80250170(0, 0x6A, 0);
         Me.unk8++;
         if(Me.unk8->unk4 == -1){
             Me.unk8 = &D_8038BF20[10];

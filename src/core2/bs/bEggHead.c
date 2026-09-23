@@ -3,7 +3,7 @@
 #include "variables.h"
 
 #include "core2/abilityprogress.h"
-
+#include "core2/yaw.h"
 #include "core2/ba/physics.h"
 #include "core2/commonParticle.h"
 
@@ -17,10 +17,10 @@ u8 D_8037D2F1;
 /* .code */
 void bsegghead_init(void){
     baanim_playForDuration_onceSmooth(ASSET_2A_ANIM_BSEGGHEAD, 1.0f);
-    func_8029C7F4(1,3,1, BA_PHYSICS_LOCKED_ROTATION);
+    code_14420_setUpdateTypes(1, YAW_STATE_3_BOUNDED, 1, BA_PHYSICS_LOCKED_ROTATION);
     yaw_setVelocityBounded(350.0f, 14.0f);
     baphysics_set_target_horizontal_velocity(0.0f);
-    func_8029E070(1);
+    modelAppendages_setKazooiesUpperHalfVisibility(TRUE);
     D_8037D2F0 = (D_8037D2F1 = 1);
     bainput_enable(2,0);
 }
@@ -52,7 +52,7 @@ void bsegghead_update(void) {
         if (anctrl_isAt(aCtrl, 0.4704f)){
             commonParticle_new(COMMON_PARTICLE_1_EGG_HEAD, 1);
             item_dec(ITEM_D_EGGS);
-            ability_use(ABILITY_USED_EGG);
+            ability_setUsedWithDialog(ABILITY_USED_7_EGG);
         }
         if ((anctrl_isAt(aCtrl,  0.5919f)) &&  (D_8037D2F1 < D_8037D2F0)) {
             anctrl_setStart(aCtrl, 0.3878f);
@@ -61,7 +61,7 @@ void bsegghead_update(void) {
         }
     }
     if (anctrl_isStopped(aCtrl)) {
-        next_state = (bakey_held(BUTTON_Z))? BS_CROUCH : BS_1_IDLE;
+        next_state = (bakey_held(BUTTON_Z))? BS_7_CROUCH : BS_1_IDLE;
 
     } else if (0.65 < (f64) anctrl_getAnimTimer(aCtrl)) {
         next_state = func_802ADCD4(0);
@@ -74,5 +74,5 @@ void bsegghead_update(void) {
 void bsegghead_end(void){
     bainput_enable(2, 1);
     baphysics_reset_gravity();
-    func_8029E070(0);
+    modelAppendages_setKazooiesUpperHalfVisibility(FALSE);
 }

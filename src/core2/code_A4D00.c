@@ -15,7 +15,7 @@ extern f32 func_8033229C(ActorMarker *marker);
 
 extern f32 func_80309B24(f32 [3]);
 
-extern BKCollisionTri *func_80320C94(f32 arg0[3], f32 arg1[3], f32 arg2, f32 arg3[3], s32 arg4, u32 arg5);
+extern BKCollisionTriangle *func_80320C94(f32 arg0[3], f32 arg1[3], f32 arg2, f32 arg3[3], s32 arg4, u32 arg5);
 
 /* .h */
 typedef bool (*method_core2_A4D00_0)(Actor *, f32[3], s32, s32);
@@ -23,7 +23,7 @@ typedef bool (*method_core2_A4D00_0)(Actor *, f32[3], s32, s32);
 typedef struct {
     f32 unk0[3];
     f32 unkC[3];
-    BKCollisionTri *unk18;
+    BKCollisionTriangle *unk18;
     f32 unk1C[3];
     f32 unk28[3];
     f32 unk34[3];
@@ -236,7 +236,7 @@ bool func_8032C2F0(Actor *arg0, f32 arg1[3], s32 arg2, s32 arg3) {
     sp6C[0] = arg0->actor_specific_1_f;
     sp6C[1] = 0.0f;
     sp6C[2] = 0.0f;
-    guRotateRPYF(sp20[0], arg0->roll, 90.0f - arg0->yaw, arg0->pitch);
+    core1_3250_guRotateRPYF(sp20[0], arg0->roll, 90.0f - arg0->yaw, arg0->pitch);
     sp60[0] = (sp20[0][0] * sp6C[0]) + (sp20[0][1] * sp6C[1]) + (sp20[0][2] * sp6C[2]);
     sp60[1] = (sp20[1][0] * sp6C[0]) + (sp20[1][1] * sp6C[1]) + (sp20[1][2] * sp6C[2]);
     sp60[2] = (sp20[2][0] * sp6C[0]) + (sp20[2][1] * sp6C[1]) + (sp20[2][2] * sp6C[2]);

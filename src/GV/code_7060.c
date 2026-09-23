@@ -9,10 +9,10 @@ void func_8038D47C(Actor *this);
 /* .data */
 ActorAnimationInfo D_80391290[] = {
     {0, 0.0f},
-    {0x144, 32000000.0f},
-    {0x144, 0.95f},
-    {0x145, 1.92f},
-    {0x144, 32000000.0f}
+    {ASSET_144_ANIM_unk, 32000000.0f},
+    {ASSET_144_ANIM_unk, 0.95f},
+    {ASSET_145_ANIM_unk, 1.92f},
+    {ASSET_144_ANIM_unk, 32000000.0f}
 };
 ActorInfo D_803912B8 = {
     MARKER_F9_JINXY, ACTOR_1F7_JINXY, ASSET_422_MODEL_JINXY, 
@@ -74,7 +74,7 @@ void func_8038D47C(Actor *this){
         player_getPosition(sp3C);
         if(player_movementGroup() == BSGROUP_0_NONE){
             if( ml_vec3f_distance(sp3C, this->unk1C) < 100.0f || ml_vec3f_distance(sp3C, this->velocity) < 100.0f){
-                if(gcdialog_showDialog(ASSET_A7B_DIALOG_JINXY_MEET, 0, NULL, NULL, NULL, NULL)){
+                if(gcdialog_showDialog(VER_SELECT(ASSET_A7B_DIALOG_JINXY_MEET, 0x937, 0, 0), 0, NULL, NULL, NULL, NULL)){
                     mapSpecificFlags_set(0x14, 1);
                 }
             }
@@ -103,7 +103,7 @@ void func_8038D47C(Actor *this){
             }
             if( actor_animationIsAt(this, 0.99f) ){
                 if(--this->unk38_31 == 0){
-                    gcdialog_showDialog(ASSET_A7C_DIALOG_JINXY_ONE_EGG, 4, NULL, NULL, NULL, NULL);
+                    gcdialog_showDialog(VER_SELECT(ASSET_A7C_DIALOG_JINXY_ONE_EGG, 0x938, 0, 0), 4, NULL, NULL, NULL, NULL);
                     mapSpecificFlags_set(0x14, TRUE);
                     subaddie_set_state_forward(this, 1);
                 }

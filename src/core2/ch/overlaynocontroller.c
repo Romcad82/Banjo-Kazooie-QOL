@@ -14,11 +14,13 @@ void chOverlayNoController_update(Actor *this);
 /* .data */
 ActorAnimationInfo D_80368150[] ={
     {0, 0.0f},
-    {0x286, 1.1f},
-    {0x287, 1.6f}
+    {ASSET_286_ANIM_unk, 1.1f},
+    {ASSET_287_ANIM_unk, 1.6f}
 };
+
 f32 D_80368168[3] = {0.0f, 0.0f, 0.0f};
-ActorInfo D_80368174 = { 
+
+ActorInfo chOverlayNoController = { 
     MARKER_178_NO_CONTROLLER_OVERLAY, ACTOR_1DF_NO_CONTROLLER_OVERLAY, ASSET_55D_MODEL_NO_CONTROLLER_OVERLAY, 
     0x0, D_80368150,
     chOverlayNoController_update, actor_update_func_80326224, chOverlayNoController_draw,
@@ -38,8 +40,8 @@ Actor *chOverlayNoController_draw(ActorMarker *marker, Gfx **gdl, Mtx **mptr, Vt
     
 
     actor = marker_getActor(marker);
-    modelRender_preDraw((GenFunction_1)actor_predrawMethod,  (s32)actor);
-    modelRender_postDraw((GenFunction_1)actor_postdrawMethod, (s32)marker);
+    modelRender_setPreDrawCallback((GenFunction_1)actor_predrawMethod,  (s32)actor);
+    modelRender_setPostDrawCallback((GenFunction_1)actor_postdrawMethod, (s32)marker);
     viewport_backupState();
     {sp58[0] = 0.0f; sp58[1] = 0.0f; sp58[2] = 1312.5f;};
     {sp4C[0] = 0.0f; sp4C[1] = 0.0f; sp4C[2] = 0.0f;};

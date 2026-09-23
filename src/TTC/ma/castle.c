@@ -155,12 +155,12 @@ struct
 } sMapState;
 
 /* .code */
-static void __maCastle_transformMeshCallbackOverlayUpdate(s32 arg0, BKVtxRef *vtx_ref, Vtx *vtx, s32 arg2)
+static void __maCastle_transformMeshCallbackOverlayUpdate(s32 arg0, BKModelVtxRef *vtx_ref, Vtx *vtx, s32 arg2)
 {
     vtx->v.ob[1] += 2;
 }
 
-static void __maCastle_transformMeshCallbackOverlayInit(s32 arg0, BKVtxRef *vtx_ref, Vtx *vtx, s32 arg2)
+static void __maCastle_transformMeshCallbackOverlayInit(s32 arg0, BKModelVtxRef *vtx_ref, Vtx *vtx, s32 arg2)
 {
     vtx->v.ob[1] += 0xf0;
 }
@@ -172,12 +172,12 @@ static void __maCastle_setupCheatCodeTimer(s32 new_timer_state)
         if (volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME))
         {
             // set timer to 50 seconds
-            item_set(ITEM_0_HOURGLASS_TIMER, 2999);
+            item_set(ITEM_0_HOURGLASS_TIMER, VER_SELECT(2999, 2499, 0, 0));
         }
         else
         {
             // set timer to 100 seconds
-            item_set(ITEM_0_HOURGLASS_TIMER, 5999);
+            item_set(ITEM_0_HOURGLASS_TIMER, VER_SELECT(5999, 4999, 0, 0));
         }
 
         item_set(ITEM_6_HOURGLASS, TRUE);
@@ -219,7 +219,7 @@ static void __maCastle_initFloorTiles(void)
     mapSpecificFlags_set(TTC_SPECIFIC_FLAG_1_UNKNOWN, FALSE);
 }
 
-static void __maCastle_meshCallbackFloorTileState_1(s32 arg0, BKVtxRef *ref, Vtx *dst, s32 arg3)
+static void __maCastle_meshCallbackFloorTileState_1(s32 arg0, BKModelVtxRef *ref, Vtx *dst, s32 arg3)
 {
     LetterFloorTile *ptr = (LetterFloorTile *)arg3;
     f32 temp_f2;
@@ -253,7 +253,7 @@ static void __maCastle_setLetterFloorTileState(LetterFloorTile *arg0, s32 arg1)
     }
 }
 
-static void __maCastle_meshCallbackFloorTileState_3(s32 arg0, BKVtxRef *ref, Vtx *dst, s32 arg3)
+static void __maCastle_meshCallbackFloorTileState_3(s32 arg0, BKModelVtxRef *ref, Vtx *dst, s32 arg3)
 {
     LetterFloorTile *ptr = (LetterFloorTile *)arg3;
     f32 temp_f12;
@@ -271,7 +271,7 @@ static void __maCastle_meshCallbackFloorTileState_3(s32 arg0, BKVtxRef *ref, Vtx
     }
 }
 
-static void __maCastle_meshCallbackFloorTileState_5(s32 arg0, BKVtxRef *ref, Vtx *dst, s32 arg3)
+static void __maCastle_meshCallbackFloorTileState_5(s32 arg0, BKModelVtxRef *ref, Vtx *dst, s32 arg3)
 {
     LetterFloorTile *ptr = (LetterFloorTile *)arg3;
     f32 temp_f2;
@@ -303,15 +303,15 @@ static void __maCastle_updateTimeDeltaSumForFloorTiles()
         floor_tile->timeDeltaSum += time_delta;
         if (floor_tile->state == 1)
         {
-            BKModel_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_1, (s32)floor_tile);
+            model_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_1, (s32)floor_tile);
         }
         else if (floor_tile->state == 3)
         {
-            BKModel_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_3, (s32)floor_tile);
+            model_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_3, (s32)floor_tile);
         }
         else if (floor_tile->state == 5)
         {
-            BKModel_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_5, (s32)floor_tile);
+            model_transformMesh(sMapState.model1, floor_tile->meshId, __maCastle_meshCallbackFloorTileState_5, (s32)floor_tile);
         }
     }
 }
@@ -501,9 +501,9 @@ static void __maCastle_resetCheatCodeProgress(void)
     }
 
     if (volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME))
-        strcpy(sCheatCodes[0].code, "j4663n86pink"); // EIOOZAKOJNAB
+        bk_strcpy(sCheatCodes[0].code, "j4663n86pink"); // EIOOZAKOJNAB
     else
-        strcpy(sCheatCodes[0].code, "knip68n3664j"); // BANJOKAZOOIE
+        bk_strcpy(sCheatCodes[0].code, "knip68n3664j"); // BANJOKAZOOIE
 
     __maCastle_resetSecretCheatCodeProgress();
 }
@@ -550,7 +550,7 @@ void maCastle_init(void)
             timed_exitStaticCamera(2.0f);
             func_80324E38(2.0f, 0);
             musicKeepsPlaying();
-            timedFunc_set_3(2.0f, (GenFunction_3)transitionToMap, MAP_7_TTC_TREASURE_TROVE_COVE, 1, 0);
+            timedFunc_set_3(2.0f, (GenFunction_3)transitionToMap, MAP_7_TTC_TREASURE_TROVE_COVE, WARP_TTC_1_LEAKY, 0);
         }
         else if (levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN) || volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME)) {
             func_8034E71C(sp2C, -500, 0.0f);
@@ -580,7 +580,7 @@ void maCastle_init(void)
 
         if (jiggyscore_isCollected(JIGGY_10_TTC_SANDCASTLE) && !volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME))
         {
-            BKModel_transformMesh(sMapState.model2, 0x3C, __maCastle_transformMeshCallbackOverlayInit, 0);
+            model_transformMesh(sMapState.model2, 0x3C, __maCastle_transformMeshCallbackOverlayInit, 0);
             sMapState.banjoKazooieCodeEnteredState = 3;
         }
         __maCastle_setsecretCheatCodeRelatedValue();
@@ -625,9 +625,9 @@ void maCastle_update(void)
         }
         if ((sMapState.banjoKazooieCodeEnteredState == 0) || (sMapState.banjoKazooieCodeEnteredState == 3))
         {
-            if ((levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN) || volatileFlag_get(VOLATILE_FLAG_3)) && (player_getActiveHitbox(0) == HITBOX_1_BEAK_BUSTER) && func_8028F20C())
+            if ((levelSpecificFlags_get(LEVEL_FLAG_2_TTC_UNKNOWN) || volatileFlag_get(VOLATILE_FLAG_3)) && (player_getActiveHitbox(0) == HITBOX_1_BEAK_BUSTER) && player_isStableWithExtraSteps())
             {
-                mesh_id_closest_to_player = func_8033F3C0(sMapState.model1, player_position);
+                mesh_id_closest_to_player = model_func_8033F3C0(sMapState.model1, player_position);
                 if (mesh_id_closest_to_player != 0)
                 {
                     floor_tile = __maCastle_getFloorTileForMeshId(mesh_id_closest_to_player);
@@ -645,7 +645,7 @@ void maCastle_update(void)
         else if (sMapState.banjoKazooieCodeEnteredState == 2)
         {
             sMapState.unkC = (f32)(sMapState.unkC + time_delta);
-            BKModel_transformMesh(sMapState.model2, 0x3C, __maCastle_transformMeshCallbackOverlayUpdate, 0);
+            model_transformMesh(sMapState.model2, 0x3C, __maCastle_transformMeshCallbackOverlayUpdate, 0);
             if (sMapState.unkC > 4.0f)
             {
                 sMapState.banjoKazooieCodeEnteredState = 3;
@@ -1527,7 +1527,7 @@ static void __maCastle_eraseGameplayDialogCallback(ActorMarker *caller, enum ass
     {
         __maCastle_setNumberOfBannedCheatcodesEntered(3);
         __maCastle_checkSecretCheatCodeIndex(sThirdForbiddenSecretCheatCodeIndex);
-        gcdialog_showDialog(ASSET_FBF_DIALOG_ERASED_SAVE, 0xC, NULL, NULL, NULL, NULL);
+        gcdialog_showDialog(VER_SELECT(ASSET_FBF_DIALOG_ERASED_SAVE, 0xB25, 0, 0), 0xC, NULL, NULL, NULL, NULL);
         gameFile_clear(gameSelect_getGameNumber());
         gameFile_8033CFD4(gameSelect_getGameNumber());
         gameSelect_setGameNumber(-1);
@@ -1572,11 +1572,11 @@ static void __maCastle_checkIfBannedCheatCodeEntered(s32 secret_cheat_code_index
                         __maCastle_setNumberOfBannedCheatcodesEntered(2);
                         __maCastle_checkSecretCheatCodeIndex(secret_cheat_code_index);
                         __maCastle_resetSecretCheatCodeProgress();
-                        gcdialog_showDialog(ASSET_FBE_DIALOG_CHEATING_ERASE_SAVE_WARNING, 0xC, NULL, NULL, NULL, NULL);
+                        gcdialog_showDialog(VER_SELECT(ASSET_FBE_DIALOG_CHEATING_ERASE_SAVE_WARNING, 0xB24, 0, 0), 0xC, NULL, NULL, NULL, NULL);
                         return;
                     case 2:
                         sThirdForbiddenSecretCheatCodeIndex = secret_cheat_code_index;
-                        gcdialog_showDialog(ASSET_E38_DIALOG_CHEATING_ERASE_SAVE_CONFIRMATION, 0xC, NULL, NULL, __maCastle_eraseGameplayDialogCallback, NULL);
+                        gcdialog_showDialog(VER_SELECT(ASSET_E38_DIALOG_CHEATING_ERASE_SAVE_CONFIRMATION, 0xA7A, 0, 0), 0xC, NULL, NULL, __maCastle_eraseGameplayDialogCallback, NULL);
                         return;
 #ifdef ENTER_MORE_THAN_3_BANNED_CHEATS
                     case 3:

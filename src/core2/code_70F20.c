@@ -67,7 +67,7 @@ void func_802F8110(struct3s *this, Gfx **gdl, Mtx **mptr, u32 arg3){
     for(iPtr = startPtr; iPtr < endPtr; iPtr++){
         modelRender_setDepthMode(MODEL_RENDER_DEPTH_COMPARE);
         modelRender_draw(gdl, mptr, iPtr, 0, 1.0f, 0, this->unk2C);
-        iPtr->unk18 = func_8033A170();
+        iPtr->unk18 = modelRender_func_8033A170();
     }
 }
 
@@ -80,12 +80,12 @@ void func_802F8214(struct3s * this){
         func_802F9D38(this->unk0);
     vector_free(this->unk20);
     func_8033BD20(&this->unk2C);
-    free(this);
+    bk_free(this);
 
 }
 
 struct3s *func_802F8264(s32 arg0){
-    struct3s * ptr = (struct3s *) malloc(sizeof(struct3s));
+    struct3s * ptr = (struct3s *) bk_malloc(sizeof(struct3s));
     ptr->unk0 = 0;
     ptr->unk1C = 0;
     ptr->unk34 = 0;

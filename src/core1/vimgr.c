@@ -1,10 +1,9 @@
 #include <ultra64.h>
+#include <PRinternal/macros.h>
 #include "core1/core1.h"
 #include "functions.h"
 #include "variables.h"
 #include "version.h"
-
-#define VIMANAGER_THREAD_STACK_SIZE 0x400
 
 // Used in US 1.0 NTSC 
 static OSViMode sViMode_US10_NTSC = {
@@ -84,7 +83,7 @@ static OSMesg sMesgBuffer3[FRAMERATE];
 volatile s32 D_802808D8;
 s32 D_802808DC;
 static OSThread sViManagerThread;
-static u8 sViManagerThreadStack[VIMANAGER_THREAD_STACK_SIZE];
+STACK(sViManagerThreadStack, 1024);
 
 u32 getOtherFramebuffer(void) {
     return NOT(sActiveFramebuffer);
@@ -98,7 +97,7 @@ s32 getActiveFramebuffer(void){
     return sActiveFramebuffer;
 }
 
-void viMgr_func_8024BDAC(OSMesgQueue *mq, OSMesg msg){
+void viMgr_registerSignalMesg(OSMesgQueue *mq, OSMesg msg){
     s32 i;
     for(i = 0; i < 8; i++){
         if(D_80280730[i].messageQueue == NULL){
@@ -145,7 +144,7 @@ void viMgr_init(void) {
     D_802808D8 = 0;
     viMgr_func_8024BF94(2);
 
-    osCreateThread(&sViManagerThread, 0, viMgr_entry, NULL, sViManagerThreadStack + VIMANAGER_THREAD_STACK_SIZE, 80);
+    osCreateThread(&sViManagerThread, VI_THREAD_ID, viMgr_entry, NULL, STACK_START(sViManagerThreadStack), VI_THREAD_PRI);
     osStartThread(&sViManagerThread);
 }
 
@@ -165,8 +164,8 @@ void viMgr_func_8024BFD8(s32 arg0){
     static s32 D_80280E90;
     
     osSetThreadPri(NULL, 0x7f);
-    defragManager_setPriority(DEFRAGMANAGER_THREAD_PRIORITY_HIGH);
-    defragManager_resume();
+    defragthread_setPriority(DEFRAGMANAGER_THREAD_PRI_HIGH);
+    defragthread_resume();
     if(arg0){
         osRecvMesg(&sMesgQueue2, NULL, OS_MESG_BLOCK);
     }
@@ -187,21 +186,21 @@ void viMgr_func_8024BFD8(s32 arg0){
     }//L8024C178
     D_80280724 = D_802808D8;
     D_802808D8 = 0;
-    defragManager_pause();
+    defragthread_pause();
     osSetThreadPri(NULL, 0x14);
-    defragManager_setPriority(DEFRAGMANAGER_THREAD_PRIORITY);
+    defragthread_setPriority(DEFRAGMANAGER_THREAD_PRI);
 }
 
 void viMgr_func_8024C1B4(void){
     viMgr_func_8024BFD8(0);
-    dummy_func_8025AFB8();
+    core1_1D590_func_8025AFB8();
 }
 
 void viMgr_func_8024C1DC(void){
     viMgr_func_8024BFD8(1);
 }
 
-void viMgr_func_8024C1FC(OSMesgQueue *mq, OSMesg msg) {
+void viMgr_unregisterSignalMesg(OSMesgQueue *mq, OSMesg msg) {
     s32 i;
 
     for (i = 0; i < 8; i++) {
@@ -217,16 +216,16 @@ void viMgr_setActiveFramebuffer(s32 fb_idx) {
     osViSwapBuffer(gFramebuffers[sActiveFramebuffer]);
 }
 
-void viMgr_entry(void *arg0){
+void viMgr_entry(void *arg){
     s32 i;
     OSMesg sp48;
     do{
         osRecvMesg(&sMesgQueue1, &sp48, OS_MESG_BLOCK);
-        func_80247380();
+        thread5_checkAndExecutePreNMI();
         D_802808D8++;
         if(D_802808D8 == 420){
 #if VERSION == VERSION_USA_1_0
-            gcdebugText_isThreadLocked();
+            gcdebugtext_isThreadLocked();
 #endif
         }
         osSendMesg(&sMesgQueue3, NULL, OS_MESG_NOBLOCK);
@@ -244,7 +243,7 @@ void viMgr_setScreenBlack(s32 active) {
 }
 
 void viMgr_clearFramebuffers(void) {
-    func_80253034(&gFramebuffers, 0, (s32) ((f32)gFramebufferWidth*2*gFramebufferHeight*2)); // TODO: This function does not exist in source code, why does it work?
+    bkmemset64(&gFramebuffers, 0, (s32) ((f32)gFramebufferWidth*2*gFramebufferHeight*2));
     osWritebackDCache(&gFramebuffers, (s32) ((f32)gFramebufferWidth*2*gFramebufferHeight*2));
 }
 

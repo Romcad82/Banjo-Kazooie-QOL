@@ -4,13 +4,8 @@
 #include "variables.h"
 #include "version.h"
 
-#if VERSION == VERSION_USA_1_0
-u32 D_80276CB0 = 0xD22FFFD8; // CRC used in TTC
-u32 D_80276CB4 = 0xDEFEF692; //WHAT IS THIS?
-#elif VERSION == VERSION_PAL
-u32 D_80276CB0 = 0x90FA97CB; // CRC used in TTC
-u32 D_80276CB4 = 0x8D96D002; //WHAT IS THIS?
-#endif
+s32 D_80276CB0 = VER_SELECT(0xD22FFFD8, 0x90FA97CB, 0, 0); // TTC_DATA_CRC2
+s32 D_80276CB4 = VER_SELECT(0xDEFEF692, 0x8D96D002, 0, 0); // RBB_DATA_CRC2
 
 u16 *D_80276CB8 = NULL; //! ml_acosPrecValTblPtr
 
@@ -118,37 +113,39 @@ f32 ml_vec3f_distance(f32 vec1[3], f32 vec2[3]) {
     return LENGTH_VEC3F(diff);
 }
 
-f32 ml_func_802560D0(f32 arg0[3], f32 arg1[3], f32 arg2[3]) {
-    f32 sp4C[3];
-    f32 pad48;
-    f32 sp3C[3];
-    f32 sp38;
-    f32 sp34;
-    f32 sp30;
-    f32 sp24[3];
-    f32 sp20;
-    f32 pad58;
+f32 ml_vec3f_distance_to_point(f32 line_start_position[3], f32 line_end_position[3], f32 point_position[3]) {
+    f32 closestPointOnLine[3];
+    f32 pad48; // unused
+    f32 pointOffsetFromLineStart[3];
+    f32 pointDistanceFromLineStart;
+    f32 projectionFactor;
+    f32 projectionDistance;
+    f32 lineDirection[3];
+    f32 lineLength;
+    f32 pad58; // unused
 
-    TUPLE_DIFF_COPY(sp24, arg1, arg0)
-    sp20 = LENGTH_VEC3F(sp24);
+    TUPLE_DIFF_COPY(lineDirection, line_end_position, line_start_position)
+    lineLength = LENGTH_VEC3F(lineDirection);
 
-    if (sp20 < 0.01) {
-        return ml_vec3f_distance(arg0, arg2);
+    if (lineLength < 0.01) {
+        return ml_vec3f_distance(line_start_position, point_position);
     }
 
-    TUPLE_DIFF_COPY(sp3C, arg2, arg0)
-    sp38 = LENGTH_VEC3F(sp3C);
+    TUPLE_DIFF_COPY(pointOffsetFromLineStart, point_position, line_start_position)
+    pointDistanceFromLineStart = LENGTH_VEC3F(pointOffsetFromLineStart);
 
-    if (sp38 < 0.01) {
-        return sp38;
+    if (pointDistanceFromLineStart < 0.01) {
+        return pointDistanceFromLineStart;
     }
 
-    sp34 = ((sp24[0]*sp3C[0] + sp24[1]*sp3C[1] + sp24[2]*sp3C[2]) / (sp20 * sp38));
-    sp30 = (sp34 *sp38) / sp20;
-    sp4C[0] = arg0[0] + (sp24[0] * sp30);
-    sp4C[1] = arg0[1] + (sp24[1] * sp30);
-    sp4C[2] = arg0[2] + (sp24[2] * sp30);
-    return ml_vec3f_distance(sp4C, arg2);
+    projectionFactor = ((lineDirection[0] * pointOffsetFromLineStart[0]
+            + lineDirection[1] * pointOffsetFromLineStart[1]
+            + lineDirection[2] * pointOffsetFromLineStart[2]) / (lineLength * pointDistanceFromLineStart));
+    projectionDistance = (projectionFactor * pointDistanceFromLineStart) / lineLength;
+    closestPointOnLine[0] = line_start_position[0] + (lineDirection[0] * projectionDistance);
+    closestPointOnLine[1] = line_start_position[1] + (lineDirection[1] * projectionDistance);
+    closestPointOnLine[2] = line_start_position[2] + (lineDirection[2] * projectionDistance);
+    return ml_vec3f_distance(closestPointOnLine, point_position);
 }
 
 f32 ml_distanceSquared_vec3f(f32 vec1[3], f32 vec2[3])
@@ -234,16 +231,14 @@ void ml_vec3f_set_length_copy(f32 dst[3], f32 src[3], f32 len)
         ml_vec3f_copy(dst, src);
 }
 
-void func_80256664(f32 ptr[3])
-{
-    u32 i;
+void ml_vec3f_clamp_deg360(f32 ptr[3]) {
+    int i;
 
-    for (i = 0; i < 3; i++)
-    {
+    for (i = 0; i < 3; i++) {
         if (ptr[i] >= 0)
-            ptr[i] = (s32)ptr[i] % 360;
+            ptr[i] = (s32) ptr[i] % 360;
         else
-            ptr[i] += ((360 - (s32)ptr[i]) / 360) * 360;
+            ptr[i] += ((360 - (s32) ptr[i]) / 360) * 360;
     }
 }
 
@@ -457,7 +452,7 @@ f32 func_80257248(f32 vec1[3], f32 vec2[3])
     return func_8025715C(vec2[0] - vec1[0], vec2[2] - vec1[2]);
 }
 
-void func_8025727C(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 *o1, f32 *o2)
+void ml_horizontal_and_vertical_angles(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 *o1, f32 *o2)
 {
     f32 dz;
     f32 dy; // unused
@@ -513,7 +508,7 @@ void ml_init(void)
     u16 i;
 
     // Allocate table
-    D_80276CB8 = (u16 *)malloc(10001 * sizeof(u16));
+    D_80276CB8 = (u16 *)bk_malloc(10001 * sizeof(u16));
 
     // Generate all entries in the table
     for (i = 0; i < 10001; i++)
@@ -529,7 +524,7 @@ void ml_init(void)
 //ml_free
 void ml_free(void)
 {
-    free(D_80276CB8);
+    bk_free(D_80276CB8);
     D_80276CB8 = NULL;
 }
 
@@ -1032,27 +1027,30 @@ void func_802589E4(f32 dst[3], f32 yaw, f32 length)
     dst[2] = cosf(yaw) * length;
 }
 
-void func_80258A4C(f32 vec1[3], f32 arg1, f32 vec2[3], f32 *arg3, f32 *arg4, f32 *arg5)
+void func_80258A4C(
+    f32 this_position[3], f32 this_yaw, f32 target_position[3],
+    f32 *horizontal_distance, f32 *distance_in_front, f32 *side_angle_radian)
 {
-    f32 t1[3];
-    f32 t2[3];
+    f32 dst[3];
+    f32 direction[3];
 
-    TUPLE_DIFF_COPY(t1, vec2, vec1)
-    t1[1] = 0;
+    TUPLE_DIFF_COPY(dst, target_position, this_position)
+    dst[1] = 0;
 
-    *arg3 = sqrtf(_SQ3(t1[0], t1[1], t1[2]));
+    *horizontal_distance = sqrtf(_SQ3(dst[0], dst[1], dst[2]));
 
-    t2[2] = 0;
-    t2[1] = 0;
-    t2[0] = 100;
+    direction[2] = 0;
+    direction[1] = 0;
+    direction[0] = 100;
 
-    ml_vec3f_yaw_rotate_copy(t2, t2, arg1);
+    ml_vec3f_yaw_rotate_copy(direction, direction, this_yaw);
 
-    *arg4 = TUPLE_DOT_PRODUCT(t1, t2);
-    *arg5 = func_80256AB4(t2[0], t2[2], t1[0], t1[2]);
+    *distance_in_front = TUPLE_DOT_PRODUCT(dst, direction);
 
-    if (*arg4 < 0)
-        *arg5 = *arg5 < 0 ? -1 : 1;
+    *side_angle_radian = func_80256AB4(direction[0], direction[2], dst[0], dst[2]);
+
+    if (*distance_in_front < 0)
+        *side_angle_radian = *side_angle_radian < 0 ? -1 : 1;
 }
 
 void ml_vec3f_clear(f32 dst[3])
@@ -1188,15 +1186,15 @@ void func_8025901C(f32 arg0, f32 arg1[3], f32 arg2[3], f32 arg3){
     }//L80259184
 }
 
-f32 func_80259198(f32 arg0, f32 arg1)
+f32 ml_clamp_abs_f(f32 value, f32 max_abs_value)
 {
-    if (arg0 > arg1)
-        return arg1;
+    if (value > max_abs_value)
+        return max_abs_value;
 
-    if (arg0 < -arg1)
-        return -arg1;
+    if (value < -max_abs_value)
+        return -max_abs_value;
 
-    return arg0;
+    return value;
 }
 
 f32 mlDiffDegF(f32 arg0, f32 arg1)
@@ -1263,48 +1261,51 @@ void ml_sub_delta_time(f32 *x) {
         *x = 0;
 }
 
-void func_8025947C(f32 a0[3], f32 a1[3], f32 a2[3], f32 a3[3])
+// Perpendicular projection of point onto line using xz coordinates
+void ml_project_point_onto_vecf3(
+    f32 closest_point_on_line[3], f32 line_start_position[3],
+    f32 line_end_position[3], f32 point_to_project[3])
 {
-    f32 f0;
-    f32 f12;
-    f32 f16;
-    f32 f8;
-    f32 f18;
-    f32 f4;
+    f32 line_dx_xz;
+    f32 line_dz_xz;
+    f32 line_slope_xz;
+    f32 intersection_x_xz;
+    f32 line_intercept_xz;
+    f32 perpendicular_intercept_xz;
 
-    a0[1] = a1[1];
+    closest_point_on_line[1] = line_start_position[1];
 
-    f0 = a2[0] - a1[0];
+    line_dx_xz = line_end_position[0] - line_start_position[0];
 
-    if (f0 == 0)
+    if (line_dx_xz == 0)
     {
-        a0[0] = a1[0];
-        a0[2] = a3[2];
+        closest_point_on_line[0] = line_start_position[0];
+        closest_point_on_line[2] = point_to_project[2];
 
         return;
     }
 
-    f12 = a2[2] - a1[2];
+    line_dz_xz = line_end_position[2] - line_start_position[2];
 
-    if (f12 == 0)
+    if (line_dz_xz == 0)
     {
-        a0[0] = a3[0];
-        a0[2] = a1[2];
+        closest_point_on_line[0] = point_to_project[0];
+        closest_point_on_line[2] = line_start_position[2];
 
         return;
     }
 
-    f16 = f12 / f0;
-    f18 = a1[2] - (a1[0] * f16);
+    line_slope_xz = line_dz_xz / line_dx_xz;
+    line_intercept_xz = line_start_position[2] - (line_start_position[0] * line_slope_xz);
 
-    f8 = -1.0 / f16;
+    intersection_x_xz = -1.0 / line_slope_xz;
 
-    f4 = a3[2] - (a3[0] * f8);
+    perpendicular_intercept_xz = point_to_project[2] - (point_to_project[0] * intersection_x_xz);
 
-    f8 = (f4 - f18) / (f16 - f8);
+    intersection_x_xz = (perpendicular_intercept_xz - line_intercept_xz) / (line_slope_xz - intersection_x_xz);
 
-    a0[0] = f8;
-    a0[2] = f8 * f16 + f18;
+    closest_point_on_line[0] = intersection_x_xz;
+    closest_point_on_line[2] = intersection_x_xz * line_slope_xz + line_intercept_xz;
 }
 
 

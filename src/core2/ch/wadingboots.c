@@ -9,16 +9,16 @@ Actor *chwadingboots_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
 void chwadingboots_update(Actor *this);
 
 /* .data */
-ActorAnimationInfo D_80367A00[] = {
+ActorAnimationInfo chWadingBootsAnimations[] = {
     {ASSET_67_ANIM_WADINGBOOTS_WALK, 0.7f},
     {ASSET_67_ANIM_WADINGBOOTS_WALK, 0.7f},
     {ASSET_67_ANIM_WADINGBOOTS_WALK, 0.7f},
     {ASSET_67_ANIM_WADINGBOOTS_WALK, 0.7f},
 };
 
-ActorInfo D_80367A20 = {
+ActorInfo chWadingBoots = {
     MARKER_11_WADING_BOOTS, ACTOR_65_WADING_BOOTS, ASSET_366_MODEL_WADING_BOOTS, 
-    0x0, D_80367A00, 
+    0x0, chWadingBootsAnimations,
     chwadingboots_update, actor_update_func_80326224, chwadingboots_draw, 
     0, 0, 0.0f, 0
 };
@@ -46,13 +46,13 @@ void chwadingboots_update(Actor *this){
         subaddie_set_state(this, 0);
     }
 
-    if(!volatileFlag_get(VOLATILE_FLAG_10_HAS_MEET_WADING_BOOTS) && ability_isUnlocked(ABILITY_E_WADING_BOOTS)){
+    if(!volatileFlag_get(VOLATILE_FLAG_10_HAS_MEET_WADING_BOOTS) && player_isAbilityUnlocked(ABILITY_E_WADING_BOOTS)){
         volatileFlag_set(VOLATILE_FLAG_10_HAS_MEET_WADING_BOOTS, TRUE);
     }
 
     switch(this->state){
         case 0://L802D6C60
-            if(ability_isUnlocked(ABILITY_E_WADING_BOOTS))
+            if(player_isAbilityUnlocked(ABILITY_E_WADING_BOOTS))
                 actor_setOpacity(this, 0xff);
             else
                 actor_setOpacity(this, 0x87);
@@ -70,7 +70,7 @@ void chwadingboots_update(Actor *this){
             if(!subaddie_playerIsWithinSphereAndActive(this, 250)) break;
             if(player_getTransformation() != TRANSFORM_1_BANJO) break;
             
-            if(gcdialog_showDialog(ASSET_DA5_DIALOG_WADINGBOOTS_MEET, 0, NULL, NULL, NULL, NULL)){
+            if(gcdialog_showDialog(VER_SELECT(ASSET_DA5_DIALOG_WADINGBOOTS_MEET, 0xA23, 0, 0), 0, NULL, NULL, NULL, NULL)){
                 volatileFlag_set(VOLATILE_FLAG_10_HAS_MEET_WADING_BOOTS, TRUE);
             }
 
@@ -101,7 +101,7 @@ void chwadingboots_update(Actor *this){
 }
 
 bool chwadingboots_802D6E0C(Actor *this){
-    return this->unk10_12 && ability_isUnlocked(ABILITY_E_WADING_BOOTS);
+    return this->unk10_12 && player_isAbilityUnlocked(ABILITY_E_WADING_BOOTS);
 }
 
 f32 chwadingboots_802D6E4C(Actor *this){

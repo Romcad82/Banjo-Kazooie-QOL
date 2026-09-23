@@ -70,7 +70,7 @@ Actor *func_8038DF34(Actor *this){
     s32 marker_id;
     f32 sp18[3];
 
-    func_8034A174(this->marker->unk44, 5, sp18);
+    vec3fArray_get_vec3f(this->marker->unk44, 5, sp18);
     this->marker->unk38[0] = sp18[0] - this->position[0];
     this->marker->unk38[1] = sp18[1] - this->position[1];
     this->marker->unk38[2] = sp18[2] - this->position[2];
@@ -127,7 +127,7 @@ void chTwinklyMuncher_update(Actor *this){
             if(this->actorTypeSpecificField == 1 && !fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME)){
                 if(this->state != 6 && this->state != 7 && 0.0f == this->velocity[0]){
                     timed_setStaticCameraToNode(0.5f, 0xd);
-                    gcdialog_showDialog(ASSET_C15_DIALOG_TWINKLIE_MINIGAME_MISS, 0x2b, this->position, this->marker, chTwinklyMuncher_failMinigameExit, NULL);
+                    gcdialog_showDialog(VER_SELECT(ASSET_C15_DIALOG_TWINKLIE_MINIGAME_MISS, 0x98F, 0, 0), 0x2b, this->position, this->marker, chTwinklyMuncher_failMinigameExit, NULL);
                     this->velocity[0] = 1.0f;
                     subaddie_set_state_with_direction(this, 6, 0.03f, 1);
                     actor_loopAnimation(this);
@@ -201,7 +201,7 @@ void chTwinklyMuncher_update(Actor *this){
                     sfx_playFadeShorthandDefault(SFX_27_JINJO_HI, 1.6f, 32000, this->position, 1250, 2500);
                     func_80324D54(0.35f, SFX_110_TWINKLY_DEATH, 1.0f, 32000, this->position, 1250.0f, 2500.0f);
                     marker_despawn(sp38->marker);
-                    if( !mapSpecificFlags_get(FP_SPECIFIC_FLAG_A_FIRST_TWINKLY_EATEN) && gcdialog_showDialog(ASSET_C16_DIALOG_TWINKLIE_MINIGAME_EATEN, 0, NULL, NULL, NULL, NULL)){
+                    if( !mapSpecificFlags_get(FP_SPECIFIC_FLAG_A_FIRST_TWINKLY_EATEN) && gcdialog_showDialog(VER_SELECT(ASSET_C16_DIALOG_TWINKLIE_MINIGAME_EATEN, 0x990, 0, 0), 0, NULL, NULL, NULL, NULL)){
                         mapSpecificFlags_set(FP_SPECIFIC_FLAG_A_FIRST_TWINKLY_EATEN, TRUE);
                     }
                 }

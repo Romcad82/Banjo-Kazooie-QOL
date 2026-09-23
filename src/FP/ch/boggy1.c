@@ -12,11 +12,11 @@ Actor *func_80328230(enum actor_e id, f32 pos[3], f32 rot[3]);
 /* .data */
 ActorAnimationInfo D_80391B80[] = {
     {0x000, 0.0f},
-    {0x14E, 2.0f},
-    {0x14D, 7.0f},
-    {0x14C, 2.0f},
-    {0x14F, 0.5f},
-    {0x14F, 1.0f}
+    {ASSET_14E_ANIM_BOGGY_JIGGY_IN_BELLY, 2.0f},
+    {ASSET_14D_ANIM_BOGGY_HIT_BY_SLED, 7.0f},
+    {ASSET_14C_ANIM_BOGGY_IDLE, 2.0f},
+    {ASSET_14F_ANIM_BOGGY_RUN, 0.5f},
+    {ASSET_14F_ANIM_BOGGY_RUN, 1.0f}
 };
 
 ActorInfo D_80391BB0 = { 
@@ -37,11 +37,11 @@ Actor *func_803875E0(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     if(!this->unk38_31 || this->state == 5)
         return this;
     
-    func_8033A45C(1, 0);
-    func_8033A45C(3, 1);
+    modelRender_setAppendageVisibility(1, 0);
+    modelRender_setAppendageVisibility(3, 1);
     this = actor_draw(marker, gfx, mtx, vtx);
     if(marker->unk14_21){
-        func_8034A174(func_80329934(), 5, this->velocity);
+        vec3fArray_get_vec3f(func_80329934(), 5, this->velocity);
     }
     return this;
 }
@@ -85,8 +85,8 @@ void func_803877A8(ActorMarker *caller, enum asset_e text_id, s32 arg2){
 void func_80387828(ActorMarker *caller, enum asset_e text_id, s32 arg2){
     Actor *this = marker_getActor(caller);
 
-    if (text_id == ASSET_C00_DIALOG_BOGGY_SAVED) {
-        gcdialog_showDialog(ASSET_C2B_DIALOG_BOGGY_SAVED_2, 0xf, NULL, this->marker, NULL, func_803877A8);
+    if (text_id == VER_SELECT(ASSET_C00_DIALOG_BOGGY_SAVED, 0x97A, 0, 0)) {
+        gcdialog_showDialog(VER_SELECT(ASSET_C2B_DIALOG_BOGGY_SAVED_2, 0x9A5, 0, 0), 0xf, NULL, this->marker, NULL, func_803877A8);
     }
 }
 
@@ -142,14 +142,14 @@ void func_8038794C(Actor *this){
             if(mapSpecificFlags_get(0x1)){
                 func_8028F94C(1, this->position);
                 timed_setStaticCameraToNode(0.0f, 0x12);
-                func_80324DBC(1.0f, ASSET_C00_DIALOG_BOGGY_SAVED, 0xe, NULL, this->marker, func_80387828, func_803877A8);
+                func_80324DBC(1.0f, VER_SELECT(ASSET_C00_DIALOG_BOGGY_SAVED, 0x97A, 0, 0), 0xe, NULL, this->marker, func_80387828, func_803877A8);
                 func_803876A4(this);
                 break;
             }//L80387B38
 
             if(!this->has_met_before && subaddie_playerIsWithinSphereAndActive(this, 0x1f4)){
                 if(!player_movementGroup() || player_movementGroup() == BSGROUP_8_TROT){
-                    if (gcdialog_showDialog(ASSET_BFF_DIALOG_BOGGY_MEET, 0x2a, this->position, NULL, NULL, NULL)) {
+                    if (gcdialog_showDialog(VER_SELECT(ASSET_BFF_DIALOG_BOGGY_MEET, 0x979, 0, 0), 0x2a, this->position, NULL, NULL, NULL)) {
                         for (i = 0; i < 5; i++) {
                             timedFunc_set_1(D_80391BEC[i], (GenFunction_1) func_8038787C, (s32) this->marker);
                         }

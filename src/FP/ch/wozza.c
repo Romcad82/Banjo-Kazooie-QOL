@@ -18,18 +18,18 @@ void chWozza_update(Actor *this);
 /* .data */
 ActorAnimationInfo chWozzaAnimations[] ={
     {0x000, 0.0f},
-    {0x1AC, 3.8f},
-    {0x1AC, 3.8f},
-    {0x1AE, 0.55f},
-    {0x1AE, 0.55f},
-    {0x1B3, 0.6f},
-    {0x1B4, 0.8f},
-    {0x1AE, 0.55f},
-    {0x1AD, 4.4f},
-    {0x1B5, 1.2f},
-    {0x221, 5.0f},
-    {0x1AE, 0.55f},
-    {0x1AE, 0.55f}
+    {ASSET_1AC_ANIM_WOZZA_HOLDING_JIGGY, 3.8f},
+    {ASSET_1AC_ANIM_WOZZA_HOLDING_JIGGY, 3.8f},
+    {ASSET_1AE_ANIM_WOZZA_LEAVING, 0.55f},
+    {ASSET_1AE_ANIM_WOZZA_LEAVING, 0.55f},
+    {ASSET_1B3_ANIM_WOZZA_unk, 0.6f},
+    {ASSET_1B4_ANIM_WOZZA_unk, 0.8f},
+    {ASSET_1AE_ANIM_WOZZA_LEAVING, 0.55f},
+    {ASSET_1AD_ANIM_WOZZA_THROWING_JIGGY, 4.4f},
+    {ASSET_1B5_ANIM_WOZZA_unk, 1.2f},
+    {ASSET_221_ANIM_WOZZA_IN_CAVE, 5.0f},
+    {ASSET_1AE_ANIM_WOZZA_LEAVING, 0.55f},
+    {ASSET_1AE_ANIM_WOZZA_LEAVING, 0.55f}
 };
 
 ActorInfo gChWozza = { MARKER_20B_WOZZA, ACTOR_1F3_WOZZA, ASSET_494_MODEL_WOZZA, 
@@ -70,11 +70,11 @@ void chWozza_enterCaveFinal(Actor *this){
 void chWozza_textCallback(ActorMarker *caller, enum asset_e text_id, s32 arg2){
     Actor *this = marker_getActor(caller);
     switch(text_id){
-        case ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR:
+        case VER_SELECT(ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR, 0x995, 0, 0):
             timed_exitStaticCamera(0.0f);
             break;
 
-        case ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS:
+        case VER_SELECT(ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS, 0x996, 0, 0):
             timed_exitStaticCamera(0.0f);
             chWozza_enterCaveFinal(this);
             break;
@@ -110,7 +110,7 @@ void chWozza_firstContact(Actor *this){
         subaddie_set_state(this, 2);
         actor_loopAnimation(this);
         timed_setStaticCameraToNode(0.0f, 0x2e);
-        func_80324DBC(0.0f, ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR, 0x2a, this->position, this->marker, chWozza_textCallback, NULL);
+        func_80324DBC(0.0f, VER_SELECT(ASSET_C1B_DIALOG_WOZZA_MEET_AS_BEAR, 0x995, 0, 0), 0x2a, this->position, this->marker, chWozza_textCallback, NULL);
         timedFunc_set_1(2.5f, (GenFunction_1)chWozza_delayedRetreatToCave, (s32)this->marker);
     }
     else{
@@ -276,7 +276,7 @@ void chWozza_update(Actor *this){
             chWozza_checkForPlayer(this);
 
             if(!local->unk30){
-                if(gcdialog_showDialog(ASSET_C1D_DIALOG_WOZZA_RETURN, 0x20, NULL, NULL, NULL, NULL)){
+                if(gcdialog_showDialog(VER_SELECT(ASSET_C1D_DIALOG_WOZZA_RETURN, 0x997, 0, 0), 0x20, NULL, NULL, NULL, NULL)){
                     local->unk30 =  TRUE;
                 }
             }
@@ -303,7 +303,7 @@ void chWozza_update(Actor *this){
             }
 
             if(subaddie_playerIsWithinSphereAndActive(this, 500) && !this->has_met_before){
-                if(gcdialog_showDialog(ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS, 0xAA, this->position, this->marker, chWozza_textCallback, chWozza_checkCompletion)){
+                if(gcdialog_showDialog(VER_SELECT(ASSET_C1C_DIALOG_WOZZA_MEET_AS_WALRUS, 0x996, 0, 0), 0xAA, this->position, this->marker, chWozza_textCallback, chWozza_checkCompletion)){
                     timed_setStaticCameraToNode(0.0f, 0x2E);
                     this->has_met_before = TRUE;
                 }

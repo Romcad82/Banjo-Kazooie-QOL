@@ -3,7 +3,7 @@
 #include "functions.h"
 #include "variables.h"
 
-#include "zoombox.h"
+#include "core2/gc/zoombox.h"
 
 #include "config.h"
 
@@ -27,7 +27,6 @@ typedef struct struct_1A_s {
 
 extern void gameSelect_saveAndExit(void);
 extern void func_802E412C(s32, s32);
-void volatileFlag_set(enum volatile_flags_e, s32);
 f32 func_8024DE1C(f32, f32, f32 *, f32 *);
 void func_80310D2C(void);
 
@@ -37,7 +36,6 @@ s32 getGameMode(void);
 void func_802DC5B8(void);
 void func_802DC560(s32, s32);
 s32 controller_getStartButton(s32 controller_index);
-bool fileProgressFlag_get(enum file_progress_e);
 enum map_e gsworld_getMap(void);
 bool func_802FD2D4(void);
 bool func_802FC3C4(void);
@@ -314,21 +312,21 @@ char *gcpausemenu_TimeToA(int time) {
     s32 minutes;
     s32 seconds;
 
-    strcpy(D_80383088, "");
-    strIToA(D_80383088, time / 3600);
-    strcat(D_80383088, ":");
+    bk_strcpy(D_80383088, "");
+    bk_strIToA(D_80383088, time / 3600);
+    bk_strcat(D_80383088, ":");
     minutes = (time / 60) % 60;
     if (minutes < 10) {
-        strcat(D_80383088, "0");
+        bk_strcat(D_80383088, "0");
     }
-    strIToA(D_80383088, minutes);
-    strcat(D_80383088, ":");
+    bk_strIToA(D_80383088, minutes);
+    bk_strcat(D_80383088, ":");
     seconds = time % 60;
     if (seconds < 10) {
-        strcat(D_80383088, "0");
+        bk_strcat(D_80383088, "0");
     }
-    strIToA(D_80383088, seconds);
-    strcat(D_80383088, "");
+    bk_strIToA(D_80383088, seconds);
+    bk_strcat(D_80383088, "");
     return D_80383088;
 }
 
@@ -339,31 +337,31 @@ void gcpausemenu_printLevelTotals(enum level_e level) {
 
     //note ratio 2 string
     gcpausemenu_getLevelNoteScore(level, &val, &max);
-    strcpy(D_8036C520[0].str, empty);
-    strIToA(D_8036C520[0].str, val);
-    strcat(D_8036C520[0].str, "/");
-    strIToA(D_8036C520[0].str, max);
-    strcat(D_8036C520[0].str, empty);
+    bk_strcpy(D_8036C520[0].str, empty);
+    bk_strIToA(D_8036C520[0].str, val);
+    bk_strcat(D_8036C520[0].str, "/");
+    bk_strIToA(D_8036C520[0].str, max);
+    bk_strcat(D_8036C520[0].str, empty);
 
     //jiggy_ratio_2_string
     gcpausemenu_getLevelJiggyScore(level, &val, &max);
-    strcpy(D_8036C520[1].str, empty);
-    strIToA(D_8036C520[1].str, val);
-    strcat(D_8036C520[1].str, "/");
-    strIToA(D_8036C520[1].str, max);
-    strcat(D_8036C520[1].str, empty);
+    bk_strcpy(D_8036C520[1].str, empty);
+    bk_strIToA(D_8036C520[1].str, val);
+    bk_strcat(D_8036C520[1].str, "/");
+    bk_strIToA(D_8036C520[1].str, max);
+    bk_strcat(D_8036C520[1].str, empty);
 
     //honeycomb_ratio_2_string
     gcpausemenu_getLevelHoneycombScore(level, &val, &max);
-    strcpy(D_8036C520[2].str, empty);
-    strIToA(D_8036C520[2].str, val);
-    strcat(D_8036C520[2].str, "/");
-    strIToA(D_8036C520[2].str, max);
-    strcat(D_8036C520[2].str, empty);
+    bk_strcpy(D_8036C520[2].str, empty);
+    bk_strIToA(D_8036C520[2].str, val);
+    bk_strcat(D_8036C520[2].str, "/");
+    bk_strIToA(D_8036C520[2].str, max);
+    bk_strcat(D_8036C520[2].str, empty);
 
     //gametime_2_sting
-    strcpy(D_8036C520[3].str, empty);
-    strcat(D_8036C520[3].str, gcpausemenu_TimeToA(itemscore_timeScores_get(level)));
+    bk_strcpy(D_8036C520[3].str, empty);
+    bk_strcat(D_8036C520[3].str, gcpausemenu_TimeToA(itemscore_timeScores_get(level)));
 }
 
 void gcpausemenu_getTotalNoteScore(s32 *dst) {
@@ -384,25 +382,25 @@ void gcpausemenu_printTotals(void) {
 
     //note ratio 2 string
     gcpausemenu_getTotalNoteScore(&val);
-    strcpy(D_8036C520[0].str, D_8036C61C);
-    strIToA(D_8036C520[0].str, val);
-    strcat(D_8036C520[0].str, D_8036C61C);
+    bk_strcpy(D_8036C520[0].str, D_8036C61C);
+    bk_strIToA(D_8036C520[0].str, val);
+    bk_strcat(D_8036C520[0].str, D_8036C61C);
 
     //jiggy_ratio_2_string
     gcpausemenu_getTotalJiggyScore(&val);
-    strcpy(D_8036C520[1].str, D_8036C61C);
-    strIToA(D_8036C520[1].str, val);
-    strcat(D_8036C520[1].str, D_8036C61C);
+    bk_strcpy(D_8036C520[1].str, D_8036C61C);
+    bk_strIToA(D_8036C520[1].str, val);
+    bk_strcat(D_8036C520[1].str, D_8036C61C);
 
     //honeycomb_ratio_2_string
     gcpausemenu_getTotalHoneycombScore(&val);
-    strcpy(D_8036C520[2].str, D_8036C61C);
-    strIToA(D_8036C520[2].str, val);
-    strcat(D_8036C520[2].str, D_8036C61C);
+    bk_strcpy(D_8036C520[2].str, D_8036C61C);
+    bk_strIToA(D_8036C520[2].str, val);
+    bk_strcat(D_8036C520[2].str, D_8036C61C);
 
     //gametime_2_sting
-    strcpy(D_8036C520[3].str, D_8036C61C);
-    strcat(D_8036C520[3].str, gcpausemenu_TimeToA(itemscore_timeScores_getTotal()));
+    bk_strcpy(D_8036C520[3].str, D_8036C61C);
+    bk_strcat(D_8036C520[3].str, gcpausemenu_TimeToA(itemscore_timeScores_getTotal()));
 }
 
 s32 gcpausemenu_levelToMenuPage(enum level_e level) {
@@ -799,7 +797,7 @@ void gcpausemenu_init(void) {
     D_80383010.b_button_frame = D_80383010.unk3_0 = D_80383010.b_button_alpha = 0;
     D_80383010.page_cnt = gcpausemenu_initLargestPageIndex();
     D_80383010.sns_alpha = D_80383010.sns_visible = D_80383010.unk70_31 = D_80383010.unk70_30 = 0;
-    baMotor_80250FC0();
+    baMotor_forceStop();
     gcPauseMenu_setState(PAUSE_STATE_0_MENU_INIT);
 }
 
@@ -963,9 +961,9 @@ s32 gcPauseMenu_update(void) {
     }
 
     controller_copyFaceButtons(0, face_button);
-    controller_getJoystick(0, joystick);
+    controller_copyJoystick(0, joystick);
     controller_copySideButtons(0, sp60);
-    func_8024E6E0(0, sp50);
+    controller_copyDpadButtons(0, sp50);
     func_80310D2C();
 
     for (i = 0; i < 4; i++) {
@@ -1038,7 +1036,7 @@ s32 gcPauseMenu_update(void) {
 
 #ifdef DPAD_FUNCTIONALITY
                 if ((0.75 < joystick[JOYSTICK_Y])
-                    || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+                    || joy_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
 #else
                 if (0.75 < joystick[JOYSTICK_Y]) {
 #endif
@@ -1055,7 +1053,7 @@ s32 gcPauseMenu_update(void) {
                     }
 #ifdef DPAD_FUNCTIONALITY
                 } else if ((joystick[JOYSTICK_Y] < -0.75)
-                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+                           || joy_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
 #else
                 }
                 else if (joystick[JOYSTICK_Y] < -0.75) {
@@ -1105,7 +1103,7 @@ s32 gcPauseMenu_update(void) {
 
                     if (gsworld_getMap() == MAP_8E_GL_FURNACE_FUN) {
                         volatileFlag_set(VOLATILE_FLAG_0_IN_FURNACE_FUN_QUIZ, 0);
-                        transitionToMap(MAP_80_GL_FF_ENTRANCE, 2, 1);
+                        transitionToMap(MAP_80_GL_FF_ENTRANCE, WARP_GL_FURNACE_FUN_2_ENTRANCE_PAD, 1);
                     }
                     else {
                         transitionToMap(D_8036C560[level - 1].map, D_8036C560[level - 1].exit, 1);
@@ -1199,7 +1197,7 @@ s32 gcPauseMenu_update(void) {
                 gcPauseMenu_setState(PAUSE_STATE_A_TOTALS_CLOSING);
 #ifdef DPAD_FUNCTIONALITY
             } else if ((0.75 < joystick[JOYSTICK_X])
-                       || pfsManager_dpad_buttons_valid(BUTTON_D_RIGHT, TRUE)) {
+                       || joy_dpad_buttons_valid(BUTTON_D_RIGHT, TRUE)) {
 #else
             }
             else if (0.75 < joystick[JOYSTICK_X]) {
@@ -1209,7 +1207,7 @@ s32 gcPauseMenu_update(void) {
                 }
 #ifdef DPAD_FUNCTIONALITY
             } else if ((joystick[JOYSTICK_X] < -0.75)
-                       || pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
+                       || joy_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
 #else
             }
             else if (joystick[JOYSTICK_X] < -0.75) {//L80313CCC
@@ -1299,7 +1297,7 @@ s32 gcPauseMenu_update(void) {
                 gcPauseMenu_setState(PAUSE_STATE_11_SNS_CLOSING);
 #ifdef DPAD_FUNCTIONALITY
             } else if ((joystick[JOYSTICK_X] < -0.75)
-                       || pfsManager_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
+                       || joy_dpad_buttons_valid(BUTTON_D_LEFT, TRUE)) {
 #else
             }
             else if (joystick[JOYSTICK_X] < -0.75) {
@@ -1501,9 +1499,9 @@ void gcpausemenu_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
                 sp80[2] = 0.0f;
 
                 for (var_s0_2 = 0; var_s0_2 < 7; var_s0_2++) {
-                    func_8033A45C(var_s0_2 + 1, 0);
+                    modelRender_setAppendageVisibility(var_s0_2 + 1, 0);
                 }
-                func_8033A45C(i, 1);
+                modelRender_setAppendageVisibility(i, 1);
                 modelRender_setDepthMode(MODEL_RENDER_DEPTH_NONE);
                 modelRender_setAlpha(D_80383010.sns_alpha);
                 modelRender_draw(gfx, mtx, sp98, sp8C, 0.8f, sp80, D_80383010.sns_egg_model);

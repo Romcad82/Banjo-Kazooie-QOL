@@ -63,7 +63,7 @@ void func_80386ACC(ActorMarker *this_marker, ActorMarker *other_marker){
     Actor *this = marker_getActor(this_marker);
 
     if(!this->has_met_before){
-        if(gcdialog_showDialog(0xad8, 0, NULL, NULL, NULL, NULL)){
+        if(gcdialog_showDialog(VER_SELECT(0xAD8, 0x94A, 0, 0), 0, NULL, NULL, NULL, NULL)){
             this->has_met_before = TRUE;
         }
     }
@@ -74,14 +74,14 @@ Actor *chnapper_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     ActorLocal_Napper *local = (ActorLocal_Napper *)&this->local;
 
     if(this->state == 1){
-        func_8033A45C(1, TRUE);
-        func_8033A45C(2, FALSE);
-        func_8033A45C(3, FALSE);
+        modelRender_setAppendageVisibility(1, TRUE);
+        modelRender_setAppendageVisibility(2, FALSE);
+        modelRender_setAppendageVisibility(3, FALSE);
     }
     else {
-        func_8033A45C(1, FALSE);
-        func_8033A45C(2, BOOL(local->unk10));
-        func_8033A45C(3, (local->unk10) ? FALSE : TRUE);
+        modelRender_setAppendageVisibility(1, FALSE);
+        modelRender_setAppendageVisibility(2, BOOL(local->unk10));
+        modelRender_setAppendageVisibility(3, (local->unk10) ? FALSE : TRUE);
     }
 
     if(this->state == 1){ //set model alpha

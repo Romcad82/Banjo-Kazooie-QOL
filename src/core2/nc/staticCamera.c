@@ -19,7 +19,7 @@ void ncStaticCamera_init(void){
 void ncStaticCamera_end(void){}
 
 void ncStaticCamera_rotateToTarget(f32 target[3]){
-    func_8025727C(
+    ml_horizontal_and_vertical_angles(
         target[0], target[1], target[2],
         ncStaticCameraPosition[0], ncStaticCameraPosition[1], ncStaticCameraPosition[2],
         &ncStaticCameraRotation[0], &ncStaticCameraRotation[1]
@@ -40,7 +40,7 @@ void ncStaticCamera_update(void){
 void __ncStaticCamera_setToNode(s32 camera_node_index){
     UNK_TYPE(s32) sp1C;
 
-    sp1C = ncCameraNodeList_getCameraNodeType2(camera_node_index);
+    sp1C = ncCameraNodeList_getStaticCameraNode(camera_node_index);
     cameraNodeType2_getPosition(sp1C, ncStaticCameraPosition);
     cameraNodeType2_getPitchYawRoll(sp1C, ncStaticCameraRotation);
 }

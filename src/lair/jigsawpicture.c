@@ -52,6 +52,7 @@ JigsawPictureInfo PICTURE_INFO[0xB] ={
     {25, 0x5, FILEPROG_7A_DOG_PUZZLE_PIECES_PLACED },
     { 4, 0x3, FILEPROG_7F_DOUBLE_HEALTH_PUZZLE_PIECES_PLACED }
 };
+
 s32 D_80394824[3] = { 0xff, 0xff, 0 };
 ParticleScaleAndLifetimeRanges D_80394830 = {
     { 0.17f, 0.24f },
@@ -125,7 +126,7 @@ void onJigsawPodiumCollide(ActorMarker *marker, ActorMarker *_) {
 }
 
 bool isBanjoOnPodium(ActorMarker *marker) {
-    return func_8028F20C() && func_8028FB48(0x08000000) && marker->isBanjoOnTop;
+    return player_isStableWithExtraSteps() && func_8028FB48(0x08000000) && marker->isBanjoOnTop;
 }
 
 s32 isPicturePiecePlaced(Actor *this, s32 position) {
@@ -213,7 +214,7 @@ void stoodOnPodiumCallback(ActorMarker *marker) {
     Actor *this;
 
     this = marker_getActor(marker);
-    func_8034A174(func_803097A0(), getUnknownJigsawPictureIndex(this), camera_position);
+    vec3fArray_get_vec3f(func_803097A0(), getUnknownJigsawPictureIndex(this), camera_position);
 
     // Put Banjo into the idle animation
     func_8028E6EC(2);
@@ -324,7 +325,7 @@ void jigsawPicture_setState(Actor *this, s32 nextState) {
     s32 i;
 
     local = (JigsawPictureActorData*)&this->local;
-    func_8034A174(func_803097A0(), getUnknownJigsawPictureIndex(this), position);
+    vec3fArray_get_vec3f(func_803097A0(), getUnknownJigsawPictureIndex(this), position);
 
     switch (nextState) {
         case JIGSAW_PICTURE_LEAVE_PODIUM:
@@ -563,19 +564,19 @@ void updateJigsawPictureActor(Actor *this) {
 #ifdef BUG_AND_OVERSIGHT_FIXES
  #ifdef OPTIONS_MENU
             if (!is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)) {
-                deactivateJigsawPodium = (!func_8028F20C() || !func_8028FB48(0x08000000));
+                deactivateJigsawPodium = (!player_isStableWithExtraSteps() || !func_8028FB48(0x08000000));
             } else {
   #ifdef EXTREME_JIGSAW_PODIUM_FIX
                 deactivateJigsawPodium = !this->marker->isBanjoOnTop;
   #else
-                deactivateJigsawPodium = ((!func_8028F20C() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
+                deactivateJigsawPodium = ((!player_isStableWithExtraSteps() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
   #endif
             }
  #else
   #ifdef EXTREME_JIGSAW_PODIUM_FIX
             deactivateJigsawPodium = !this->marker->isBanjoOnTop;
   #else
-            deactivateJigsawPodium = ((!func_8028F20C() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
+            deactivateJigsawPodium = ((!player_isStableWithExtraSteps() || !func_8028FB48(0x08000000)) && !subaddie_playerIsWithinSphereAndActive(this, 125));
   #endif
  #endif
 #endif
@@ -584,7 +585,7 @@ void updateJigsawPictureActor(Actor *this) {
 #ifdef BUG_AND_OVERSIGHT_FIXES
                 && deactivateJigsawPodium
 #else
-                && (!func_8028F20C() || !func_8028FB48(0x08000000))
+                && (!player_isStableWithExtraSteps() || !func_8028FB48(0x08000000))
 #endif
                 ) {
                 this->has_met_before = TRUE;
@@ -635,7 +636,7 @@ void updateJigsawPictureActor(Actor *this) {
                 // Remove piece
 #ifdef DPAD_FUNCTIONALITY
                 } else if ((face_buttons[FACE_BUTTON(BUTTON_C_DOWN)] == TRUE)
-                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, FALSE)) {
+                           || joy_dpad_buttons_valid(BUTTON_D_DOWN, FALSE)) {
 #else
                 } else if (face_buttons[FACE_BUTTON(BUTTON_C_DOWN)] == TRUE) {
 #endif

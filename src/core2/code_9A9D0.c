@@ -37,17 +37,17 @@ void func_803219F4(s32 arg0){
     switch(D_80383310){
         case 2: //L80321A30
             func_8025A55C(-1, 4000, 7);
-            core1_ce60_incOrDecCounter(TRUE);
+            midichannel_incOrDecCounter(TRUE);
             comusic_8025AB44(COMUSIC_58_WADING_BOOTS, 0, 4000);
             func_8025AABC(COMUSIC_58_WADING_BOOTS);
             break;
         case 4: //L80321A6C
-            core1_ce60_incOrDecCounter(TRUE);
+            midichannel_incOrDecCounter(TRUE);
             if(D_80383314 == COMUSIC_57_TURBO_TRAINERS){
 // Fixes an oversight where level music would play when you recollect Turbo Trainers while already wearing Turbo Trainers.
 #ifdef BUG_AND_OVERSIGHT_FIXES
                 // Check if Kazooie is wearing Turbo Trainers. If she is, then skip the function that plays the level music.
-                if (!func_8029DFE0()
+                if (!modelAppendages_hideTurboTrainers()
  #ifdef OPTIONS_MENU
                     || !is_qol_feature_enabled(QOL_ID_BUG_AND_OVERSIGHT_FIXES)
  #endif
@@ -60,7 +60,7 @@ void func_803219F4(s32 arg0){
             break;
         case 3: //L80321AC0
             func_8025A55C(-1, 4000, 7);
-            core1_ce60_incOrDecCounter(TRUE);
+            midichannel_incOrDecCounter(TRUE);
             comusic_8025AB44(COMUSIC_95_BBONUS_A, 0, 4000);
             func_8025AABC(COMUSIC_95_BBONUS_A);
             break;
@@ -72,7 +72,7 @@ void func_803219F4(s32 arg0){
 
     switch(D_80383310){
         case 2: //L80321B28
-            core1_ce60_incOrDecCounter(FALSE);
+            midichannel_incOrDecCounter(FALSE);
             func_8025A55C(0, 4000, 7);
             coMusicPlayer_playMusic(COMUSIC_58_WADING_BOOTS, -1);
             func_8025A8B8(COMUSIC_58_WADING_BOOTS, 1);
@@ -84,7 +84,7 @@ void func_803219F4(s32 arg0){
             else{
                 D_80383314 = COMUSIC_57_TURBO_TRAINERS;
             }
-            core1_ce60_incOrDecCounter(FALSE);
+            midichannel_incOrDecCounter(FALSE);
             if(D_80383314 == COMUSIC_57_TURBO_TRAINERS){
                 func_8025A55C(0, 4000, 7);
             }
@@ -93,7 +93,7 @@ void func_803219F4(s32 arg0){
             break;
         case 3: //L80321BDC
             musicKeepsPlaying();
-            core1_ce60_incOrDecCounter(FALSE);
+            midichannel_incOrDecCounter(FALSE);
             func_8025A55C(0, 4000, 7);
             coMusicPlayer_playMusic(COMUSIC_95_BBONUS_A, -1);
             func_8025A8B8(COMUSIC_95_BBONUS_A, 1);

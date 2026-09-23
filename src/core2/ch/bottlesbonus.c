@@ -9,11 +9,8 @@ extern f32 *chBottlesBonusCursor_func_802E05AC(s32);
 extern f32  func_802E4B38(void);
 extern void func_8033A8F0(BoneTransformList *, s32, f32[4]);
 extern f32  time_func_8033DDB8(void);
-BKAnimationList *model_getAnimationList(BKModelBin *arg0);
 extern void func_8034BB08(s32);
 extern void func_803458E4(f32[4], f32[4], f32[4], f32);
-extern BKModel *func_8033F5F8(BKMeshList *, BKVertexList *);
-extern BKMeshList *func_8033A0B0(BKModelBin *);
 
 #define CH_BOTTLES_BONUS_PUZZLE_HEIGHT (4)
 #define CH_BOTTLES_BONUS_PUZZLE_WIDTH  (5)
@@ -53,7 +50,6 @@ typedef struct{
 extern void item_set(enum item_e, s32);
 extern void actor_postdrawMethod(ActorMarker *);
 extern void viewport_setNearAndFar(f32, f32);
-extern s16 *func_8030C704(void);
 
 Actor *chBottlesBonus_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx);
 void chBottlesBonus_update(Actor *this);
@@ -61,13 +57,13 @@ void chBottlesBonus_update(Actor *this);
 /* .data */
 Struct_core2_560F0_0 D_803681A0[] = {
     { 0, 0x000, 0, 0x211},
-    {99, 0xE27, 0, 0x2C1},
-    {99, 0xE29, 0, 0x2C2},
-    {99, 0xE2B, 0, 0x2C9},
-    {99, 0xE2D, 0, 0x2C3},
-    {99, 0xE2F, 0, 0x2C4},
-    {99, 0xE31, 0, 0x2C5},
-    {75, 0xE34, 0, 0x007}
+    {99, VER_SELECT(0xE27, 0xA69, 0, 0), 0, 0x2C1},
+    {99, VER_SELECT(0xE29, 0xA6B, 0, 0), 0, 0x2C2},
+    {99, VER_SELECT(0xE2B, 0xA6D, 0, 0), 0, 0x2C9},
+    {99, VER_SELECT(0xE2D, 0xA6F, 0, 0), 0, 0x2C3},
+    {99, VER_SELECT(0xE2F, 0xA71, 0, 0), 0, 0x2C4},
+    {99, VER_SELECT(0xE31, 0xA73, 0, 0), 0, 0x2C5},
+    {75, VER_SELECT(0xE34, 0xA76, 0, 0), 0, 0x007}
 };
 
 ActorAnimationInfo chBottlesBonusAnimations[] ={
@@ -160,7 +156,7 @@ Actor *chBottlesBonus_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx)
     void *sp50;
 
     sp6C = marker_getActor(marker);
-    sp50 = func_8030C704(); //grabs frame as texture?
+    sp50 = picturebox_getColorBuffer(); //grabs frame as texture?
     if ((sp50 == NULL) || (getGameMode() != GAME_MODE_8_BOTTLES_BONUS))
         return sp6C;
 
@@ -174,12 +170,12 @@ Actor *chBottlesBonus_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx)
     gDPSetTextureFilter((*gfx)++, G_TF_POINT);
     gDPSetColorDither((*gfx)++, G_CD_DISABLE);
     func_802DF160(gfx, mtx, vtx);
-    func_80253190(gfx);
+    depthbuffer_clear(gfx);
     
     gDPSetTextureFilter((*gfx)++, G_TF_POINT);
     gSPSegment((*gfx)++, 0x04, osVirtualToPhysical(sp50));
-    modelRender_preDraw((GenFunction_1)actor_predrawMethod, (s32)sp6C);
-    modelRender_postDraw((GenFunction_1)actor_postdrawMethod, (s32)marker);
+    modelRender_setPreDrawCallback((GenFunction_1)actor_predrawMethod, (s32)sp6C);
+    modelRender_setPostDrawCallback((GenFunction_1)actor_postdrawMethod, (s32)marker);
 
     modelRender_draw(gfx, mtx, sp60, NULL, D_80368250, sp54, marker_loadModelBin(marker));
     gDPSetTextureFilter((*gfx)++, G_TF_BILERP);
@@ -209,10 +205,10 @@ void chBottlesBonus_free(Actor *this) {
         assetcache_release(D_8037DEA8);
         D_8037DEA8 = 0;
     }
-    free(D_8037DEB8);
-    free(D_8037DEBC);
-    free(D_8037DEC0);
-    free(D_8037DEC4);
+    bk_free(D_8037DEB8);
+    bk_free(D_8037DEBC);
+    bk_free(D_8037DEC0);
+    bk_free(D_8037DEC4);
 }
 
 void chBottlesBonus_func_802DD484(f32 dst[3], f32 arg1, f32 avg, f32 range) {
@@ -224,15 +220,10 @@ void chBottlesBonus_func_802DD484(f32 dst[3], f32 arg1, f32 avg, f32 range) {
 }
 
 f32 *chBottlesBonus_func_802DD584(s32 arg0){
-    f64 temp_f0;
-    BKAnimation *temp_v1;
-
-    // temp_f0 = D_80376F48;
-    sizeof(BKAnimationList);
-    temp_v1 = (BKAnimation*)(model_getAnimationList(marker_loadModelBin(chBottlesBonusMarker)) + 1);
-    D_8037DF70[0] = temp_v1[5 + arg0].unk0[0] * 0.01;
-    D_8037DF70[1] = temp_v1[5 + arg0].unk0[1] * 0.01;
-    D_8037DF70[2] = temp_v1[5 + arg0].unk0[2] * 0.01;
+    BKAnimation *temp_v1 = &modelbin_getAnimationList(marker_loadModelBin(chBottlesBonusMarker))->animations[0];
+    D_8037DF70[0] = temp_v1[5 + arg0].translation[0] * 0.01;
+    D_8037DF70[1] = temp_v1[5 + arg0].translation[1] * 0.01;
+    D_8037DF70[2] = temp_v1[5 + arg0].translation[2] * 0.01;
     return D_8037DF70;
 }
 
@@ -469,17 +460,17 @@ void chBottlesBonus_update(Actor *this) {
             D_8037DEA8 = assetcache_get(0x471);
         }
         if (D_8037DEAC == NULL) {
-            D_8037DEAC = func_8033F5F8(func_8033A0B0(chBottleBonusBookselfModelBin), model_getVtxList(chBottleBonusBookselfModelBin));
+            D_8037DEAC = meshList_createModel(modelbin_getMeshList(chBottleBonusBookselfModelBin), modelbin_getVtxList(chBottleBonusBookselfModelBin));
             func_8034CF74(local, 0, D_8037DEAC, 0xF0);
         }
         func_8028746C(this->anctrl, (GenFunction_2)chBottlesBonus_func_802DD8AC);
         for(phi_s0 = 0; phi_s0 < CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT; phi_s0++){
             func_8034DFB0(&func_8034C2C4(this->marker, phi_s0 + 0x190)->type_6D, D_803682B4, D_803682A4, 0.0f);
         }
-        D_8037DEB8 = (Struct_core2_560F0_1 *) malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
-        D_8037DEBC = (Struct_core2_560F0_1 *) malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
-        D_8037DEC0 = (Struct_core2_560F0_1 *) malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
-        D_8037DEC4 = (Struct_core2_560F0_1 *) malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
+        D_8037DEB8 = (Struct_core2_560F0_1 *) bk_malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
+        D_8037DEBC = (Struct_core2_560F0_1 *) bk_malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
+        D_8037DEC0 = (Struct_core2_560F0_1 *) bk_malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
+        D_8037DEC4 = (Struct_core2_560F0_1 *) bk_malloc(CH_BOTTLES_BONUS_PUZZLE_PIECE_COUNT*sizeof(Struct_core2_560F0_1));
     }
     func_8034CF90(local, D_8037DEAC, 0xF0);
     sp48 = chBottlesBonusCursor_func_802E06B4() - 1;

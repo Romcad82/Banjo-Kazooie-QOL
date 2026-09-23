@@ -32,7 +32,7 @@ u8 hutNotesCollected;
 /* .code */
 void func_80345EB0(enum item_e item){
     if(func_802FAFE8(item)){
-        item_adjustByDiffWithHud(item, (s32)(-time_getDelta()*60.0f * 1.1));
+        item_adjustByDiffWithHud(item, (s32)(-time_getDelta()*(float)(FRAMERATE) * 1.1));
     }else{
         code_73640_printItemCount(item);
     }
@@ -102,7 +102,7 @@ s32 item_adjustByDiff(enum item_e item, s32 diff, s32 no_hud){
     D_80385F30[ITEM_15_HEALTH_TOTAL] = MIN(sp34*8, D_80385F30[ITEM_15_HEALTH_TOTAL]);
 #endif
     D_80385F30[ITEM_14_HEALTH]= MIN(D_80385F30[ITEM_15_HEALTH_TOTAL], D_80385F30[ITEM_14_HEALTH]);
-    D_80385F30[ITEM_17_AIR] = MIN(3600, D_80385F30[ITEM_17_AIR]);
+    D_80385F30[ITEM_17_AIR] = MIN(VER_SELECT(3600, 3000, 0, 0), D_80385F30[ITEM_17_AIR]);
     D_80385F30[ITEM_25_MUMBO_TOKEN_TOTAL] = D_80385F30[ITEM_1C_MUMBO_TOKEN];
     D_80385F30[ITEM_16_LIFE] = MIN(0xFF, D_80385F30[ITEM_16_LIFE]);
 
@@ -209,7 +209,7 @@ void item_setItemsStartCounts(void){
     D_80385F30[ITEM_10_GOLD_FEATHER] = 0;
     D_80385F30[ITEM_14_HEALTH] = D_80385F30[ITEM_15_HEALTH_TOTAL] =  5;
     D_80385F30[ITEM_16_LIFE] = 3;
-    D_80385F30[ITEM_17_AIR] = 3600;
+    D_80385F30[ITEM_17_AIR] = VER_SELECT(3600, 3000, 0, 0);
     D_80385F30[ITEM_1C_MUMBO_TOKEN] = 0;
     D_80385F30[0x2B] = 0;
     D_80385F30[ITEM_26_JIGGY_TOTAL] = 0;
@@ -533,7 +533,7 @@ void itemscore_levelReset(enum level_e level){
 #endif
     D_80385F30[ITEM_E_JIGGY] = jiggyscore_leveltotal(level);
     D_80385F30[ITEM_12_JINJOS] = 0;
-    D_80385F30[ITEM_17_AIR] = 3600;
+    D_80385F30[ITEM_17_AIR] = VER_SELECT(3600, 3000, 0, 0);
     D_80385F30[ITEM_18_GOLD_BULLIONS] = 0;
     D_80385F30[ITEM_19_ORANGE] = 0;
     D_80385F30[ITEM_23_ACORNS] = 0;
@@ -571,7 +571,7 @@ void func_803465E4(void){
     if(D_80385FE8){
         if( ncCamera_getType() != 3 // CAMERA_TYPE_3_STATIC
             && func_8028F070()
-            && gsworld_getMap() != MAP_33_UNUSED
+            && gsworld_getMap() != MAP_33_STUB_DEMO_INTRO_ROOM
             && gsworld_getMap() != MAP_91_FILE_SELECT
         ){
             D_80385FE0 = TRUE;
@@ -631,16 +631,16 @@ void func_803465E4(void){
                 D_80385FEC = MAX(0.0, D_80385FEC - time_getDelta());
             }//L80346870
             if( (!is_in_polluted_or_winter_water && is_underwater) || (is_in_polluted_or_winter_water && is_on_water_surface) ){//L80346894
-                item_adjustByDiffWithHud(ITEM_17_AIR, (s32)((f64)((-time_getDelta())*60.0f)*1.1));
+                item_adjustByDiffWithHud(ITEM_17_AIR, (s32)((f64)((-time_getDelta())*(float)(FRAMERATE))*1.1));
             }
             else{ 
                 if(is_in_polluted_or_winter_water && is_underwater){//L803468D8
-                    item_adjustByDiffWithHud(ITEM_17_AIR, (s32)(f64)((-time_getDelta()*60.0f)*2.1));
+                    item_adjustByDiffWithHud(ITEM_17_AIR, (s32)(f64)((-time_getDelta()*(float)(FRAMERATE))*2.1));
                 }//L80346930
                 if(!is_in_polluted_or_winter_water || D_80385FEC == 0.0f){
-                    if(!D_80385FE4 && D_80385F30[ITEM_17_AIR] < 3600){
-                        item_adjustByDiffWithHud(ITEM_17_AIR, (s32)(((time_getDelta()*60.0f)*100.0)*1.1));
-                        D_80385F30[ITEM_17_AIR] = MIN(D_80385F30[ITEM_17_AIR], 3600);
+                    if(!D_80385FE4 && D_80385F30[ITEM_17_AIR] < VER_SELECT(3600, 3000, 0, 0)){
+                        item_adjustByDiffWithHud(ITEM_17_AIR, (s32)(((time_getDelta()*(float)(FRAMERATE))*100.0)*1.1));
+                        D_80385F30[ITEM_17_AIR] = MIN(D_80385F30[ITEM_17_AIR], VER_SELECT(3600, 3000, 0, 0));
                     }
                 }
             }
@@ -685,7 +685,7 @@ void func_803465E4(void){
     }//L80346B6C
 
     if((globalTimer_getTime() & 7) == 6){
-        if(!func_80320708() || !dummy_func_80320248()){
+        if(!volatileflag_func_80320708() || !volatileflag_stub2()){
             D_80385F30[randi2(0, 0x2C)] = 1;
             D_80385FF0[randi2(0, 0xE)] = 1;
             D_80386000[randi2(0, 0xE)] = 1.0f;
@@ -715,7 +715,7 @@ void func_80346CA8(void) {
     if (D_80385FE4) {
         D_80385FE0 = TRUE;
         D_80385F30[ITEM_14_HEALTH] = D_80385F30[ITEM_15_HEALTH_TOTAL];
-        D_80385F30[ITEM_17_AIR] = 60*60;
+        D_80385F30[ITEM_17_AIR] = VER_SELECT(3600, 3000, 0, 0);
     }
 }
 
@@ -763,10 +763,10 @@ void func_80346DB4(s32 note_count) {
             D_80385FF0[level_id] = note_count;
 #endif
             if ((level_get() == LEVEL_1_MUMBOS_MOUNTAIN) && (note_count == 50)) {
-                gcdialog_showDialog(0xF74, 4, NULL, NULL, NULL, NULL);
+                gcdialog_showDialog(VER_SELECT(0xF74, 0xADA, 0, 0), 4, NULL, NULL, NULL, NULL);
             }
             if (note_count == 100) {
-                gcdialog_showDialog(0xF78, 4, NULL, NULL, NULL, NULL);
+                gcdialog_showDialog(VER_SELECT(0xF78, 0xADE, 0, 0), 4, NULL, NULL, NULL, NULL);
             }
 #if defined(OPTIONS_MENU) && defined(NOTE_SAVING)
             if (!is_qol_feature_enabled(QOL_ID_NOTE_SAVING)) {
@@ -782,7 +782,7 @@ void func_80346DB4(s32 note_count) {
             if (note_count == 1) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
-            if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showDialog(0xF76, 0, NULL, NULL, NULL, NULL))) {
+            if (!levelSpecificFlags_get(LEVEL_FLAG_34_UNKNOWN) && (gcdialog_showDialog(VER_SELECT(0xF76, 0xADC, 0, 0), 0, NULL, NULL, NULL, NULL))) {
                 levelSpecificFlags_set(LEVEL_FLAG_34_UNKNOWN, TRUE);
             }
 #endif

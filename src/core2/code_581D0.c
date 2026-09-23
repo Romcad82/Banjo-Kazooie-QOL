@@ -10,8 +10,11 @@ void func_802DF2C4(Actor *this);
 f32 D_80368360[3] = {0.0f, 0.0f, 0.0f};
 s32 D_8036836C[4] = {0x60, 0x60, 0x60, 0xFF};
 s32 D_8036837C[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+
+// Asset is blank white rectangle
+// Appears during Bottles Bonus
 ActorInfo D_8036838C = { 
-    0x17B, 0x2B5, 0x472,
+    MARKER_17B_UNKNOWN, ACTOR_2B5_UNKNOWN, ASSET_472_UNKNOWN,
     0, NULL, 
     func_802DF2C4, actor_update_func_80326224, func_80325340, 
     0, 0, 0.0f, 0
@@ -27,12 +30,12 @@ Actor *func_802DF160(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     void *sp38;
 
     this = marker_getActor(D_8037E000);
-    sp38 = func_8030C704();
+    sp38 = picturebox_getColorBuffer();
     modelRender_setDepthMode(MODEL_RENDER_DEPTH_FULL);
     gDPSetTextureFilter((*gfx)++, G_TF_POINT);
     gSPSegment((*gfx)++, 0x04, osVirtualToPhysical(sp38));
-    modelRender_preDraw((GenFunction_1)actor_predrawMethod, (s32)this);
-    modelRender_postDraw((GenFunction_1)actor_postdrawMethod, (s32)D_8037E000);
+    modelRender_setPreDrawCallback((GenFunction_1)actor_predrawMethod, (s32)this);
+    modelRender_setPostDrawCallback((GenFunction_1)actor_postdrawMethod, (s32)D_8037E000);
     modelRender_draw(gfx, mtx, &D_80368360, NULL, 1.0f, NULL, marker_loadModelBin(D_8037E000));
     gDPSetTextureFilter((*gfx)++, G_TF_BILERP);
     return this;
@@ -41,22 +44,23 @@ Actor *func_802DF160(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
 void func_802DF270(void){
     Actor *this;
     if(D_8037E000 == NULL){
-        this = actor_spawnWithYaw_f32(0x2B5, D_80368360, 0);
+        this = actor_spawnWithYaw_f32(ACTOR_2B5_UNKNOWN, D_80368360, 0);
         D_8037E000 = this->marker;
     }
 }
 
+// free
 void func_802DF2B4(Actor *this){
     D_8037E000 = NULL;
 }
 
+// update
 void func_802DF2C4(Actor *this) {
     s32 temp_fp;
     s32 i;
     s32 prev_val;
     s32 temp_v0;
     s32 val;
-
 
     temp_fp = chBottlesBonusCursor_func_802E06B4() - 0x15;
     if (!this->initialized) {

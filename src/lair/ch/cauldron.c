@@ -3,7 +3,7 @@
 #include "variables.h"
 
 #include "config.h"
-#include "src/core2/gc/zoombox.h"
+#include "include/core2/gc/zoombox.h"
 
 extern void func_8028F4B8(f32[3], f32, f32);
 extern void func_8028F66C(s32);
@@ -38,17 +38,17 @@ void reopen_warpMenu_zoomboxes(enum file_progress_e currFlag);
 /* .data */
 ActorAnimationInfo D_80393520[] = {
     {    0, 0.0f},
-    {0x213, 2.66f},
-    {0x212, 2.0f},
-    {0x214, 6.4f},
-    {0x215, 3.4f},
-    {0x216, 1.0f},
-    {0x28F, 5.167f},
-    {0x290, 6.26f}
+    {ASSET_213_ANIM_unk, 2.66f},
+    {ASSET_212_ANIM_unk, 2.0f},
+    {ASSET_214_ANIM_unk, 6.4f},
+    {ASSET_215_ANIM_unk, 3.4f},
+    {ASSET_216_ANIM_unk, 1.0f},
+    {ASSET_28F_ANIM_unk, 5.167f},
+    {ASSET_290_ANIM_unk, 6.26f}
 #ifdef WARP_CAULDRON_MENU
     ,
-    {0x216, 1.0f}, // State 8
-    {0x214, 6.4f}  // State 9
+    {ASSET_216_ANIM_unk, 1.0f}, // State 8
+    {ASSET_214_ANIM_unk, 6.4f}  // State 9
 #endif
 };
 ActorInfo D_80393560 = { MARKER_231_WARP_CAULDRON, ACTOR_23B_WARP_CAULDRON, ASSET_4DF_MODEL_WARP_CAULDRON, 1, D_80393520, chWarpCauldron_update, actor_update_func_80326224, chWarpCauldron_draw, 0, 0, 3.0f, 0};
@@ -856,7 +856,7 @@ void chWarpCauldron_update(Actor *this) {
             delta_time = time_getDelta();
             controller_copyFaceButtons(0, face_buttons);
             controller_copySideButtons(0, side_buttons);
-            controller_getJoystick(0, joystick);
+            controller_copyJoystick(0, joystick);
             
             check_scrollingMenu_finished_displaying();
             if (get_inWarpCauldronCutscene()) {
@@ -887,7 +887,7 @@ void chWarpCauldron_update(Actor *this) {
                     reset_scrollingMenu_zoombox_y_pos_and_transparency();
  #ifdef DPAD_FUNCTIONALITY
                 } else if ((0.75 < joystick[JOYSTICK_Y])
-                           || pfsManager_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
+                           || joy_dpad_buttons_valid(BUTTON_D_UP, TRUE)) {
  #else
                 } else if (0.75 < joystick[JOYSTICK_Y]) {
  #endif
@@ -906,7 +906,7 @@ void chWarpCauldron_update(Actor *this) {
                     }
  #ifdef DPAD_FUNCTIONALITY
                 } else if ((joystick[JOYSTICK_Y] < -0.75)
-                           || pfsManager_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
+                           || joy_dpad_buttons_valid(BUTTON_D_DOWN, TRUE)) {
  #else
                 } else if (joystick[JOYSTICK_Y] < -0.75) {
  #endif
@@ -987,8 +987,8 @@ Actor *chWarpCauldron_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx)
 
     this = marker_getActor(marker);
     if(this->modelCacheIndex == ACTOR_23B_WARP_CAULDRON) {
-        func_8033A45C(3, BOOL(this->unk38_0));
-        func_8033A45C(4, this->unk38_0 ? FALSE : TRUE);
+        modelRender_setAppendageVisibility(3, BOOL(this->unk38_0));
+        modelRender_setAppendageVisibility(4, this->unk38_0 ? FALSE : TRUE);
     }
     this = actor_draw(marker, gfx, mtx, vtx);
     if (marker->unk14_21 && this->unk38_0 && (getGameMode() != GAME_MODE_4_PAUSED)) {
@@ -1056,12 +1056,12 @@ void update_warpMenu_zoombox_strings(u8 selectionIndex, u8 zoomboxIndex, bool in
     u8 *zoombox_strings[2];
     static u8 upperTextLine[6][0x20];
     static u8 lowerTextLine[6][0x20];
-    bool onlyOneString = strcmp("", cauldronZoomboxData[selectionIndex].secondStr);
+    bool onlyOneString = bk_strcmp("", cauldronZoomboxData[selectionIndex].secondStr);
 
-    strcpy(upperTextLine[zoomboxIndex], "");
-    strcat(upperTextLine[zoomboxIndex], cauldronZoomboxData[selectionIndex].firstStr);
-    strcpy(lowerTextLine[zoomboxIndex], "");
-    strcat(lowerTextLine[zoomboxIndex], cauldronZoomboxData[selectionIndex].secondStr);
+    bk_strcpy(upperTextLine[zoomboxIndex], "");
+    bk_strcat(upperTextLine[zoomboxIndex], cauldronZoomboxData[selectionIndex].firstStr);
+    bk_strcpy(lowerTextLine[zoomboxIndex], "");
+    bk_strcat(lowerTextLine[zoomboxIndex], cauldronZoomboxData[selectionIndex].secondStr);
 
     if (onlyOneString) {
         scrollingMenu.zoombox[zoomboxIndex]->textYOffset = -1;

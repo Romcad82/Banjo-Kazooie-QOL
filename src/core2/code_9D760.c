@@ -11,7 +11,7 @@ void func_80324700(u8* self){
 
     for(i_ptr = self; i_ptr < self + 0x10; i_ptr++){
         if(*i_ptr != 0xFF){
-            func_8033A45C((i_ptr - self) + 1, *i_ptr);
+            modelRender_setAppendageVisibility((i_ptr - self) + 1, *i_ptr);
         }
     }
 }
@@ -21,14 +21,14 @@ void func_80324770(u8* self, s32 indx, s32 value){
 }
 
 void func_8032477C(u8 *self){
-    free(self);
+    bk_free(self);
 }
 
 u8 *func_8032479C(void){
     u8 *self;
     s32 i;
 
-    self = (u8*)malloc(0x10);
+    self = (u8*)bk_malloc(0x10);
     for(i = 0; i < 0x10; i++){
         self[i] = 0xff;
     }

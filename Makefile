@@ -2,6 +2,7 @@
 BASENAME := banjo
 VERSION  ?= us.v10
 ANTI_TAMPER ?= 0
+ANTI_PIRACY ?= 0
 
 ifeq ($(VERSION),us.v10)
 	C_VERSION=0
@@ -19,6 +20,56 @@ ifeq ($(VERSION),jp)
 	C_VERSION=3
 endif
 
+### Utils ###
+
+# OS detection
+UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
+
+ifeq ($(OS),Windows_NT)
+	$(error Native Windows is currently unsupported for building this repository, use WSL instead c:)
+else ifeq ($(UNAME_S),Linux)
+	ifneq ($(filter aarch%,$(UNAME_M)),)
+		DETECTED_OS := linux-arm
+	else
+		DETECTED_OS := linux
+	endif
+else ifeq ($(UNAME_S),Darwin)
+	DETECTED_OS := macos
+endif
+
+# Recomp configuration
+RECOMP_VERSION := v1.2
+RECOMP_FILE := ido-5.3-recomp-$(DETECTED_OS).tar.gz
+RECOMP_URL := https://github.com/decompals/ido-static-recomp/releases/download/$(RECOMP_VERSION)/$(RECOMP_FILE)
+RECOMP_DIR := tools/ido-recomp/$(DETECTED_OS)
+RECOMP_CC := $(RECOMP_DIR)/cc
+
+ifeq ($(wildcard $(RECOMP_CC)),)
+  $(info Fetching Recomp...)
+  $(shell mkdir -p $(RECOMP_DIR))
+  $(shell curl -L $(RECOMP_URL) -o $(RECOMP_FILE))
+  $(shell tar xf $(RECOMP_FILE) -C $(RECOMP_DIR))
+  $(shell rm $(RECOMP_FILE))
+endif
+
+# MIPS toolchain detection
+find-command = $(shell which $(1) 2>/dev/null)
+find-mips-prefix = $(shell test -n "$(call find-command,$(1)-ld)" && test -n "$(call find-command,$(1)-gcc)" && echo $(1))
+
+MIPS_PREFIX_CANDIDATES := mips64-elf mips-n64 mips64 mips-linux-gnu mips64-linux-gnu mips64-none-elf mips mips-suse-linux
+define _find-mips-toolchain-internal
+$(eval DETECTED_PREFIX :=)
+$(eval _unused := $(foreach prefix,$(MIPS_PREFIX_CANDIDATES),\
+  $(if $(DETECTED_PREFIX),,\
+    $(if $(call find-mips-prefix,$(prefix)),\
+      $(eval DETECTED_PREFIX := $(prefix)-)))))
+$(if $(DETECTED_PREFIX),,$(error Unable to detect a suitable MIPS toolchain installed))
+$(DETECTED_PREFIX)
+endef
+
+find-mips-toolchain = $(strip $(call _find-mips-toolchain-internal))
+
 ### Tools ###
 
 # System tools
@@ -30,12 +81,12 @@ CAT := cat
 DIFF := diff
 
 # Build tools
-CROSS   := mips-linux-gnu-
-CC      := ido/ido5.3_recomp/cc
+CROSS   := $(call find-mips-toolchain)
+CC      := $(RECOMP_CC)
 CPP     := cpp
 GCC     := $(CROSS)gcc
 AS      := $(CROSS)as
-LD      := $(CROSS)ld -b elf32-tradbigmips
+LD      := $(CROSS)ld
 OBJDUMP := $(CROSS)objdump
 OBJCOPY := $(CROSS)objcopy
 PYTHON  := .venv/bin/python3
@@ -83,7 +134,7 @@ NEW_C_SRCS := $(filter-out $(C_SRCS), $(YAML_C_SRCS))
 NEW_ASM_SRCS := $(filter-out $(ALL_ASM_SRCS), $(YAML_ASM_SRCS))
 NEW_BINS := $(filter-out $(ALL_BINS), $(YAML_BINS))
 NEW_FILES := $(NEW_C_SRCS) $(NEW_ASM_SRCS) $(NEW_BINS)
-BOOT_ASM_SRCS := $(filter-out asm/core1/%,$(NEW_ASM_SRCS) $(ALL_ASM_SRCS))
+BOOT_ASM_SRCS := $(filter-out asm/core1/% asm/data/core1/%,$(NEW_ASM_SRCS) $(ALL_ASM_SRCS))
 # Any source files that have GLOBAL_ASM in them or do not exist before splitting
 GLOBAL_ASM_C_SRCS := $(shell $(GREP) GLOBAL_ASM $(SRC_ROOT) </dev/null) $(NEW_C_SRCS)
 
@@ -118,9 +169,6 @@ BIN_OBJS             := $(filter-out $(ASSET_OBJS),$(BIN_OBJS))
 ALL_OBJS             := $(C_OBJS) $(ASM_OBJS) $(BIN_OBJS)
 SYMBOL_ADDRS         := symbol_addrs.$(VERSION).txt
 SYMBOL_ADDR_FILES    := $(filter-out $(SYMBOL_ADDRS), $(wildcard symbol_addrs.*.$(VERSION).txt))
-MIPS3_OBJS           := $(BUILD_DIR)/$(SRC_ROOT)/core1/ultra/libc/ll.c.o $(BUILD_DIR)/$(SRC_ROOT)/core1/ultra/libc/llcvt.c.o
-BOOT_MIPS3_OBJS      := $(BUILD_DIR)/$(SRC_ROOT)/boot/ultra/libc/ll.c.o
-BOOT_C_OBJS          := $(filter-out $(BOOT_MIPS3_OBJS),$(BOOT_C_OBJS))
 COMPRESSED_SYMBOLS   := $(BUILD_DIR)/compressed_symbols.txt
 
 # Progress files
@@ -160,16 +208,16 @@ endef
 ### Flags ###
 
 # Build tool flags
-CFLAGS         := -c -Wab,-r4300_mul -non_shared -G 0 -Xcpluscomm $(OPT_FLAGS) $(MIPSBIT) -D_FINALROM -DF3DEX_GBI -DVERSION='$(C_VERSION)' -DNDEBUG -DBUILD_VERSION=VERSION_I -DBKDIFFS -DANTI_TAMPER='$(ANTI_TAMPER)'
+CFLAGS         := -c -Wab,-r4300_mul -non_shared -G 0 -Xcpluscomm $(OPT_FLAGS) $(MIPSBIT) -D_FINALROM -DF3DEX_GBI -DVERSION='$(C_VERSION)' -DNDEBUG -DBUILD_VERSION=VERSION_I -DBKDIFFS -DANTI_TAMPER='$(ANTI_TAMPER)' -DANTI_PIRACY='$(ANTI_PIRACY)'
 CFLAGS         += -woff 649,654,838,807
 CPPFLAGS       := -D_FINALROM -DN_MICRO -DNDEBUG -DBUILD_VERSION=VERSION_I -DBKDIFFS
 INCLUDE_CFLAGS := -I . -I include -I lib/ultralib/include -I lib/ultralib/include/PR -I lib/ultralib/include/PRinternal -I lib/ultralib/include/compiler/ido -I include/n_audio/PR -I lib/ultralib/src/audio
-OPT_FLAGS      := -O2 
+OPT_FLAGS      := -O2
 MIPSBIT        := -mips2
 ASFLAGS        := -EB -mtune=vr4300 -march=vr4300 -mabi=32 -I include
-GCC_ASFLAGS    := -c -x assembler-with-cpp -mabi=32 -ffreestanding -mtune=vr4300 -march=vr4300 -mfix4300 -G 0 -O -mno-shared -fno-PIC -mno-abicalls
+GCC_ASFLAGS    := -c -x assembler-with-cpp -Wa,-Iinclude -mabi=32 -ffreestanding -mtune=vr4300 -march=vr4300 -mfix4300 -G 0 -O -mno-shared -fno-PIC -mno-abicalls
 LDFLAGS        := -T $(LD_SCRIPT) -Map $(ELF:.elf=.map) --no-check-sections --accept-unknown-input-arch -T manual_syms.$(VERSION).txt
-BINOFLAGS      := -I binary -O elf32-tradbigmips
+BINOFLAGS      := -r -b binary
 
 ### Rules ###
 
@@ -243,41 +291,26 @@ $(BOOT_ASM_OBJS) : $(BUILD_DIR)/%.s.o : %.s | $(ASM_BUILD_DIRS)
 
 # .bin -> .o
 $(BIN_OBJS) : $(BUILD_DIR)/%.bin.o : %.bin | $(BIN_BUILD_DIRS)
-	$(call print2,Objcopying:,$<,$@)
-	@$(OBJCOPY) $(BINOFLAGS) $< $@
+	$(call print2,Embedding:,$<,$@)
+	@$(LD) $(BINOFLAGS) -o $@ $<
 
 # .c -> .o
 $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
 	$(call print2,Compiling:,$<,$@)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDE_CFLAGS) $(OPT_FLAGS) $(MIPSBIT) -o $@ $<
 
-# .c -> .o (mips3)
-$(MIPS3_OBJS) : $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
-	$(call print2,Compiling:,$<,$@)
-	@$(CC) -c -32 $(CFLAGS) $(CPPFLAGS) $(INCLUDE_CFLAGS) $(OPT_FLAGS) $(LOOP_UNROLL) $(MIPSBIT) -o $@ $<
-	@tools/set_o32abi_bit.py $@
-
 # .c -> .o with asm processor
 $(GLOBAL_ASM_C_OBJS) : $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
 	$(call print2,Compiling (with ASM Processor):,$<,$@)
 	@$(ASM_PROCESSOR) $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
 	@$(CC) -32 $(CFLAGS) $(CPPFLAGS) $(INCLUDE_CFLAGS) $(OPT_FLAGS) $(MIPSBIT) -o $@ $(BUILD_DIR)/$<
-	@$(ASM_PROCESSOR) $(OPT_FLAGS) $< --post-process $@ \
-		--assembler "$(AS) $(ASFLAGS)" --asm-prelude include/prelude.s
+	@$(ASM_PROCESSOR) $(OPT_FLAGS) $< --post-process $@ --assembler "$(AS) $(ASFLAGS)" --asm-prelude include/prelude.s
 
 # .c -> .o (boot)
 $(BOOT_C_OBJS) : $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
 	$(call print2,Compiling:,$<,$@)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDE_CFLAGS) $(OPT_FLAGS) $(MIPSBIT) -o $@ $<
-	@mips-linux-gnu-strip $@ -N asdasdasasdasd
-	@$(OBJCOPY) --prefix-symbols=boot_ $@
-	@$(OBJCOPY) --strip-unneeded $@
-
-# .c -> .o (mips3, boot)
-$(BOOT_MIPS3_OBJS) : $(BUILD_DIR)/%.c.o : %.c | $(C_BUILD_DIRS)
-	$(call print2,Compiling:,$<,$@)
-	@$(CC) -c -32 $(CFLAGS) $(CPPFLAGS) $(INCLUDE_CFLAGS) $(OPT_FLAGS) $(LOOP_UNROLL) $(MIPSBIT) -o $@ $<
-	@tools/set_o32abi_bit.py $@
+	@$(CROSS)strip $@ -N asdasdasasdasd
 	@$(OBJCOPY) --prefix-symbols=boot_ $@
 	@$(OBJCOPY) --strip-unneeded $@
 
@@ -321,8 +354,8 @@ endif
 
 # .bin -> .o
 $(ASSET_OBJS): $(ASSET_BIN)
-	$(call print2,Objcopying:,$<,$@)
-	@$(OBJCOPY) $(BINOFLAGS) $< $@
+	$(call print2,Embedding:,$<,$@)
+	@$(LD) $(BINOFLAGS) -o $@ $<
 
 # decompress baserom
 $(DECOMPRESSED_BASEROM): $(BASEROM) $(BK_ROM_DECOMPRESS)
@@ -359,7 +392,7 @@ $(FINAL_Z64) : $(UNCOMPRESSED_Z64) $(ELF) $(BK_ROM_COMPRESS)
 # Libultra files
 $(BUILD_DIR)/libultra_rom.a:
 	@$(MAKE) -C lib/ultralib VERSION=I TARGET=libultra_rom COMPARE=0 MODERN_LD=1 setup
-	@$(MAKE) -C lib/ultralib VERSION=I TARGET=libultra_rom COMPARE=0 MODERN_LD=1
+	@$(MAKE) -C lib/ultralib VERSION=I TARGET=libultra_rom COMPARE=0 MODERN_LD=1 CC="$(abspath $(RECOMP_CC))" AS="$(abspath $(RECOMP_CC))"
 	@$(CP) lib/ultralib/build/I/libultra_rom/libultra_rom.a $@
 
 $(BUILD_DIR)/libultra_rom_boot.a: $(BUILD_DIR)/libultra_rom.a
@@ -394,7 +427,6 @@ clean:
 # Per-file flag definitions
 build/$(VERSION)/src/core1/ultra/audio/%.c.o: OPT_FLAGS = -O3
 build/$(VERSION)/src/core1/n_audio/%.c.o: OPT_FLAGS = -O3
-build/$(VERSION)/src/core1/ultra/gu/%.c.o: OPT_FLAGS := -O3
 
 # Disable implicit rules
 MAKEFLAGS += -r

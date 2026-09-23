@@ -7,6 +7,7 @@
 #include "core2/anctrl.h"
 #include "core2/modelRender.h"
 #include "core2/skeletalanim.h"
+#include "core2/code_C31A0.h"
 
 typedef struct sprite_prop_s{
     u32 spriteId:12;
@@ -113,7 +114,7 @@ typedef struct actorMarker_s{
     u32         unk14_10:11; //used in ch/jiggy
     Struct6Cs   *unk18;
     MarkerCollisionFunc dieFunc;
-    s32         unk20;
+    AnimMtxList *unk20;
     ActorUpdateFunc actorUpdateFunc;
     s32         commonParticleIndex;
     u32         actrArrayIdx:11; //unk2C
@@ -135,9 +136,9 @@ typedef struct actorMarker_s{
     u32         unk40_22:1;
     u32         unk40_21:1;
     u32         unk40_20:1;
-    u32         unk40_19:1;
+    u32         unk40_19:1; // set for screen overlay sprites
     u32         pad40_18:19;
-    struct5Bs * unk44;
+    Vec3fArray * unk44;
     BKModel *   unk48;
     vector(Struct70s) * unk4C;
     s32         unk50;
@@ -433,9 +434,9 @@ typedef struct actor_array{
     Actor data[]; //variable size array
 }ActorArray;
 
-typedef struct {
+typedef struct actor_list_savestate_s {
     u32 cnt;
-    Actor *actor_save_state[];
+    Actor data[];
 }ActorListSaveState;
 
 #endif

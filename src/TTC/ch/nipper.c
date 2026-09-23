@@ -68,7 +68,7 @@ static Actor *__chNipper_animFunc(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx
     Actor *this;
     
     this = marker_getActor(marker);
-    func_8033A45C(3, (this->state == 7)? 0 : 1);
+    modelRender_setAppendageVisibility(3, (this->state == 7)? 0 : 1);
     return actor_draw(marker, gfx, mtx, vtx);
 }
 
@@ -156,7 +156,7 @@ static void __chNipper_dieFunc(ActorMarker *this_marker, ActorMarker *other_mark
 
     __chNipper_playDeathAnimation(this);
     this->lifetime_value = 80.0f;
-    gcdialog_showDialog(ASSET_A10_DIALOG_NIPPER_HURT, 4, NULL, NULL, NULL, NULL);
+    gcdialog_showDialog(VER_SELECT(ASSET_A10_DIALOG_NIPPER_HURT, 0x910, 0, 0), 4, NULL, NULL, NULL, NULL);
     return;
 }
 
@@ -177,7 +177,7 @@ static void __chNipper_ow2Func(ActorMarker * this_marker, ActorMarker *other_mar
         this = marker_getActor(this_marker);
         if( !mapSpecificFlags_get(TTC_SPECIFIC_FLAG_7_NIPPER_FIRST_MEET_TEXT_SHOWN)
             && this->has_met_before
-            && gcdialog_showDialog(ASSET_A0F_DIALOG_NIPPER_HIT_BY_EGG, 0, NULL, NULL, NULL, NULL)
+            && gcdialog_showDialog(VER_SELECT(ASSET_A0F_DIALOG_NIPPER_HIT_BY_EGG, 0x90F, 0, 0), 0, NULL, NULL, NULL, NULL)
         ){
             mapSpecificFlags_set(TTC_SPECIFIC_FLAG_7_NIPPER_FIRST_MEET_TEXT_SHOWN, TRUE);
         }
@@ -188,7 +188,7 @@ static void __chNipper_owFunc(ActorMarker * this_marker, ActorMarker *other_mark
     Actor *this = marker_getActor(this_marker);
     if( !this->unk138_23
         && this->has_met_before
-        && gcdialog_showDialog(ASSET_A11_DIALOG_NIPPER_ATTACK, 0, NULL, NULL, NULL, NULL)
+        && gcdialog_showDialog(VER_SELECT(ASSET_A11_DIALOG_NIPPER_ATTACK, 0x911, 0, 0), 0, NULL, NULL, NULL, NULL)
     ){
         this->unk138_23 = TRUE;
     }
@@ -213,13 +213,13 @@ static void __chNipper_updateFunc(Actor *this){
         if(0.0f == this->velocity_x && xVelocity){
             comusic_8025AB44(COMUSIC_12_TTC_NIPPER, -1, 5000);
             func_8032BB88(this, 0, 4000);
-            core1_ce60_incOrDecCounter(FALSE);
+            midichannel_incOrDecCounter(FALSE);
         }
         else if(!xVelocity && 0.0f != this->velocity_x){
             comusic_8025AB44(COMUSIC_12_TTC_NIPPER, 0, 300);
             func_8025AABC(COMUSIC_12_TTC_NIPPER);
             func_8032BB88(this, -1, 300);
-            core1_ce60_incOrDecCounter(TRUE);
+            midichannel_incOrDecCounter(TRUE);
         }
         this->velocity_x = xVelocity;
     }
@@ -243,7 +243,7 @@ static void __chNipper_updateFunc(Actor *this){
                     && player_movement_group != BSGROUP_A_FLYING
                 ){
                     subaddie_set_state_with_direction(this, CH_NIPPER_STATE_5_SPAWNED, 0.01f, 1);
-                    if(gcdialog_showDialog(ASSET_A0E_DIALOG_NIPPER_SPAWNED, 0xf, this->position, this->marker, __chNipper_spawnedShowTextCallback, NULL)){
+                    if(gcdialog_showDialog(VER_SELECT(ASSET_A0E_DIALOG_NIPPER_SPAWNED, 0x90E, 0, 0), 0xf, this->position, this->marker, __chNipper_spawnedShowTextCallback, NULL)){
                         this->has_met_before = TRUE;
                     }
                     comusic_8025AB44(COMUSIC_12_TTC_NIPPER, 5000, 300);
@@ -279,11 +279,11 @@ static void __chNipper_updateFunc(Actor *this){
 
         case CH_NIPPER_STATE_3_UNKNOWN:
             if(actor_animationIsAt(this, 0.5f) && this->marker->unk14_21){
-                func_8034A174(this->marker->unk44, 6, particlePosition);
+                vec3fArray_get_vec3f(this->marker->unk44, 6, particlePosition);
                 __chNipper_drawParticlesAtPosition(particlePosition, 2);
             }
             else if(actor_animationIsAt(this, 0.95f) && this->marker->unk14_21){//L80388800
-                func_8034A174(this->marker->unk44, 5, particlePosition);
+                vec3fArray_get_vec3f(this->marker->unk44, 5, particlePosition);
                 __chNipper_drawParticlesAtPosition(particlePosition, 2);
             }
 

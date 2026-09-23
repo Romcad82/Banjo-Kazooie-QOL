@@ -80,19 +80,19 @@ struct {
 MapToBoldFontTextureMap mapToBoldFontTextureMap[] ={
     {MAP_1_SM_SPIRAL_MOUNTAIN,               SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
     {MAP_2_MM_MUMBOS_MOUNTAIN,               SPRITE_BOLD_FONT_ORANGE_SPHERE_TEXTURE},
-    {MAP_3_UNUSED,                           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_4_UNUSED,                           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_3_STUB_TEST_TEMPLE,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_4_STUB_TEST_MB,                     SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_5_TTC_BLUBBERS_SHIP,                SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
     {MAP_6_TTC_NIPPERS_SHELL,                SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_7_TTC_TREASURE_TROVE_COVE,          SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
-    {MAP_8_UNUSED,                           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_9_UNUSED,                           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_8_STUB_TEST_CS_HEIGHT_AND_DISTANCE, SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_9_STUB_TEST_CS_SLIGHT_SLOPES,       SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_A_TTC_SANDCASTLE,                   SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
     {MAP_B_CC_CLANKERS_CAVERN,               SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_C_MM_TICKERS_TOWER,                 SPRITE_BOLD_FONT_ORANGE_SPHERE_TEXTURE},
     {MAP_D_BGS_BUBBLEGLOOP_SWAMP,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_E_MM_MUMBOS_SKULL,                  SPRITE_BOLD_FONT_ORANGE_SPHERE_TEXTURE},
-    {MAP_F_UNUSED,                           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_F_STUB_TEST_PM,                     SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_10_BGS_MR_VILE,                     SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_11_BGS_TIPTUP,                      SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_12_GV_GOBIS_VALLEY,                 SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
@@ -100,9 +100,9 @@ MapToBoldFontTextureMap mapToBoldFontTextureMap[] ={
     {MAP_14_GV_SANDYBUTTS_MAZE,              SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_15_GV_WATER_PYRAMID,                SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_16_GV_RUBEES_CHAMBER,               SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_17_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_18_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_19_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_17_STUB_TEST_GS,                    SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_18_STUB_TEST_RL,                    SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_19_STUB_TEST_CS_STEEP_SLOPES,       SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_1A_GV_INSIDE_JINXY,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_1B_MMM_MAD_MONSTER_MANSION,         SPRITE_BOLD_FONT_ORANGE_SPHERE_TEXTURE},
     {MAP_21_CC_WITCH_SWITCH_ROOM,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
@@ -121,8 +121,8 @@ MapToBoldFontTextureMap mapToBoldFontTextureMap[] ={
     {MAP_2F_MMM_WATERDRAIN_BARREL,           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_30_MMM_MUMBOS_SKULL,                SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_31_RBB_RUSTY_BUCKET_BAY,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_32_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_33_UNUSED,                          SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
+    {MAP_32_STUB_LL_LAVA_LEVEL,              SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_33_STUB_DEMO_INTRO_ROOM,            SPRITE_BOLD_FONT_BLUE_SPHERE_TEXTURE},
     {MAP_34_RBB_ENGINE_ROOM,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_35_RBB_WAREHOUSE,                   SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_36_RBB_BOATHOUSE,                   SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
@@ -136,30 +136,30 @@ MapToBoldFontTextureMap mapToBoldFontTextureMap[] ={
     {MAP_3E_RBB_CONTAINER_2,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_3F_RBB_CAPTAINS_CABIN,              SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_41_FP_BOGGYS_IGLOO,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_42_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_42_STUB_LL_TIPTUPS_CAVE,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_43_CCW_SPRING,                      SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_44_CCW_SUMMER,                      SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_45_CCW_AUTUMN,                      SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_46_CCW_WINTER,                      SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_47_BGS_MUMBOS_SKULL,                SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_48_FP_MUMBOS_SKULL,                 SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_49_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_49_STUB_ML_MUMBOS_SKULL,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_4A_CCW_SPRING_MUMBOS_SKULL,         SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_4B_CCW_SUMMER_MUMBOS_SKULL,         SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_4C_CCW_AUTUMN_MUMBOS_SKULL,         SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_4D_CCW_WINTER_MUMBOS_SKULL,         SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_4E_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_4F_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_50_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_51_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_52_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_4E_STUB_LL_MUMBOS_SKULL,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_4F_STUB_FL_MUMBOS_SKULL_NORMAL,     SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_50_STUB_FL_MUMBOS_SKULL_RAIN_DANCE, SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_51_STUB_LL_SWIM,                    SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_52_STUB_LL_TEMPLE,                  SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_53_FP_CHRISTMAS_TREE,               SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_54_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_55_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_56_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_57_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_58_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
-    {MAP_59_UNUSED,                          SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_54_STUB_ML_CRUSHER_SHED,            SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_55_STUB_ML_GENERATOR_CAVES,         SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_56_STUB_ML_MINE_LEVEL,              SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_57_STUB_ML_TUBS,                    SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_58_STUB_ML_WATER_CAVES,             SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
+    {MAP_59_STUB_ML_WATERFALL,               SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_5A_CCW_SUMMER_ZUBBA_HIVE,           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_5B_CCW_SPRING_ZUBBA_HIVE,           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
     {MAP_5C_CCW_AUTUMN_ZUBBA_HIVE,           SPRITE_BOLD_FONT_ORANGE_GRADIENT_TEXTURE},
@@ -286,7 +286,7 @@ void print_applyTextureToBoldFontLetter(BKSpriteTextureBlock *alphaMask, BKSprit
 FontLetter *print_getLettersFromFont(BKSprite *alphaMask, BKSprite *textureSprite){
     BKSpriteFrame * font = sprite_getFramePtr(alphaMask, 0);
     BKSpriteTextureBlock *chunkPtr;
-    FontLetter * letters = malloc((font->chunkCnt + 1)*sizeof(FontLetter));
+    FontLetter * letters = bk_malloc((font->chunkCnt + 1)*sizeof(FontLetter));
     u8* palDataPtr;
     u8* chunkDataPtr;
     s32 chunkSize;
@@ -367,11 +367,11 @@ void print_free(void){
         assetcache_release(print_sFontSpriteAssets[i]);
         print_sFontSpriteAssets[i] = NULL;
         if(i < FONTS_4_MAX){
-            free(print_sFonts[i]);
+            bk_free(print_sFonts[i]);
             print_sFonts[i] = NULL;
         }
     }
-    free(print_sPrintBuffer);
+    bk_free(print_sPrintBuffer);
     print_sPrintBuffer = NULL;
 }
 
@@ -401,10 +401,10 @@ void print_setBoldFontTexture(s32 textureId){
         }
     }//L802F510C
     print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE] = assetcache_get(textureId);
-    free(print_sFonts[FONTS_1_BOLD_NUMBERS]);
+    bk_free(print_sFonts[FONTS_1_BOLD_NUMBERS]);
     print_sFonts[FONTS_1_BOLD_NUMBERS] = print_getLettersFromFont(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_1_BOLD_FONT_NUMBERS_ALPHAMASK], print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE]);
     if(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_3_BOLD_FONT_LETTERS_ALPHAMASK]){
-        free(print_sFonts[FONTS_3_BOLD_LETTERS]);
+        bk_free(print_sFonts[FONTS_3_BOLD_LETTERS]);
         print_sFonts[FONTS_3_BOLD_LETTERS] = print_getLettersFromFont(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_3_BOLD_FONT_LETTERS_ALPHAMASK], print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE]);
     }
     assetcache_release(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE]);
@@ -422,7 +422,7 @@ void print_init(void){
     s32 length;
     int found;
 
-    length = strlen(boldFontLetters);
+    length = bk_strlen(boldFontLetters);
     print_sCurrentFont = \
     print_sPreviousFont = \
     print_sMonospacedModeEnabled = \
@@ -441,7 +441,7 @@ void print_init(void){
     print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE] = assetcache_get(print_getCurrentMapBoldFontTexture());
     print_sFonts[FONTS_0_DIALOG] =  print_getLettersFromFont(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_0_DIALOG_FONT_ALPHAMASK], print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE]);
     print_sFonts[FONTS_1_BOLD_NUMBERS] =  print_getLettersFromFont(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_1_BOLD_FONT_NUMBERS_ALPHAMASK], print_sFontSpriteAssets[FONT_SPRITE_ASSETS_4_BOLD_FONT_TEXTURE]);
-    print_sPrintBuffer = malloc(PRINT_BUFFER_COUNT * sizeof(PrintBuffer));
+    print_sPrintBuffer = bk_malloc(PRINT_BUFFER_COUNT * sizeof(PrintBuffer));
     print_clearPrintBufferStrings();
 
     for(i = 0; i < 0x80; i++){//L802F52EC
@@ -464,7 +464,7 @@ void print_updateBoldLetterFontDelayedFreeing(void){
     if(print_sBoldLetterFontFreeTimer > 0 && --print_sBoldLetterFontFreeTimer == 0){
         assetcache_release(print_sFontSpriteAssets[FONT_SPRITE_ASSETS_3_BOLD_FONT_LETTERS_ALPHAMASK]);
         print_sFontSpriteAssets[FONT_SPRITE_ASSETS_3_BOLD_FONT_LETTERS_ALPHAMASK] = 0;
-        free(print_sFonts[FONTS_3_BOLD_LETTERS]);
+        bk_free(print_sFonts[FONTS_3_BOLD_LETTERS]);
         print_sFonts[FONTS_3_BOLD_LETTERS] = NULL;
     }
 }
@@ -475,7 +475,7 @@ void print_freeBoldLetterFont(void){
         print_sFontSpriteAssets[FONT_SPRITE_ASSETS_3_BOLD_FONT_LETTERS_ALPHAMASK] = NULL;
     }
     if(print_sFonts[FONTS_3_BOLD_LETTERS]){
-        free(print_sFonts[FONTS_3_BOLD_LETTERS]);
+        bk_free(print_sFonts[FONTS_3_BOLD_LETTERS]);
         print_sFonts[FONTS_3_BOLD_LETTERS] = NULL;
     }
     print_sBoldLetterFontFreeTimer = 0;
@@ -541,7 +541,7 @@ void _printbuffer_draw_letter(char letter, f32* xPtr, f32* yPtr, f32 scale, Gfx 
 
     switch(print_sCurrentFont){
         case FONTS_0_DIALOG: //L802F5678
-            if(letter >= '\x21' && letter < '\x5f'){
+            if(letter >= '\x21' && letter < VER_SELECT('\x5f', '\x6c', 0, 0)){
                 letter_id = letter - '\x21';
                 valid_letter = 1;
             }
@@ -837,7 +837,7 @@ void printbuffer_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
                 _printbuffer_draw_letter(print_sCurrentPtr->fmtString[j], &_x, &_y, 1.0f, gfx, mtx, vtx);
             }
             if (print_sBackgroundModeEnabled != 0) {
-                width = (strlen(print_sCurrentPtr->string) -1)*maxFontLetterWidths[print_sCurrentFont];
+                width = (bk_strlen(print_sCurrentPtr->string) -1)*maxFontLetterWidths[print_sCurrentFont];
                 gDPPipeSync((*gfx)++);
                 gDPSetPrimColor((*gfx)++, 0, 0, 0x00, 0x00, 0x00, 0x64);
                 gDPSetCombineMode((*gfx)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
@@ -905,7 +905,7 @@ void _printbuffer_push_new(s32 x, s32 y, u8 * string) {
 void print_bold_overlapping(s32 x, s32 y, f32 scale, u8* string){
     _printbuffer_push_new(x, y, string);
     if(print_sCurrentPtr){
-        strcpy(print_sCurrentPtr->fmtString, "fl");
+        bk_strcpy(print_sCurrentPtr->fmtString, "fl");
         print_sCurrentPtr->scale = scale;
     }
 }
@@ -913,21 +913,21 @@ void print_bold_overlapping(s32 x, s32 y, f32 scale, u8* string){
 void print_bold_spaced(s32 x, s32 y, u8* string){
     _printbuffer_push_new(x, y, string);
     if(print_sCurrentPtr){
-        strcpy(print_sCurrentPtr->fmtString, "f");
+        bk_strcpy(print_sCurrentPtr->fmtString, "f");
     }
 }
 
 void print_dialog(s32 x, s32 y, u8* string){
     _printbuffer_push_new(x, y, string);
     if(print_sCurrentPtr){
-        strcpy(print_sCurrentPtr->fmtString, "elq");
+        bk_strcpy(print_sCurrentPtr->fmtString, "elq");
     }
 }
 
 void print_dialog_w_bg(s32 x, s32 y, u8* string){
     _printbuffer_push_new(x, y, string);
     if(print_sCurrentPtr){
-        strcpy(print_sCurrentPtr->fmtString, "pb");
+        bk_strcpy(print_sCurrentPtr->fmtString, "pb");
     }
 }
 
@@ -936,7 +936,7 @@ void print_dialog_gradient(s32 x, s32 y, u8* string, u8 topVertexAlpha, u8 botto
     if(print_sCurrentPtr){
         print_sCurrentPtr->topVertexAlpha = topVertexAlpha;
         print_sCurrentPtr->bottomVertexAlpha = bottomVertexAlpha;
-        strcpy(print_sCurrentPtr->fmtString, "v");
+        bk_strcpy(print_sCurrentPtr->fmtString, "v");
     }
 }
 
@@ -945,7 +945,7 @@ void print_dialog_gradient2(s32 x, s32 y, u8* string, s32 topVertexAlpha, s32 bo
     if(print_sCurrentPtr){
         print_sCurrentPtr->topVertexAlpha = topVertexAlpha;
         print_sCurrentPtr->bottomVertexAlpha = bottomVertexAlpha;
-        strcpy(print_sCurrentPtr->fmtString, "delq");
+        bk_strcpy(print_sCurrentPtr->fmtString, "delq");
     }
 }
 

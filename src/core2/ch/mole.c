@@ -54,16 +54,16 @@ ActorInfo gChMole = {
 }; 
 
 ChMoleDescription moleTable[] = {
-    {ASSET_C23_DIALOG_BEAKBOMB_LEARN,      ASSET_C24_DIALOG_BEAKBOMB_REFRESHER,      0x0F, ABILITY_1_BEAK_BOMB},
-    {ASSET_B47_DIALOG_EGGS_LEARN,          ASSET_B4B_DIALOG_EGGS_REFRESHER,          0x16, ABILITY_6_EGGS},
-    {ASSET_B48_DIALOG_BEAKBUSTER_LEARN,    ASSET_B4C_DIALOG_BEAKBUSTER_REFRESHER,    0x17, ABILITY_2_BEAK_BUSTER},
-    {ASSET_B49_DIALOG_TALON_TROT_LEARN,    ASSET_B4A_DIALOG_TALON_TROT_REFRESHER,    0x18, ABILITY_10_TALON_TROT},
-    {ASSET_A1F_DIALOG_SHOCKJUMP_LEARN,     ASSET_A23_DIALOG_SHOCKJUMP_REFRESHER,     0x0C, ABILITY_D_SHOCK_JUMP},
-    {ASSET_A20_DIALOG_FLY_LEARN,           ASSET_A22_DIALOG_FLY_REFRESHER,           0x0D, ABILITY_9_FLIGHT},
-    {ASSET_D35_DIALOG_WONDERWING_LEARN,    ASSET_D36_DIALOG_WONDERWING_REFRESHER,    0x01, ABILITY_12_WONDERWING},
-    {ASSET_C88_DIALOG_WADING_BOOTS_LEARN,  ASSET_C89_DIALOG_WADING_BOOTS_REFRESHER,  0x10, ABILITY_E_WADING_BOOTS},
-    {ASSET_A84_DIALOG_TURBOTRAINERS_LEARN, ASSET_A85_DIALOG_TURBOTRAINERS_REFRESHER, 0x19, ABILITY_11_TURBO_TALON},
-    {ASSET_F64_DIALOG_NOTEDOORS_LEARN,     ASSET_F65_DIALOG_NOTEDOORS_REFRESHER,     0x0E, ABILITY_13_1ST_NOTEDOOR}
+    {VER_SELECT(ASSET_C23_DIALOG_BEAKBOMB_LEARN,      0x99D, 0, 0), VER_SELECT(ASSET_C24_DIALOG_BEAKBOMB_REFRESHER,      0x99E, 0, 0), 0x0F, ABILITY_1_BEAK_BOMB},
+    {VER_SELECT(ASSET_B47_DIALOG_EGGS_LEARN,          0x965, 0, 0), VER_SELECT(ASSET_B4B_DIALOG_EGGS_REFRESHER,          0x969, 0, 0), 0x16, ABILITY_6_EGGS},
+    {VER_SELECT(ASSET_B48_DIALOG_BEAKBUSTER_LEARN,    0x966, 0, 0), VER_SELECT(ASSET_B4C_DIALOG_BEAKBUSTER_REFRESHER,    0x96A, 0, 0), 0x17, ABILITY_2_BEAK_BUSTER},
+    {VER_SELECT(ASSET_B49_DIALOG_TALON_TROT_LEARN,    0x967, 0, 0), VER_SELECT(ASSET_B4A_DIALOG_TALON_TROT_REFRESHER,    0x968, 0, 0), 0x18, ABILITY_10_TALON_TROT},
+    {VER_SELECT(ASSET_A1F_DIALOG_SHOCKJUMP_LEARN,     0x91F, 0, 0), VER_SELECT(ASSET_A23_DIALOG_SHOCKJUMP_REFRESHER,     0x923, 0, 0), 0x0C, ABILITY_D_SHOCK_JUMP},
+    {VER_SELECT(ASSET_A20_DIALOG_FLY_LEARN,           0x920, 0, 0), VER_SELECT(ASSET_A22_DIALOG_FLY_REFRESHER,           0x922, 0, 0), 0x0D, ABILITY_9_FLIGHT},
+    {VER_SELECT(ASSET_D35_DIALOG_WONDERWING_LEARN,    0xA08, 0, 0), VER_SELECT(ASSET_D36_DIALOG_WONDERWING_REFRESHER,    0xA09, 0, 0), 0x01, ABILITY_12_WONDERWING},
+    {VER_SELECT(ASSET_C88_DIALOG_WADING_BOOTS_LEARN,  0x9CB, 0, 0), VER_SELECT(ASSET_C89_DIALOG_WADING_BOOTS_REFRESHER,  0x9CC, 0, 0), 0x10, ABILITY_E_WADING_BOOTS},
+    {VER_SELECT(ASSET_A84_DIALOG_TURBOTRAINERS_LEARN, 0x940, 0, 0), VER_SELECT(ASSET_A85_DIALOG_TURBOTRAINERS_REFRESHER, 0x941, 0, 0), 0x19, ABILITY_11_TURBO_TALON},
+    {VER_SELECT(ASSET_F64_DIALOG_NOTEDOORS_LEARN,     0xACA, 0, 0), VER_SELECT(ASSET_F65_DIALOG_NOTEDOORS_REFRESHER,     0xACB, 0, 0), 0x0E, ABILITY_13_1ST_NOTEDOOR}
 };
 
 #define MOLE_ID_TO_TABLE_SHIFT   9
@@ -73,20 +73,20 @@ int chmole_learnedAllLevelAbilities(enum level_e level){
     // Checks if all of the level's abilities are learned.
     switch (level){
         case LEVEL_1_MUMBOS_MOUNTAIN:
-            return ability_isUnlocked(ABILITY_6_EGGS)
-                && ability_isUnlocked(ABILITY_2_BEAK_BUSTER)
-                && ability_isUnlocked(ABILITY_10_TALON_TROT);
+            return player_isAbilityUnlocked(ABILITY_6_EGGS)
+                && player_isAbilityUnlocked(ABILITY_2_BEAK_BUSTER)
+                && player_isAbilityUnlocked(ABILITY_10_TALON_TROT);
         case LEVEL_2_TREASURE_TROVE_COVE:
-            return ability_isUnlocked(ABILITY_D_SHOCK_JUMP)
-                && ability_isUnlocked(ABILITY_9_FLIGHT);
+            return player_isAbilityUnlocked(ABILITY_D_SHOCK_JUMP)
+                && player_isAbilityUnlocked(ABILITY_9_FLIGHT);
         case LEVEL_3_CLANKERS_CAVERN:
-            return ability_isUnlocked(ABILITY_12_WONDERWING);
+            return player_isAbilityUnlocked(ABILITY_12_WONDERWING);
         case LEVEL_4_BUBBLEGLOOP_SWAMP:
-            return ability_isUnlocked(ABILITY_E_WADING_BOOTS);
+            return player_isAbilityUnlocked(ABILITY_E_WADING_BOOTS);
         case LEVEL_5_FREEZEEZY_PEAK:
-            return ability_isUnlocked(ABILITY_1_BEAK_BOMB);
+            return player_isAbilityUnlocked(ABILITY_1_BEAK_BOMB);
         case LEVEL_7_GOBIS_VALLEY:
-            return ability_isUnlocked(ABILITY_11_TURBO_TALON);
+            return player_isAbilityUnlocked(ABILITY_11_TURBO_TALON);
         default:
             return FALSE;
   }
@@ -99,42 +99,42 @@ enum asset_e chmole_learnedAllLevelAbilitiesDialog(void){
     int learned_all_moves = chmole_learnedAllLevelAbilities(level_id);
     switch(level_id){
         case LEVEL_1_MUMBOS_MOUNTAIN:
-            return learned_all_moves ? ASSET_B4E_DIALOG_BOTTLES_ALL_MM_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? ASSET_B4E_DIALOG_BOTTLES_ALL_MM_MOVES_LEARNED : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         case LEVEL_2_TREASURE_TROVE_COVE:
-            return learned_all_moves ? ASSET_A27_DIALOG_BOTTLES_ALL_TTC_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? ASSET_A27_DIALOG_BOTTLES_ALL_TTC_MOVES_LEARNED : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         case LEVEL_3_CLANKERS_CAVERN:
-            return learned_all_moves ? ASSET_D37_DIALOG_BOTTLES_ALL_CC_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? VER_SELECT(ASSET_D37_DIALOG_BOTTLES_ALL_CC_MOVES_LEARNED, 0xA0A, 0, 0) : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         case LEVEL_4_BUBBLEGLOOP_SWAMP:
-            return learned_all_moves ? ASSET_C8A_DIALOG_BOTTLES_ALL_BGS_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? VER_SELECT(ASSET_C8A_DIALOG_BOTTLES_ALL_BGS_MOVES_LEARNED, 0x9CD, 0, 0) : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         case LEVEL_5_FREEZEEZY_PEAK:
-            return learned_all_moves ? ASSET_C2A_DIALOG_BOTTLES_ALL_FP_GV_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? VER_SELECT(ASSET_C2A_DIALOG_BOTTLES_ALL_FP_GV_MOVES_LEARNED, 0x9A4, 0, 0) : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         case LEVEL_7_GOBIS_VALLEY:
-            return learned_all_moves ? ASSET_C2A_DIALOG_BOTTLES_ALL_FP_GV_MOVES_LEARNED : ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return learned_all_moves ? VER_SELECT(ASSET_C2A_DIALOG_BOTTLES_ALL_FP_GV_MOVES_LEARNED, 0x9A4, 0, 0) : VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
         default:
-            return ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED;
+            return VER_SELECT(ASSET_D38_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0xA0B, 0, 0);
 
     }
 }
 
 int chmole_learnedAllGameAbilities(void){
     // Checks if the player has learned all non-Spiral Mountain abilities.
-    return ability_isUnlocked(ABILITY_6_EGGS)
-        && ability_isUnlocked(ABILITY_2_BEAK_BUSTER)
-        && ability_isUnlocked(ABILITY_10_TALON_TROT)
-        && ability_isUnlocked(ABILITY_D_SHOCK_JUMP)
-        && ability_isUnlocked(ABILITY_9_FLIGHT)
-        && ability_isUnlocked(ABILITY_12_WONDERWING)
-        && ability_isUnlocked(ABILITY_E_WADING_BOOTS)
-        && ability_isUnlocked(ABILITY_1_BEAK_BOMB)
-        && ability_isUnlocked(ABILITY_11_TURBO_TALON);
+    return player_isAbilityUnlocked(ABILITY_6_EGGS)
+        && player_isAbilityUnlocked(ABILITY_2_BEAK_BUSTER)
+        && player_isAbilityUnlocked(ABILITY_10_TALON_TROT)
+        && player_isAbilityUnlocked(ABILITY_D_SHOCK_JUMP)
+        && player_isAbilityUnlocked(ABILITY_9_FLIGHT)
+        && player_isAbilityUnlocked(ABILITY_12_WONDERWING)
+        && player_isAbilityUnlocked(ABILITY_E_WADING_BOOTS)
+        && player_isAbilityUnlocked(ABILITY_1_BEAK_BOMB)
+        && player_isAbilityUnlocked(ABILITY_11_TURBO_TALON);
 }
 
 Actor *func_802D94B4(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     Actor *actor = marker_getActor(marker);
 
     if(actor->state != MOLE_STATE_1_AWAITING_PLAYER && actor->state != MOLE_STATE_5_REFRESHER){
-        func_8033A45C(3, 0);
-        func_8033A45C(4, 0);
+        modelRender_setAppendageVisibility(3, 0);
+        modelRender_setAppendageVisibility(4, 0);
         actor = actor_draw(marker, gfx, mtx, vtx);
     }
 
@@ -176,10 +176,10 @@ void chmole_healthRefill(ActorMarker *marker, enum asset_e arg1, s32 arg2){
     if( arg1 == moleTable[actor->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].teach_text_id
         && item_getCount(ITEM_14_HEALTH) < item_getCount(ITEM_15_HEALTH_TOTAL)
     ){
-        gcdialog_showDialog(ASSET_D39_DIALOG_BOTTLES_REFILL_HEALTH, 7, 0, actor->marker, chmole_healthRefill, chmole_additionalAbilityLearnActions);
+        gcdialog_showDialog(VER_SELECT(ASSET_D39_DIALOG_BOTTLES_REFILL_HEALTH, 0xA0C, 0, 0), 7, 0, actor->marker, chmole_healthRefill, chmole_additionalAbilityLearnActions);
     }//L802D9738
-    else if(arg1 == moleTable[actor->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].teach_text_id || arg1 == ASSET_D39_DIALOG_BOTTLES_REFILL_HEALTH){
-        gcdialog_showDialog(chmole_learnedAllGameAbilities()? ASSET_A87_DIALOG_BOTTLES_ALL_MOVES_LEARNED : chmole_learnedAllLevelAbilitiesDialog(), 7, 0, actor->marker, chmole_healthRefill, NULL);
+    else if(arg1 == moleTable[actor->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].teach_text_id || arg1 == VER_SELECT(ASSET_D39_DIALOG_BOTTLES_REFILL_HEALTH, 0xA0C, 0, 0)){
+        gcdialog_showDialog(chmole_learnedAllGameAbilities()? VER_SELECT(ASSET_A87_DIALOG_BOTTLES_ALL_MOVES_LEARNED, 0x943, 0, 0) : chmole_learnedAllLevelAbilitiesDialog(), 7, 0, actor->marker, chmole_healthRefill, NULL);
     }
     else{//L802D97BC
         if(actor->has_met_before){
@@ -239,7 +239,7 @@ int chmole_learnAbility(Actor *this){
     s32 teach_text_id;
     s32 sp28 = 0xe;
     // Known Ability: Refresher Dialog
-    if(ability_isUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)){
+    if(player_isAbilityUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)){
         sp28 = 0xf;
         teach_text_id = moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].refresher_text_id;
     }//L802D99EC
@@ -248,7 +248,7 @@ int chmole_learnAbility(Actor *this){
         func_80347A14(0);
         this->has_met_before = TRUE;
         teach_text_id = moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].teach_text_id;
-        ability_unlock(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability);
+        player_unlockAbility(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability);
         switch(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability){
             case ABILITY_9_FLIGHT:
             case ABILITY_D_SHOCK_JUMP:
@@ -315,7 +315,7 @@ void func_802D9C90(Actor *this){
 void chmole_startingDialog(Actor *this){
     // If the player knows the ability, use refresher function
     // Otherwise, set player's position and spawn mole
-    if(ability_isUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)){
+    if(player_isAbilityUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)){
         chmole_Refresher(this);
     }
     else{
@@ -393,9 +393,9 @@ void chmole_update(Actor *this){
         case MOLE_STATE_1_AWAITING_PLAYER://L802D9F70
             this->yaw_ideal = subaddie_getYawToPlayer(this);
             subaddie_turnToYaw(this, 4.0f);
-            if(func_8028F20C() && func_8028F0D4() && !func_8028EC04()){
+            if(player_isStableWithExtraSteps() && player_isBanjoOrWishywashy() && !func_8028EC04()){
                 if( this->actorTypeSpecificField == CH_MOLE_ID_12_OPEN_NOTEDOORS 
-                    && !ability_isUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)
+                    && !player_isAbilityUnlocked(moleTable[this->actorTypeSpecificField - MOLE_ID_TO_TABLE_SHIFT].ability)
                     && (player_movementGroup() == BSGROUP_0_NONE || player_movementGroup() == BSGROUP_8_TROT)
                 ){
                     player_getPosition(sp34);
@@ -487,14 +487,14 @@ void chmole_update(Actor *this){
 
 int chmole_learnedAllSpiralMountainAbilities(void){
     // Checks if the player has learned all of the Spiral Mountain abilities.
-    return ability_isUnlocked(ABILITY_F_DIVE)
-        && ability_isUnlocked(ABILITY_4_CLAW_SWIPE)
-        && ability_isUnlocked(ABILITY_C_ROLL)
-        && ability_isUnlocked(ABILITY_B_RATATAT_RAP)
-        && ability_isUnlocked(ABILITY_0_BARGE)
-        && ability_isUnlocked(ABILITY_A_HOLD_A_JUMP_HIGHER)
-        && ability_isUnlocked(ABILITY_7_FEATHERY_FLAP)
-        && ability_isUnlocked(ABILITY_8_FLAP_FLIP)
-        && ability_isUnlocked(ABILITY_5_CLIMB)
+    return player_isAbilityUnlocked(ABILITY_F_DIVE)
+        && player_isAbilityUnlocked(ABILITY_4_CLAW_SWIPE)
+        && player_isAbilityUnlocked(ABILITY_C_ROLL)
+        && player_isAbilityUnlocked(ABILITY_B_RATATAT_RAP)
+        && player_isAbilityUnlocked(ABILITY_0_BARGE)
+        && player_isAbilityUnlocked(ABILITY_A_HOLD_A_JUMP_HIGHER)
+        && player_isAbilityUnlocked(ABILITY_7_FEATHERY_FLAP)
+        && player_isAbilityUnlocked(ABILITY_8_FLAP_FLIP)
+        && player_isAbilityUnlocked(ABILITY_5_CLIMB)
     ;
 }

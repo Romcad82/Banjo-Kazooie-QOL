@@ -17,8 +17,8 @@ ActorInfo chXmasTree = {
 /* .code */
 Actor *chXmasTree_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     Actor *this = marker_getActor(marker);
-    func_8033A45C(5, this->unk38_31);
-    func_8033A45C(6, fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME) && !func_8033A0F0(5));
+    modelRender_setAppendageVisibility(5, this->unk38_31);
+    modelRender_setAppendageVisibility(6, fileProgressFlag_get(FILEPROG_13_COMPLETED_TWINKLIES_MINIGAME) && !modelRender_func_8033A0F0(5));
     return actor_draw(marker, gfx, mtx, vtx);
 }
 
@@ -42,7 +42,7 @@ void chXmasTree_swapCameraToIce(void){
     levelSpecificFlags_set(LEVEL_FLAG_29_FP_XMAS_TREE_COMPLETE, TRUE);
     musicKeepsPlaying();
     volatileFlag_set(VOLATILE_FLAG_E, 1);
-    transitionToMap(MAP_53_FP_CHRISTMAS_TREE, 1, 0);
+    transitionToMap(MAP_53_FP_CHRISTMAS_TREE, WARP_FP_CHRISTMAS_TREE_1_ENTRANCE, 0);
 }
 
 void chXmasTree_setLightsOn(Actor * this){
@@ -127,7 +127,7 @@ void chXmasTree_update(Actor *this){
             this->lifetime_value = 2.0f;
             coMusicPlayer_playMusic(COMUSIC_61_XMAS_TREE_LIGHTS_UP, 28000);
             gcStaticCamera_activate(0x1A);
-            gcdialog_showDialog(ASSET_C14_DIALOG_TWINKLIE_MINIGAME_LIGHT_TREE, 0, NULL, NULL, NULL, NULL);
+            gcdialog_showDialog(VER_SELECT(ASSET_C14_DIALOG_TWINKLIE_MINIGAME_LIGHT_TREE, 0x98E, 0, 0), 0, NULL, NULL, NULL, NULL);
             break;
 
         case 3: // L803872F0
@@ -150,7 +150,7 @@ void chXmasTree_update(Actor *this){
                 if(func_802BB270()){
                     subaddie_set_state(this, 4);
                     chXmasTree_setState(this, 1);
-                    item_set(ITEM_0_HOURGLASS_TIMER, 3600 - 1);
+                    item_set(ITEM_0_HOURGLASS_TIMER, VER_SELECT(3600, 3000, 0, 0) - 1);
                     item_set(ITEM_6_HOURGLASS, TRUE);
 
                 }

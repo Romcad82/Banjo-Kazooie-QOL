@@ -9,6 +9,11 @@ void stub_80240A74(f32 position[3]);
 f32 stub_80240A94(s32 time_out, f32 arg1);
 void stub_80240AC8(f32 position[3], f32 speed);
 
+s32 D_80275850 = VER_SELECT(0xF51CDB53, 0xBBBCEF3F, 0, 0); // CUTSCENES_DATA_CRC2
+s32 D_80275854 = VER_SELECT(0x9494D865, 0xE0A3AC75, 0, 0); // MMM_DATA_CRC2
+s32 D_80275858 = 0;
+s32 D_8027585C = 0;
+
 static s32 sTimeout = 0;
 
 void stub_802409C0(f32 position[3], f32 speed) {
@@ -18,7 +23,7 @@ void stub_802409C0(f32 position[3], f32 speed) {
     f32 dt;
     
     dt = time_getDelta() * speed;
-    controller_getJoystick(0, joystick_data);
+    controller_copyJoystick(0, joystick_data);
 
     delta_position[0] = joystick_data[0] * dt;
     delta_position[1] = 0.0f;
@@ -50,7 +55,7 @@ void stub_80240AC8(f32 position[3], f32 speed) {
     f32 dt;
     
     dt = time_getDelta() * speed;
-    controller_getJoystick(0, joystick_data);
+    controller_copyJoystick(0, joystick_data);
 
     if (0.0f != joystick_data[0] || 0.0f != joystick_data[1]) {
         sTimeout++;

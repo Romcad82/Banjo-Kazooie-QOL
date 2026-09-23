@@ -2,21 +2,15 @@
 #define STRUCTS_H
 
 #include <ultra64.h>
-#include "model.h"
+#include "core2/model.h"
 #include "core2/vla.h"
+#include "core2/fla.h"
 #include "enums.h"
 #include "bool.h"
 
 #define MERGE(a, b) a ## b
 
 #define UNK_TYPE(t) t
-
-
-typedef struct{
-    f32 x;
-    f32 y;
-    f32 z;
-} vec3f;
 
 #define TUPLE(t, n) union{\
     struct{ t n##_x; t n##_y; t n##_z; };\
@@ -37,19 +31,6 @@ typedef struct{
 }
 
 #define KEY_VALUE_PAIR(T1, T2) struct { T1 key; T2 value; }
-
-typedef struct freelist_s{
-    s16 elem_size;
-    s16 elem_cnt;
-    u8 unk4[];
-}FLA;
-
-#define FREE_LIST(T) struct freelist_s
-//^defined to keep element type with sla
-
-typedef struct {
-    f32 m[4][4];
-} MtxF;
 
 typedef struct bk_sprite_s{
     s16 frameCnt;
@@ -89,6 +70,7 @@ typedef struct bk_sprite_frame_s{
     s16 unkE;
     s16 unk10;
     s16 unk12;
+    u8 data[]; // u16[] (for palette formats), followed by BKSpriteTextureBlock[]
 } BKSpriteFrame;
 
 typedef struct bk_sprite_texture_block_s{
@@ -96,7 +78,14 @@ typedef struct bk_sprite_texture_block_s{
     s16 y;
     s16 w;
     s16 h;
+    u8 data[];
 } BKSpriteTextureBlock;
+
+typedef struct sprite_mask_list_s {
+    s16 texture_type;
+    s16 count;
+    s32 offset[];
+} BKSpriteMask;
 
 typedef struct model_cache_s{
     BKModelBin * modelPtr;
@@ -120,8 +109,8 @@ typedef struct portrait_info_s{
 
 typedef struct struct_0_s{ //floor
     void *  model;
-    BKCollisionTri unk4;
-    BKCollisionTri unk10;
+    BKCollisionTriangle unk4;
+    BKCollisionTriangle unk10;
     f32     unk1C[3];
     f32     unk28[3];
     f32     normX;
@@ -248,25 +237,6 @@ typedef struct struct_8_s{
     s8 string_54[0xC]; //value string
     f32 unk60;
 }struct8s;
-
-typedef struct struct_11_s{
-    f32 unk0;
-    f32 unk4;
-    s32 volume;
-    s32 unkC;
-    s16 track_id; //trackId
-    s16 unk12;
-    u8 unk14;
-    u8 unk15;
-    u8 pad16[0x2];
-    FREE_LIST(struct12s) *unk18;
-    s32 unk1C[0xE];
-} CoMusic;
-
-typedef struct struct_12_s{
-    s32 unk0;
-    s32 unk1;
-} struct12s;
 
 typedef struct dialog_s {
     s32 cmd;
@@ -495,10 +465,6 @@ typedef struct{
 
 
 
-typedef struct {
-    f32 (*unk0)[3];
-    f32 (*unk4)[3];
-}struct5Bs;
 
 typedef struct{
     u16 playerInteraction:4;
@@ -610,9 +576,9 @@ typedef struct {
 } Struct6Bs;
 
 typedef struct{
-    BKCollisionTri * (* unk0)(struct actorMarker_s *, f32[3], f32[3], f32[3], s32);
-    BKCollisionTri *(* unk4)(struct actorMarker_s *, f32[3], f32[3], f32, f32[3], s32, u32);
-    BKCollisionTri *(* unk8)(struct actorMarker_s *, f32[3], f32, f32[3], s32);
+    BKCollisionTriangle * (* unk0)(struct actorMarker_s *, f32[3], f32[3], f32[3], s32);
+    BKCollisionTriangle *(* unk4)(struct actorMarker_s *, f32[3], f32[3], f32, f32[3], s32, u32);
+    BKCollisionTriangle *(* unk8)(struct actorMarker_s *, f32[3], f32, f32[3], s32);
     s32 (* unkC)(struct actorMarker_s *, f32[3], f32, f32[3], s32);
 } Struct6Cs;
 
@@ -771,12 +737,6 @@ typedef struct {
 }Struct83s;
 
 typedef struct{
-    s16 texture_type;
-    s16 count;
-    s32 offset[];
-}Struct84s;
-
-typedef struct{
     u8 pad0[1];
 }struct85s;
 
@@ -792,8 +752,8 @@ typedef struct{
 typedef struct {
     s32 unk0; //sound state cnt
     s32 unk4;
-    s32 unk8; //maxSounds
-    ALHeap *unkC; //heap
+    s32 max_sounds;
+    ALHeap *heap;
     u16 unk10;
 }Struct87s;
 #endif

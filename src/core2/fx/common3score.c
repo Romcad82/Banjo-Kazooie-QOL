@@ -4,8 +4,8 @@
 #include "variables.h"
 
 
-extern f32 vtxList_getGlobalNorm(BKVertexList *);
-extern void func_80253208(Gfx **gdl, s32 x, s32 y, s32 w, s32 h, void *color_buffer);
+
+extern void depthbuffer_clearRegion(Gfx **gdl, s32 x, s32 y, s32 w, s32 h, void *color_buffer);
 
 extern f32 func_802FB0E4(struct8s*);
 
@@ -190,7 +190,7 @@ void fxcommon3score_draw(enum item_e item_id, void *arg1, Gfx **gfx, Mtx **mtx, 
     sp40 = func_802FB0E4(arg1)*a1->unk54 + a1->unk34;
     if(a1->model != NULL && func_802FB0D4(arg1)){
         a1->value_string[0] = '\0';
-        strIToA(a1->value_string, itemPrint_getValue(item_id));
+        bk_strIToA(a1->value_string, itemPrint_getValue(item_id));
         print_bold_spaced(a1->unk30 + a1->unk40, sp40 + a1->unk44, a1->value_string);
         sp3C = viewport_transformCoordinate(a1->unk30, sp40, sp5C, sp68);
 
@@ -201,15 +201,15 @@ void fxcommon3score_draw(enum item_e item_id, void *arg1, Gfx **gfx, Mtx **mtx, 
         sp50[0] = 0.0f;
         sp50[1] = a1->unk68;
         sp50[2] = 0.0f;
-        func_8033A308(sp50);
+        modelRender_func_8033A308(sp50);
         if(getGameMode() != GAME_MODE_4_PAUSED){
             modelRender_setDepthMode(MODEL_RENDER_DEPTH_FULL);
         }
         sp68[0] += a1->unk4C;
         if(a1->unk6C == 0.0f){
-            a1->unk6C = 1.1*(vtxList_getGlobalNorm(model_getVtxList(a1->model)) * a1->unk3C);
+            a1->unk6C = 1.1*(vtxList_getGlobalNorm(modelbin_getVtxList(a1->model)) * a1->unk3C);
         }
-        func_80253208(gfx, a1->unk30 - a1->unk6C, sp40 - a1->unk6C, 2*a1->unk6C, 2*a1->unk6C, gFramebuffers[getActiveFramebuffer()]);
+        depthbuffer_clearRegion(gfx, a1->unk30 - a1->unk6C, sp40 - a1->unk6C, 2*a1->unk6C, 2*a1->unk6C, gFramebuffers[getActiveFramebuffer()]);
         if(a1->anim_ctrl != NULL){
             anctrl_drawSetup(a1->anim_ctrl, sp5C, 1);
         }

@@ -75,7 +75,7 @@ void __codeC6C0_updateFunc(Actor *this) {
 
 // When you press start, stop any music track that could be playing and transition to FF Parade.
 #ifdef SKIPPABLE_CUTSCENES
-    if ((func_8024E698(0) == 1) && mapSpecificFlags_get(9) && !mapSpecificFlags_get(2)
+    if ((controller_getStartButtonSafe(0) == 1) && mapSpecificFlags_get(9) && !mapSpecificFlags_get(2)
  #ifdef OPTIONS_MENU
         && is_qol_feature_enabled(QOL_ID_SKIPPABLE_CUTSCENES)
  #endif

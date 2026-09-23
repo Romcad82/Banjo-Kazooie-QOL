@@ -3,7 +3,7 @@
 #include "functions.h"
 #include "variables.h"
 
-#include "gc/gctransition.h"
+#include "core2/gc/transition.h"
 #include "time.h"
 
 #include "config.h"
@@ -14,7 +14,6 @@ extern void timedFuncQueue_update(void);
 extern void func_8025A2B0(void);
 extern void func_8025A430(s32, s32, s32);
 extern void func_8034BB90(void);
-extern void func_8030C27C(void);
 extern void func_80321C34(void);
 extern void func_8030ED0C(void);
 extern void coMusicPlayer_update(void);
@@ -83,7 +82,7 @@ void func_802E3854(void){
     for(i = 0; i < 0xF; i++){
         func_802E6820(5);
         modelRender_defrag();
-        mapSavestate_defrag_all();
+        mapSavestate_defrag();
         gctransition_defrag();
         printbuffer_defrag();
         code_C9E70_defrag();
@@ -120,64 +119,61 @@ void func_802E398C(s32 arg0) {
     }
 }
 
-void func_802E39D0(Gfx **gdl, Mtx **mptr, Vtx **vptr, s32 framebuffer_idx, s32 arg4){
-    Mtx* m_start = *mptr; 
-    Vtx* v_start = *vptr;
+void func_802E39D0(Gfx **gfx, Mtx **mtx, Vtx **vtx, s32 framebuffer_idx, bool arg4) {
+    Mtx* mtx_start = *mtx; 
+    Vtx* vtx_start = *vtx;
 
-    scissorBox_SetForGameMode(gdl, framebuffer_idx);
+    setupFramebufferForGamemode(gfx, framebuffer_idx);
     D_8037E8E0.unkC = FALSE;
-    gsworld_draw(gdl, mptr, vptr);
-    if(!arg4){
+    gsworld_draw(gfx, mtx, vtx);
+
+    if (!arg4) { // related to framebufferdraw_ functions
         func_802E67AC();
         func_802E3BD0(getActiveFramebuffer());
         func_802E67C4();
-        func_802E5F10(gdl);
+        func_802E5F10(gfx);
     }
-    if( D_8037E8E0.game_mode == GAME_MODE_A_SNS_PICTURE
-        && D_8037E8E0.unk19 != 6
-        && D_8037E8E0.unk19 != 5
-    ){
-        gctransition_draw(gdl, mptr, vptr);
+
+    if ((D_8037E8E0.game_mode == GAME_MODE_A_SNS_PICTURE) && (D_8037E8E0.unk19 != 6) && (D_8037E8E0.unk19 != 5)) {
+        gctransition_draw(gfx, mtx, vtx);
     }
     
-    if( D_8037E8E0.game_mode == GAME_MODE_8_BOTTLES_BONUS
-        || D_8037E8E0.game_mode == GAME_MODE_A_SNS_PICTURE
-    ){
-        func_8030C2D4(gdl, mptr, vptr);
+    if ((D_8037E8E0.game_mode == GAME_MODE_8_BOTTLES_BONUS) || (D_8037E8E0.game_mode == GAME_MODE_A_SNS_PICTURE)) {
+        picturebox_resetScissorBoxAndFramebuffer(gfx, mtx, vtx);
     }
 
-    if(!game_is_frozen() && gsworld_getEnableDraw()){
-        func_8032D474(gdl, mptr, vptr);
+    if (!game_is_frozen() && gsworld_getEnableDraw()) {
+        core2_A5BC0_drawScreenOverlayMarkers(gfx, mtx, vtx);
     }
 
-    gcpausemenu_draw(gdl, mptr, vptr);
-    if(!game_is_frozen()){
-        dummy_func_8025AFC0(gdl, mptr, vptr);
+    gcpausemenu_draw(gfx, mtx, vtx);
+
+    if (!game_is_frozen()) {
+        core1_1D590_func_8025AFC0(gfx, mtx, vtx);
     }
 
-    gcdialog_draw(gdl, mptr, vptr);
-    if(!game_is_frozen()){
-        itemPrint_draw(gdl, mptr, vptr);
+    gcdialog_draw(gfx, mtx, vtx);
+
+    if (!game_is_frozen()) {
+        itemPrint_draw(gfx, mtx, vtx);
     }
 
 #ifdef WARP_CAULDRON_MENU
     if (warpMenuActive && (inWarpCauldronCutscene == 0)) {
         scrollingMenu_zoomboxUpdate();
-        scrollingMenu_zoomboxDraw(gdl, mptr, vptr);
+        scrollingMenu_zoomboxDraw(gfx, mtx, vtx);
     }
 #endif
 
-    printbuffer_draw(gdl, mptr, vptr);
+    printbuffer_draw(gfx, mtx, vtx);
 
-    if( D_8037E8E0.game_mode != GAME_MODE_A_SNS_PICTURE
-        || D_8037E8E0.unk19 == 6
-        || D_8037E8E0.unk19 == 5
-    ){
-        gctransition_draw(gdl, mptr, vptr);
+    if ((D_8037E8E0.game_mode != GAME_MODE_A_SNS_PICTURE) || (D_8037E8E0.unk19 == 6) || (D_8037E8E0.unk19 == 5)) {
+        gctransition_draw(gfx, mtx, vtx);
     }
-    finishFrame(gdl);
-    osWritebackDCache(m_start, sizeof(Mtx)*( *mptr - m_start));
-    osWritebackDCache(v_start, sizeof(Vtx)*( *vptr - v_start));
+
+    core1_15B30_finishDList(gfx);
+    osWritebackDCache(mtx_start, sizeof(Mtx) * (*mtx - mtx_start));
+    osWritebackDCache(vtx_start, sizeof(Vtx) * (*vtx - vtx_start));
 }
 
 void func_802E3BD0(s32 frame_buffer_indx){
@@ -208,10 +204,10 @@ void game_setMode(enum game_mode_e next_mode, s32 arg1){
 
     //L802E3C84
     if(next_mode == GAME_MODE_8_BOTTLES_BONUS || next_mode == GAME_MODE_A_SNS_PICTURE){
-        func_8030C1A0();
+        picturebox_init();
     }
     else{
-        func_8030C204();
+        picturebox_free();
     }//L802E3CB4
 
     D_8037E8E0.game_mode = next_mode;
@@ -256,7 +252,7 @@ void game_setMode(enum game_mode_e next_mode, s32 arg1){
     else if(next_mode == GAME_MODE_4_PAUSED){//L802E3E24
         gsworld_setEnableUpdate(FALSE);
         FUNC_8030E624(SFX_C9_PAUSEMENU_ENTER, 1.1f, 32750);
-        pfsManager_update();
+        joy_update();
         func_8025A430(0, 2000, 3);
         func_8025A23C(COMUSIC_6F_PAUSE_SCREEN);
         gcpausemenu_init();
@@ -270,7 +266,7 @@ void func_802E3E7C(enum game_mode_e mode){
     s32 sp28;
     s32 prev_mode;
 
-    func_80254008();
+    core1_15B30_sendMesg3ToRenderThread();
     sp34 = D_8037E8E0.unk18;
     sp30 = D_8037E8E0.unk17;
     map = D_8037E8E0.map;
@@ -294,32 +290,30 @@ s32 func_802E3F80(void){
     return D_8037E8E0.unk0;
 }
 
-void game_draw(s32 arg0){
-    Gfx *gfx;
-    Gfx *gfx_start;
-    Gfx *sp2C;
+void game_draw(bool arg0) {
+    Gfx *gfx, *gfx_start, *gfx_end;
     Mtx *mtx;
     Vtx *vtx;
 
-    if(arg0) {
+    if (arg0) {
         scissorBox_setDefault();
     }
 
-    getGraphicsStacks(&gfx, &mtx, &vtx);
+    graphicscache_swapAndGetStacks(&gfx, &mtx, &vtx);
 
-    if(D_8037E8E0.unkC == 1){
-        getGraphicsStacks(&gfx, &mtx, &vtx);
+    if (D_8037E8E0.unkC == TRUE) { // BUG: Compares explicit for integral value of TRUE, instead for true-ness
+        graphicscache_swapAndGetStacks(&gfx, &mtx, &vtx);
     }
 
     gfx_start = gfx;
     func_802E39D0(&gfx, &mtx, &vtx, getActiveFramebuffer(), arg0);
 
-    if(D_8037E8E0.unkC == 0){
-        sp2C = gfx;
+    if (!D_8037E8E0.unkC) {
+        gfx_end = gfx;
         viMgr_func_8024C1DC();
-        func_80253EC4(gfx_start, sp2C);
+        core1_15B30_addF3DEXTaskData_40000000(gfx_start, gfx_end);
 
-        if(arg0) {
+        if (arg0) {
             scissorBox_setDefault();
         }
     }
@@ -373,14 +367,14 @@ void func_802E412C(s32 arg0, s32 arg1){
 
 void func_802E4170(void){
     game_setMode(GAME_MODE_2_UNKNOWN,0);
-    defragManager_free();
+    defragthread_free();
     func_802E5F68();
     if(!func_802E4A08())
         print_free();
     timedFuncQueue_free();
     func_802F9C48();
     modelRender_free();
-    depthBuffer_stub();
+    depthbuffer_stub();
     func_802E398C(0);
     func_8030AFD8(0);
     func_80321854();
@@ -395,10 +389,10 @@ void func_802E4214(enum map_e map_id){
     D_8037E8E0.unk19 = D_8037E8E0.unk18 = 0;
     D_8037E8E0.map = D_8037E8E0.exit = D_8037E8E0.unk17 = 0;
     D_8037E8E0.unk1B = D_8037E8E0.unk1A = 0;
-    D_8037E8E0.unkC = 0;
+    D_8037E8E0.unkC = FALSE;
     D_8037E8E0.unk1C = 0;
     savedata_init();
-    sns_save_and_update_global_data();
+    sns_load_global_data();
     func_8030D86C();
     coMusicPlayer_init();
     func_80322764();
@@ -408,9 +402,9 @@ void func_802E4214(enum map_e map_id){
     if(!func_802E4A08())
         print_init();
     func_802E5F38();
-    defragManager_init();
+    defragthread_init();
     modelRender_init();
-    func_80253428(1);
+    depthbuffer_enable(TRUE);
     animCache_init();
     viewport_reset();
     viewport_setNearAndFar(1.0f, 10000.0f);
@@ -439,7 +433,7 @@ void func_802E4384(void){
     else{
         func_8033DC18();
         ;
-        time_setDeltaReal_frames((s32)(func_8033DC20()*60.0f + 0.5));
+        time_setDeltaReal_frames((s32)(func_8033DC20()*(float)FRAMERATE + 0.5));
     }
     func_8033DC10();
     
@@ -551,7 +545,7 @@ bool func_802E4424(void) {
     switch (D_8037E8E0.game_mode) {
         case GAME_MODE_8_BOTTLES_BONUS:
         case GAME_MODE_A_SNS_PICTURE:
-            func_8030C27C();
+            picturebox_spawn();
             /* fallthrough */
         case GAME_MODE_7_ATTRACT_DEMO:
         case GAME_MODE_9_BANJO_AND_KAZOOIE:
@@ -562,7 +556,7 @@ bool func_802E4424(void) {
             break;
         case GAME_MODE_3_NORMAL:                                     /* switch 2 */
             D_8037E8E0.unk10 += time_getDelta();
-            if( (func_8024E698(0) == 1)
+            if( (controller_getStartButtonSafe(0) == 1)
                 && func_8028F070()
                 && (func_8028EC04() == 0)
                 && !gctransition_8030BDC0()
@@ -571,9 +565,9 @@ bool func_802E4424(void) {
                 && (0.6 < D_8037E8E0.unk10)
                 && gcpausemenu_80314B00()
                 && !player_isDead()
-                && func_8032056C()
+                && volatileflag_func_8032056C()
                 && levelSpecificFlags_validateCRC1()
-                && dummy_func_80320248()
+                && volatileflag_stub2()
             ) {
                 game_setMode(GAME_MODE_4_PAUSED, 0U);
             } else if ((controller_getStartButton(0) == 1) && (D_8037E8E0.unk0 != 0)) {
@@ -630,9 +624,9 @@ s32 game_defrag(void){
     gcdialog_defrag();
     if(D_8037E8E0.game_mode == GAME_MODE_4_PAUSED)
         gcpausemenu_defrag();
-    switch(overlayManagergetLoadedId()){
+    switch(overlayManager_getLoadedID()){
         case OVERLAY_2_WHALE:
-            func_803894A0();
+            maClanker_defrag();
             break;
         case OVERLAY_D_WITCH:
             code_C9E70_defrag();

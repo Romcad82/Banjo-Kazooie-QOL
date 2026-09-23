@@ -22,7 +22,7 @@ bool func_80340020(Struct83s *self, f32 position[3], f32 arg2[3], f32 arg3, f32 
         return FALSE;
     }
     for(i = 0; i < 3; i++){
-        var_a0 = arg5->vtx_18 + self->unk14[i];
+        var_a0 = arg5->vertices + self->unk14[i];
         for(j = 0; j < 3; j++){
                 sp34[i][j] = var_a0->v.ob[j];
         }
@@ -71,7 +71,7 @@ void func_80340200(Struct83s *self, f32 position[3], f32 arg2[3], f32 arg3, f32 
     }
 
     for(j = 0; j < 3; j++){
-        var_a0 = arg6->vtx_18 + self->unk14[j];
+        var_a0 = arg6->vertices + self->unk14[j];
         for(var_v0 = 0; var_v0 < 3; var_v0++){
             sp34[j][var_v0] = (f32)var_a0->v.ob[var_v0];
         }
@@ -127,11 +127,11 @@ void func_80340200(Struct83s *self, f32 position[3], f32 arg2[3], f32 arg3, f32 
 }
 
 void func_80340690(Struct83s *self){
-    free(self);
+    bk_free(self);
 }
 
 Struct83s * func_803406B0(void){
-    Struct83s *self = malloc(sizeof(Struct83s));
+    Struct83s *self = bk_malloc(sizeof(Struct83s));
     self->unk1A = 0;
     return self;
 }

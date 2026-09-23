@@ -2,11 +2,10 @@
 #include "functions.h"
 #include "variables.h"
 
-#include "snacker.h"
+#include "core2/ch/snacker.h"
 
 extern f32 func_80309B24(f32[3]);
 extern void func_80328FF0(Actor *, f32);
-extern void mapSpecificFlags_setN(s32, s32, s32);
 
 typedef enum {
     CH_SNACKER_OPA_0_APPEAR,
@@ -80,7 +79,7 @@ static void __chsnacker_start_dialog(Actor *this) {
             text_index = mapSpecificFlags_getN(8, 3);
             if( !this->has_met_before ) {
                 if(text_index < 4) {
-                    if(gcdialog_showDialog(ASSET_A1B_DIALOG_SNACKER_SPAWNED_1 + text_index, 0, NULL, NULL, NULL, NULL)){
+                    if(gcdialog_showDialog(VER_SELECT(ASSET_A1B_DIALOG_SNACKER_SPAWNED_1, 0x91B, 0, 0) + text_index, 0, NULL, NULL, NULL, NULL)){
                         text_index++;
                         mapSpecificFlags_setN(8, text_index, 3);
                         this->has_met_before = TRUE;
@@ -137,7 +136,7 @@ static void __chsnacker_die(ActorMarker *marker, ActorMarker *other){
 void func_802E0FC4(Actor *this){
     s_chSnacker_marker = NULL;
     D_8037E630 = this->unk166;
-    if(func_8025AD7C(COMUSIC_34_SNACKER_DANGER)){
+    if(comusic_isTrackQueued(COMUSIC_34_SNACKER_DANGER)){
         func_8025AABC(COMUSIC_34_SNACKER_DANGER);
         func_8025A7DC(COMUSIC_34_SNACKER_DANGER);
     }
@@ -373,10 +372,10 @@ void chSnacker_spawn(void) {
     }
     if (volatileFlag_get(VOLATILE_FLAG_C1_IN_FINAL_CHARACTER_PARADE) == 0) {
         func_8032BB88(snacker, 5000, 750);
-        core1_ce60_incOrDecCounter(FALSE);
+        midichannel_incOrDecCounter(FALSE);
         coMusicPlayer_playMusic(COMUSIC_34_SNACKER_DANGER, 0);
         comusic_8025AB44(COMUSIC_34_SNACKER_DANGER, 0x7FFF, 750);
-        core1_ce60_incOrDecCounter(TRUE);
+        midichannel_incOrDecCounter(TRUE);
     }
     s_chSnacker_spawnTimer = 0.0f;
     func_8032CA80(snacker, s_chSnacker_inRbb ? 15 : 9);

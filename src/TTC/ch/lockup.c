@@ -43,8 +43,8 @@ static s32 SMOKE_VELOCITY[3] = { 0, 0, 0 };
 
 static Actor *chLockup_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     Actor *actor = marker_getActor(marker);
-    func_8033A45C(3, actor->unk38_31);
-    func_8033A45C(4, actor->unk38_31);
+    modelRender_setAppendageVisibility(3, actor->unk38_31);
+    modelRender_setAppendageVisibility(4, actor->unk38_31);
     actor_draw(marker, gfx, mtx, vtx);
 }
 
@@ -74,7 +74,7 @@ static void chLockup_update(Actor *this) {
         && subaddie_playerIsWithinSphereAndActive(this, 320)
         && !subaddie_playerIsWithinSphereAndActive(this, 160)
         && !player_movementGroup()
-        && gcdialog_showDialog(ASSET_A15_DIALOG_LOCKUP_SPAWNED, 0, NULL, NULL, NULL, NULL)) {
+        && gcdialog_showDialog(VER_SELECT(ASSET_A15_DIALOG_LOCKUP_SPAWNED, 0x915, 0, 0), 0, NULL, NULL, NULL, NULL)) {
 
         this->has_met_before = TRUE;
     }
@@ -143,7 +143,7 @@ static void chLockup_update(Actor *this) {
 
                 // Spawn smoke particles
                 for (i = 5; i < 0xE; i++) {
-                    func_8034A174(this->marker->unk44, i, this->unk1C);
+                    vec3fArray_get_vec3f(this->marker->unk44, i, this->unk1C);
                     dustEmitter_emit(this->unk1C, SMOKE_VELOCITY, SMOKE_COLOR, TRUE, 0.4f, 50.0f, 0xB4, 0xA0, DUST_EMITTER_TYPE_DUST);
                 }
             }

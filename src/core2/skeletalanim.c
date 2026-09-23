@@ -4,7 +4,6 @@
 
 #include "animation.h"
 
-extern void animationFile_getBoneTransformList(void *, f32, BoneTransformList *);
 extern void boneTransformList_interpolate(BoneTransformList *, BoneTransformList *, BoneTransformList *, f32);
 extern BoneTransformList *boneTransformList_new(void);
 
@@ -78,18 +77,18 @@ BoneTransformList *skeletalAnim_getBoneTransformList(SkeletalAnimation *self){
     }
 
     if(self->animation_bin == NULL){
-        self->animation_bin = (AnimationFile *)assetcache_get(self->animation_id);
+        self->animation_bin = (BKAnimationFileBin *)assetcache_get(self->animation_id);
     }
 
     if(0.0f == self->transition_duration){
-        animationFile_getBoneTransformList(self->animation_bin, self->progress, self->bone_transform);
+        animationfilebin_getBoneTransformList(self->animation_bin, self->progress, self->bone_transform);
         return self->bone_transform;
     }
 
     if(self->transition_target == NULL){
         self->transition_target = (BoneTransformList *) boneTransformList_new();
     }
-    animationFile_getBoneTransformList(self->animation_bin, self->progress, self->transition_target);
+    animationfilebin_getBoneTransformList(self->animation_bin, self->progress, self->transition_target);
     boneTransformList_interpolate(self->bone_transform, self->transition_start, self->transition_target, self->transition_progress);
     return self->bone_transform;
 }
@@ -129,13 +128,13 @@ void skeletalAnim_free(SkeletalAnimation *self){
     if(temp_a0 != NULL){
         vector_free(temp_a0);
     }
-    free(self);
+    bk_free(self);
 }
 
 SkeletalAnimation *skeletalAnim_new(void){
     SkeletalAnimation *self;
 
-    self = (SkeletalAnimation *)malloc(sizeof(SkeletalAnimation));
+    self = (SkeletalAnimation *)bk_malloc(sizeof(SkeletalAnimation));
     self->bone_transform = NULL;
     self->animation_bin = NULL;
     self->callback_list = 0;

@@ -29,7 +29,7 @@ Actor *chgloop_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     if(!marker->unk14_21)
         return this;
 
-    func_8034A174(func_80329934(), 5, this->unk1C);
+    vec3fArray_get_vec3f(func_80329934(), 5, this->unk1C);
     return this;
 }
 
@@ -60,7 +60,7 @@ void chgloop_update(Actor *this){
             
             if( !mapSpecificFlags_get(2) 
                 && subaddie_playerIsWithinSphereAndActive(this, 350)
-                && gcdialog_showDialog(ASSET_D34_DIALOG_GLOOP_MEET, 0, NULL, NULL, NULL, NULL)
+                && gcdialog_showDialog(VER_SELECT(ASSET_D34_DIALOG_GLOOP_MEET, 0xA07, 0, 0), 0, NULL, NULL, NULL, NULL)
             ){
                 mapSpecificFlags_set(2, TRUE);
             }

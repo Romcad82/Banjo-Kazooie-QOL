@@ -191,7 +191,7 @@ s32 func_803226BC(enum map_e map_id){
     return D_8036DE80[func_803225E0(map_id)].unk6;
 }
 
-s32 func_803226E8(enum map_e map_id){
+s32 core2_9B650_getMusicTrackFromMap(enum map_e map_id) {
     return D_8036DE80[func_803225E0(map_id)].unk2;
 }
 
@@ -222,7 +222,7 @@ void func_8032278C(s32 arg0, s32 arg1) {
 
 
     D_80383340.unk4 = func_803226BC(gsworld_getMap());
-    D_80383340.unk0 = func_803226E8(gsworld_getMap());
+    D_80383340.unk0 = core2_9B650_getMusicTrackFromMap(gsworld_getMap());
     D_80383340.unk2 = func_80322714(gsworld_getMap());
     if (arg1 == 3) {
         D_8036E2B4 = 1;
@@ -233,13 +233,13 @@ void func_8032278C(s32 arg0, s32 arg1) {
         D_8036E2B4 = 0;
         if (D_80383348 == 0) {
             if ((temp_v0 & 1) != 0) {
-                core1_ce60_func_8024ADF0(FALSE);
+                midichannel_func_8024ADF0(FALSE);
             } else {
-                core1_ce60_func_8024ADF0(TRUE);
+                midichannel_func_8024ADF0(TRUE);
             }
         } else {
             D_80383348 = 0;
-            core1_ce60_incOrDecCounter(TRUE);
+            midichannel_incOrDecCounter(TRUE);
         }
     }
     if ((arg0 == 1) && (arg1 == 2)) {
@@ -253,7 +253,7 @@ void func_8032278C(s32 arg0, s32 arg1) {
 
 void musicKeepsPlaying(void){
     if(!D_80383348){
-        core1_ce60_incOrDecCounter(FALSE);
+        midichannel_incOrDecCounter(FALSE);
         D_80383348 = TRUE;
     }
 }

@@ -37,7 +37,7 @@ Actor *chtrainers_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
 
 void _chtrainers_802CA378(Actor *this, bool arg1){
     f32 sp24[3];
-    if(ability_isUnlocked(ABILITY_11_TURBO_TALON))
+    if(player_isAbilityUnlocked(ABILITY_11_TURBO_TALON))
         actor_setOpacity(this, 0xff);
     else
         actor_setOpacity(this, 0x87);
@@ -74,7 +74,7 @@ void chtrainers_update(Actor *this){
         subaddie_set_state(this, 0);
     }
 
-    if(!volatileFlag_get(VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES) && ability_isUnlocked(ABILITY_11_TURBO_TALON)){
+    if(!volatileFlag_get(VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES) && player_isAbilityUnlocked(ABILITY_11_TURBO_TALON)){
         volatileFlag_set(VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES, TRUE);
     }
 
@@ -85,7 +85,7 @@ void chtrainers_update(Actor *this){
                     && !volatileFlag_get(VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES)
                     && player_getTransformation() == TRANSFORM_1_BANJO
                 ){
-                    if(gcdialog_showDialog(0xda4, 0, NULL, NULL, NULL, NULL)){
+                    if(gcdialog_showDialog(VER_SELECT(0xda4, 0xA22, 0, 0), 0, NULL, NULL, NULL, NULL)){
                         volatileFlag_set(VOLATILE_FLAG_F_HAS_MEET_TURBO_SHOES, TRUE);
                     }
                 }//L802CA620
@@ -118,7 +118,7 @@ void chtrainers_update(Actor *this){
 }
 
 bool chtrainers_canUse(Actor *this){
-    return this->unk10_12 && ability_isUnlocked(ABILITY_11_TURBO_TALON);
+    return this->unk10_12 && player_isAbilityUnlocked(ABILITY_11_TURBO_TALON);
 }
 
 f32 chtrainers_getDuration(Actor *this){

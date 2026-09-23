@@ -12,8 +12,8 @@ Actor* func_8038D13C(ActorMarker *, Gfx **, Mtx**, Vtx **);
 /* .data */
 ActorAnimationInfo D_8038E890[] ={
     {0x000, 0.0f},
-    {0x1F6, 10000.0f},
-    {0x1F6, 5.0f},
+    {ASSET_1F6_ANIM_unk, 10000.0f},
+    {ASSET_1F6_ANIM_unk, 5.0f},
 };
 
 ActorInfo D_8038E8A8 = {
@@ -60,7 +60,7 @@ Actor* func_8038D13C(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
     if(marker->unk14_21 && actor->state == 2){
         for(i = 5; i < 0x6; i++){
             if(randf() < 0.8){
-                func_8034A174(func_80329934(), i, sp3C);
+                vec3fArray_get_vec3f(func_80329934(), i, sp3C);
                 particleEmitter_setPosition(local->unk0, sp3C);
                 particleEmitter_emitN(local->unk0, 1);
             }

@@ -10,11 +10,11 @@ extern void func_80329904(ActorMarker*, s32, f32*);
 
 ActorAnimationInfo chBossJinjoAnimationInfo[] = {
     {0, 0.0f},
-    {0x264, 1000000.0f},
-    {0x264, 2.26f},
-    {0x130, 1.75f},
-    {0x131, 2.13333f},
-    {0x262, 2.0f}
+    {ASSET_264_ANIM_BOSSJINJO_unk, 1000000.0f},
+    {ASSET_264_ANIM_BOSSJINJO_unk, 2.26f},
+    {ASSET_130_ANIM_JINJO_FLY_START, 1.75f},
+    {ASSET_131_ANIM_JINJO_FLY_END, 2.13333f},
+    {ASSET_262_ANIM_BOSSJINJO_unk, 2.0f}
 };
 
 ActorInfo chBossJinjoOrange = { MARKER_27B_BOSS_JINJO_ORANGE, ACTOR_3A5_BOSS_JINJO_ORANGE, ASSET_3BC_MODEL_JINJO_ORANGE, 1, chBossJinjoAnimationInfo, chBossJinjo_update, chBossJinjo_update2, actor_draw, 0, 0, 1.0f, 0 };
@@ -268,13 +268,13 @@ void chBossJinjo_update(Actor *this){
                     subaddie_set_state_with_direction(this, BOSSJINJO_STATE_5_HIT, 0.001f, 1);
                     sfx_playFadeShorthandDefault(SFX_135_CARTOONY_SPRING, 1.0f, 32000, this->position, 10000, 16000);
                     func_80324D54(0.1f, SFX_C1_BUZZBOMB_ATTACK, 0.85f, 32000, this->position, 5000.0f, 12000.0f);
-                    func_8034A174(this->marker->unk44, 0x1f, this->position);
+                    vec3fArray_get_vec3f(this->marker->unk44, 0x1f, this->position);
 
                     this->velocity_x = (this->position_x - this->unk1C[0])/ time_delta;
                     this->velocity_y = (this->position_y - this->unk1C[1])/ time_delta;
                     this->velocity_z = (this->position_z - this->unk1C[2])/ time_delta;
                 } else {
-                    func_8034A174(this->marker->unk44, 0x1f, this->unk1C);
+                    vec3fArray_get_vec3f(this->marker->unk44, 0x1f, this->unk1C);
                 }
             }
             break; 

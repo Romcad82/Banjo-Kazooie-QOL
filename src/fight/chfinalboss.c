@@ -50,49 +50,49 @@ f32 fight_D_80391390[4] = { 0.33f, 0.33f, 0.33f, 1.0f };
 
 ActorAnimationInfo chFinalBossAnimationInfo[] = {
     { 0, 0.0f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.8f},
-    { 0x1C5, 0.6f},
-    { 0x25C, 1.0f},
-    { 0x25C, 1.0f},
-    { 0x25E, 6.5f},
-    { 0x25E, 6.5f},
-    { 0x25A, 1.1f},
-    { 0x1C5, 1.0f},
-    { 0x257, 2.5f},
-    { 0x259, 1.4f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.8f},
-    { 0x25A, 1.1f},
-    { 0x257, 2.5f},
-    { 0x1C5, 0.8f},
-    { 0x258, 1.0f},
-    { 0x259, 1.4f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.8f},
-    { 0x1C5, 0.8f},
-    { 0x25A, 1.1f},
-    { 0x259, 1.4f},
-    { 0x267, 3.0f},
-    { 0x1C5, 0.8f},
-    { 0x1C5, 0.6f},
-    { 0x1C5, 0.8f},
-    { 0x25A, 1.1f},
-    { 0x1C5, 0.8f},
-    { 0x259, 1.4f},
-    { 0x263, 0.5f},
-    { 0x25D, 7.0f},
-    { 0x25F, 1.0f},
-    { 0x25F, 1.0f},
-    { 0x260, 1.1f},
-    { 0x261, 2.5f},
-    { 0x25F, 1.0f},
-    { 0x279, 3.0f},
-    { 0x283, 0.25f},
-    { 0x27A, 1.0f},
-    { 0x266, 4.0f}
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_25C_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_25C_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_25E_ANIM_FINALBOSS_unk, 6.5f},
+    { ASSET_25E_ANIM_FINALBOSS_unk, 6.5f},
+    { ASSET_25A_ANIM_FINALBOSS_unk, 1.1f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_257_ANIM_FINALBOSS_unk, 2.5f},
+    { ASSET_259_ANIM_FINALBOSS_unk, 1.4f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_25A_ANIM_FINALBOSS_unk, 1.1f},
+    { ASSET_257_ANIM_FINALBOSS_unk, 2.5f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_258_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_259_ANIM_FINALBOSS_unk, 1.4f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_25A_ANIM_FINALBOSS_unk, 1.1f},
+    { ASSET_259_ANIM_FINALBOSS_unk, 1.4f},
+    { ASSET_267_ANIM_FINALBOSS_unk, 3.0f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.6f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_25A_ANIM_FINALBOSS_unk, 1.1f},
+    { ASSET_1C5_ANIM_FINALBOSS_unk, 0.8f},
+    { ASSET_259_ANIM_FINALBOSS_unk, 1.4f},
+    { ASSET_263_ANIM_FINALBOSS_unk, 0.5f},
+    { ASSET_25D_ANIM_FINALBOSS_unk, 7.0f},
+    { ASSET_25F_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_25F_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_260_ANIM_FINALBOSS_unk, 1.1f},
+    { ASSET_261_ANIM_FINALBOSS_unk, 2.5f},
+    { ASSET_25F_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_279_ANIM_FINALBOSS_unk, 3.0f},
+    { ASSET_283_ANIM_FINALBOSS_unk, 0.25f},
+    { ASSET_27A_ANIM_FINALBOSS_unk, 1.0f},
+    { ASSET_266_ANIM_FINALBOSS_unk, 4.0f}
 };
 
 ActorInfo chFinalBoss = {
@@ -164,12 +164,12 @@ Actor *chfinalboss_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     Actor *this = marker_getActor(marker);
     ActorLocal_FinalBoss *local = (ActorLocal_FinalBoss *)&this->local;
 
-    func_8033A45C(3, local->unkD);
-    func_8033A45C(4, local->unkE);
-    func_8033A45C(5, local->unkC);
+    modelRender_setAppendageVisibility(3, local->unkD);
+    modelRender_setAppendageVisibility(4, local->unkE);
+    modelRender_setAppendageVisibility(5, local->unkC);
 
     if (local->phase == FINALBOSS_PHASE_1_BROOMSTICK) {
-        func_8033A25C(FALSE);
+        modelRender_func_8033A25C(FALSE);
     }
 
     return actor_draw(marker, gfx, mtx, vtx);
@@ -289,7 +289,7 @@ void chfinalboss_spawnBroomstickGlowParticles(Actor *this) {
             sprite_id = ASSET_713_SPRITE_SPARKLE_YELLOW;
         }
 
-        func_8034A174(this->marker->unk44, 7, position);
+        vec3fArray_get_vec3f(this->marker->unk44, 7, position);
 
         if (((sprite_id == ASSET_715_SPRITE_SPARKLE_RED) && ((time_delta & 1) != 0)) || ((sprite_id == ASSET_713_SPRITE_SPARKLE_YELLOW) && ((time_delta & 3) == 0))) {
             chfinalboss_createGreenGlowParticle(position, color);
@@ -356,7 +356,7 @@ void chfinalboss_func_80386CF8(Actor *actor) {
     sp4C[0] = sp28[0] + sp34[0];
     sp4C[1] = sp28[1] + sp34[1];
     sp4C[2] = sp28[2] + sp34[2];
-    func_8025727C(sp28[0], sp28[1], sp28[2], sp4C[0], sp4C[1], sp4C[2], &sp40[0], &sp40[1]);
+    ml_horizontal_and_vertical_angles(sp28[0], sp28[1], sp28[2], sp4C[0], sp4C[1], sp4C[2], &sp40[0], &sp40[1]);
     sp40[0] = 360.0f - sp40[0];
     sp40[2] = 0.0f;
     ncStaticCamera_setPositionAndRotation(sp4C, sp40);
@@ -460,7 +460,7 @@ void chfinalboss_throwObject(ActorMarker *marker, f32 arg1[3], f32 arg2, s32 arg
 void chfinalboss_throwFinalSpell(Actor *arg0) {
     f32 vec[3];
 
-    func_8034A174(arg0->marker->unk44, 0xA, vec);
+    vec3fArray_get_vec3f(arg0->marker->unk44, 0xA, vec);
     chfinalboss_throwObject(arg0->marker, vec, 3.0f, 1);
 }
 
@@ -469,7 +469,7 @@ s32 chfinalboss_throwFireball(Actor *this, f32 arg1) {
 
     if (actor_animationIsAt(this, 0.50f) != 0) {
         if (this->marker->unk14_21) {
-            func_8034A174(this->marker->unk44, 5, sp24);
+            vec3fArray_get_vec3f(this->marker->unk44, 5, sp24);
         } else {
             sp24[0] = this->position_x;
             sp24[1] = this->position_y;
@@ -488,7 +488,7 @@ void chfinalboss_func_803873DC(Actor *actor, f32 arg1, f32 arg2) {
     if (actor_animationIsAt(actor, 0.5f) != 0) {
         marker = actor->marker;
         if (marker->unk14_21) {
-            func_8034A174(marker->unk44, 6, vec);
+            vec3fArray_get_vec3f(marker->unk44, 6, vec);
         } else {
             vec[0] = actor->position[0];
             vec[1] = actor->position[1];
@@ -858,7 +858,7 @@ void chfinalboss_func_8038856C(Actor *actor, f32 *arg1) {
 
     marker = actor->marker;
     if (marker->unk14_21) {
-        func_8034A174(marker->unk44, 7, vec);
+        vec3fArray_get_vec3f(marker->unk44, 7, vec);
     } else {
         vec[0] = actor->position[0];
         vec[1] = actor->position[1];
@@ -1372,9 +1372,9 @@ void chfinalboss_phase3_update(ActorMarker *marker) {
                 func_80324CFC(0.0f, COMUSIC_43_ENTER_LEVEL_GLITTER, 0x7FFF);
             }
             if ((0.1 < sp34) && (sp34 < 0.8)) {
-                func_8034A174(this->marker->unk44, 8, D_803928B8);
+                vec3fArray_get_vec3f(this->marker->unk44, 8, D_803928B8);
                 chfinalboss_createSingleSpriteParticle(D_803928B8, 0x716);
-                func_8034A174(this->marker->unk44, 9, D_803928B8);
+                vec3fArray_get_vec3f(this->marker->unk44, 9, D_803928B8);
                 chfinalboss_createSingleSpriteParticle(D_803928B8, 0x716);
             }
             if (actor_animationIsAt(this, 0.38f) ) {
@@ -2144,7 +2144,7 @@ void chfinalboss_update(Actor *this){
         chfinalboss_func_80386654(1.0f, fight_D_80391380, fight_D_80391390);
         func_8028F784(1);
         func_8028F4B8(D_80391804, 2000.0f, -2800.0f);
-        code_7060_setVoidOutLocation(MAP_93_GL_DINGPOT, 2);
+        code_7060_setVoidOutLocation(MAP_93_GL_DINGPOT, WARP_GL_TOWER_2_DINGPOT);
         func_8034C9B0(0);
         chfinalboss_func_80386698(2.0f);
         tmp_s0 = func_802F9AA8(SFX_9A_MECHANICAL_CLOSING);

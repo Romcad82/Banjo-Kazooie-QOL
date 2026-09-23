@@ -26,8 +26,8 @@ f32 D_803935D0[3];
 
 /* .code */
 Actor *chXmasTreeStar_draw(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
-    func_8033A45C( 2, mapSpecificFlags_get(FP_SPECIFIC_FLAG_0_XMAS_TREE_LIGHTS_ON));
-    func_8033A45C( 1, mapSpecificFlags_get(FP_SPECIFIC_FLAG_0_XMAS_TREE_LIGHTS_ON) ^ 1);
+    modelRender_setAppendageVisibility( 2, mapSpecificFlags_get(FP_SPECIFIC_FLAG_0_XMAS_TREE_LIGHTS_ON));
+    modelRender_setAppendageVisibility( 1, mapSpecificFlags_get(FP_SPECIFIC_FLAG_0_XMAS_TREE_LIGHTS_ON) ^ 1);
     return actor_draw(marker, gfx, mtx, vtx);
 }
 
@@ -75,8 +75,8 @@ void chXmasTreeStar_update(Actor *this){
 
     local->unk19 = 0;
     if(!local->unk1A && this->marker->unk14_21){
-        func_8034A174(this->marker->unk44, 5, sp58);
-        func_8034A174(this->marker->unk44, 6, sp4C);
+        vec3fArray_get_vec3f(this->marker->unk44, 5, sp58);
+        vec3fArray_get_vec3f(this->marker->unk44, 6, sp4C);
         local->unk0[0] = sp58[0] - sp4C[0];
         local->unk0[1] = sp58[1] - sp4C[1];
         local->unk0[2] = sp58[2] - sp4C[2];

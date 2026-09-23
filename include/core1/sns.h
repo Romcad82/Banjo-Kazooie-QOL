@@ -115,7 +115,7 @@ struct GlobalSave {
 #ifdef OPTIONS_MENU
     u8  optionsMenuFlags[0x18];
 #else
-    u8  UNUSED[0x18];
+    u8  padding[0x18];
 #endif
     u32 crc;
 };

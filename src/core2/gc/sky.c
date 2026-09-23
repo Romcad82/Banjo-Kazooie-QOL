@@ -40,7 +40,7 @@ MapSkyInfo D_8036BD40[] = {
     {MAP_2_MM_MUMBOS_MOUNTAIN,        {{ASSET_7BD_MODEL_SKYBOX_MM,  1.0f, 0.0f}, {ASSET_7BE_MODEL_CLOUDS_MM,  1.0f, 1.0f}}},
     {MAP_31_RBB_RUSTY_BUCKET_BAY,     {{ASSET_7C5_MODEL_SKYBOX_RBB,  1.0f, 0.0f}}},
     {MAP_1_SM_SPIRAL_MOUNTAIN,        {{ASSET_7C4_MODEL_SKYBOX_SM,  1.0f, 0.0f}}},
-    {MAP_3_UNUSED,                    {{ASSET_7BF_MODEL_SKYBOX_TTC,  1.0f, 0.0f}, {ASSET_7C0_MODEL_CLOUDS_TTC,  2.0f, 0.5f}}},
+    {MAP_3_STUB_TEST_TEMPLE,          {{ASSET_7BF_MODEL_SKYBOX_TTC,  1.0f, 0.0f}, {ASSET_7C0_MODEL_CLOUDS_TTC,  2.0f, 0.5f}}},
     {MAP_27_FP_FREEZEEZY_PEAK,        {{ASSET_7C6_MODEL_SKYBOX_FP,  1.0f, 1.0f}, {ASSET_7C7_MODEL_CLOUDS_FP_A,  1.0f, 1.5f}, {ASSET_7C8_MODEL_CLOUDS_FP_B,  1.0f, 3.0f}}},
     {MAP_C_MM_TICKERS_TOWER,          {{ASSET_7BD_MODEL_SKYBOX_MM,  1.0f, 0.5f}}},
     0
@@ -67,30 +67,30 @@ MapSkyInfo * sky_getMapSkyInfo(enum map_e map_id){
     return v1;
 }
 
-void sky_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx){
+void sky_draw(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     int i;
     f32 position[3];
     f32 rotation[3];
-    BKModelBin *iAsset;
+    BKModelBin *sky_model_bin;
 
     viewport_setNearAndFar(5.0f, 15000.0f);
-    if(gcSky.model_bins[0]){
-        drawRectangle2D(gfx, 0, 0, (s32)(f32) gFramebufferWidth, (s32)(f32)gFramebufferHeight,0, 0, 0); //fill screen with black
+
+    if (gcSky.model_bins[0]) {
+        drawRectangle2D(gfx, 0, 0, (f32) gFramebufferWidth, (f32) gFramebufferHeight, 0, 0, 0);
         viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
         viewport_getPosition_vec3f(position);
-        for(i = 0; i < 3; i++){
-            iAsset = gcSky.model_bins[i];
-            if(iAsset){
+        for (i = 0; i < 3; i++) {
+            sky_model_bin = gcSky.model_bins[i];
+            if (sky_model_bin) {
                 rotation[0] = 0.0f;
                 rotation[1] = gcSky.sky_info->sky_list[i].rotation_speed * gcSky.timer;
                 rotation[2] = 0.0f;
-                modelRender_draw(gfx, mtx, position, rotation, gcSky.sky_info->sky_list[i].scale, NULL, iAsset);
+                modelRender_draw(gfx, mtx, position, rotation, gcSky.sky_info->sky_list[i].scale, NULL, sky_model_bin);
             }
         }
+    } else {
+        drawRectangle2D(gfx, 0, 0, (f32) gFramebufferWidth, (f32) gFramebufferHeight, 0, 0, 0);
     }
-    else{//L8030B200
-        drawRectangle2D(gfx, 0, 0, (s32)(f32) gFramebufferWidth, (s32)(f32)gFramebufferHeight, 0, 0, 0);
-    }//L8030B254
 }
 
 void sky_free(void){
@@ -116,8 +116,8 @@ void sky_reset(void){
         gcSky.model_bins[i] = NULL;
         if(gcSky.sky_info->sky_list[i].model_id){
             gcSky.model_bins[i] = assetcache_get(gcSky.sky_info->sky_list[i].model_id);
-            if(func_8033A0B0(gcSky.model_bins[i])){
-                gcSky.model[i] = func_8033F5F8(func_8033A0B0(gcSky.model_bins[i]), model_getVtxList( gcSky.model_bins[i]));
+            if(modelbin_getMeshList(gcSky.model_bins[i])){
+                gcSky.model[i] = meshList_createModel(modelbin_getMeshList(gcSky.model_bins[i]), modelbin_getVtxList( gcSky.model_bins[i]));
                 func_8034C6DC(gcSky.model[i]);
             }
         }

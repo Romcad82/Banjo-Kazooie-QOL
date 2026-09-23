@@ -18,31 +18,39 @@ struct gsworld_data_s sGsWorldData;
 static bool sEnableUpdate;
 static bool sEnableDraw;
 
+enum gsWorldStartIndicators {
+    GS_WORLD_START_INDICATOR_0_END,
+    GS_WORLD_START_INDICATOR_1_CUBES,
+    GS_WORLD_START_INDICATOR_2_UNUSED,
+    GS_WORLD_START_INDICATOR_3_CAMERAS,
+    GS_WORLD_START_INDICATOR_4_LIGHTING
+};
+
 void gsworld_draw(Gfx** gfx, Mtx **mtx, Vtx **vtx) {
     f32 near, far;
 
     if (!sEnableDraw) {
         drawRectangle2D(gfx, 0, 0, gFramebufferWidth, gFramebufferHeight, 0, 0, 0);
-        func_802BBD2C(&near, &far);
+        core2_34790_getClipDistances(&near, &far);
         viewport_setNearAndFar(near, far);
         viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
         return;
     }
 
-    if (!func_80320708()) {
-        eeprom_writeBlocks(0, 0, (void *) 0x80BC7230, EEPROM_MAXBLOCKS);
+    if (!volatileflag_func_80320708()) {
+        eeprom_writeBlocks(0, 0, (void *) PHYS_TO_K0(0x00BC7230), EEPROM_MAXBLOCKS);
     }
 
     spawnQueue_unlock();
     sky_draw(gfx, mtx, vtx);
-    func_802BBD2C(&near, &far);
+    core2_34790_getClipDistances(&near, &far);
     viewport_setNearAndFar(near, far);
     viewport_setRenderViewportAndPerspectiveMatrix(gfx, mtx);
 
     if (mapModel_has_xlu_bin()) {
         mapModel_opa_draw(gfx, mtx, vtx);
         if (!game_is_frozen()) {
-            func_80322E64(gfx, mtx, vtx);
+            leveloverlay_drawCallback(gfx, mtx, vtx);
         }
         if (!game_is_frozen()) {
             player_draw(gfx, mtx, vtx);
@@ -66,7 +74,7 @@ void gsworld_draw(Gfx** gfx, Mtx **mtx, Vtx **vtx) {
             mapModel_xlu_draw(gfx, mtx, vtx);
         }
         if (!game_is_frozen()) {
-            func_8032D3D8(gfx, mtx, vtx);
+            core2_A5BC0_drawUnknownMarkers(gfx, mtx, vtx);
         }
         if (!game_is_frozen()) {
             partEmitMgr_drawPass1(gfx, mtx, vtx);
@@ -77,11 +85,11 @@ void gsworld_draw(Gfx** gfx, Mtx **mtx, Vtx **vtx) {
         func_802D520C(gfx, mtx, vtx);
     } else {
         mapModel_opa_draw(gfx, mtx, vtx);
-        func_80322E64(gfx, mtx, vtx);
+        leveloverlay_drawCallback(gfx, mtx, vtx);
         func_8034F6F0(gfx, mtx, vtx);
         player_draw(gfx, mtx, vtx);
         func_80302C94(gfx, mtx, vtx);
-        func_8032D3D8(gfx, mtx, vtx);
+        core2_A5BC0_drawUnknownMarkers(gfx, mtx, vtx);
         jiggylist_draw(gfx, mtx, vtx);
         func_803500D8(gfx, mtx, vtx);
         func_802F2ED0(func_8032994C(), gfx, mtx, vtx);
@@ -90,7 +98,7 @@ void gsworld_draw(Gfx** gfx, Mtx **mtx, Vtx **vtx) {
     }
 
     if (!game_is_frozen()) {
-        func_80350818(gfx, mtx, vtx);
+        lensflare_draw(gfx, mtx, vtx);
     }
 
     if (!game_is_frozen()) {
@@ -123,15 +131,15 @@ void gsworld_free(void) {
     gsworld_setUnk0(3);
     func_8034F734();
     func_803500E8();
-    func_80350BC8();
+    lensflare_free();
     func_8030F1D0();
     gcparade_free();//null
-    func_80322F7C();
+    leveloverlay_releaseCallback_OnlyFP();
     func_803518E8();
     func_802D48F0();
     func_803224FC();
     func_8028E644();
-    func_80322F5C();
+    leveloverlay_releaseCallback_NotFP();
     func_80341A54();
     spawnQueue_free();
     print_freeBoldLetterFont();
@@ -141,7 +149,7 @@ void gsworld_free(void) {
     func_8033FA24();
     func_80344C80();
     animsprite_terminate();
-    animBinCache_free();
+    animcommoncache_free();
     func_802BC10C();
     ncCameraNodeList_free();
     pem_freeDependencies();
@@ -171,13 +179,13 @@ void gsworld_free(void) {
         itemPrint_free();
     }
     dialogBin_terminate();
-    func_802986D0();
+    playerModel_free();
     if (!func_80322914()) {
-        func_8024F7C4(func_803226E8(sGsWorldData.map));
+        musicTrack_release(core2_9B650_getMusicTrackFromMap(sGsWorldData.map));
     }
     core1_7090_release();
     AnimTextureListCache_free();
-    func_80322FDC();
+    leveloverlay_debug();
     func_8033BD6C();
     func_80255198();//heap_flush_free_queue
     animCache_flushAll();
@@ -187,7 +195,7 @@ void gsworld_set(enum map_e map, s32 exit, bool reload) {
     sGsWorldData.unk0 = 3;
     sGsWorldData.map = map;
     sGsWorldData.exit = exit;
-    overlay_init();
+    leveloverlay_init();
     gsworld_setEnableUpdate(TRUE);
     gsworld_setEnableDraw(TRUE);
     func_802D2CB8();
@@ -196,28 +204,28 @@ void gsworld_set(enum map_e map, s32 exit, bool reload) {
         func_8038E7C4();
     }
     if (!func_80322914()) {
-        func_8024F764(func_803226E8(sGsWorldData.map));
+        musicTrack_load(core2_9B650_getMusicTrackFromMap(sGsWorldData.map));
     }
     func_80320B84();
     AnimTextureListCache_init();
     func_8034C97C();
     func_8030A078();
     func_8031B718();
-    func_80298700();
+    playerModel_set();
     if (!func_802E4A08()) {
         itemPrint_init();
     }
     dialogBin_initialize();
     spawnQueue_malloc();
     func_803329AC();
-    func_80350BFC();
+    lensflare_init();
     func_80323190();
     func_80332894();
     func_803305AC();
     func_8031F9E8();
     func_80323230();
     commonParticleType_init();
-    animBinCache_init();
+    animcommoncache_init();
     animsprite_init();
     func_80344C50();
     func_8033F9C0();
@@ -243,9 +251,9 @@ void gsworld_set(enum map_e map, s32 exit, bool reload) {
     mapSpecificFlags_clearAll();
     func_803411B0();
     spawnQueue_reset();
-    func_80322FBC();
+    leveloverlay_initCallback_NotFP();
     func_8028E4B0();
-    func_80322F9C();
+    leveloverlay_initCallback_OnlyFP();
     func_80323120();
     func_803223AC();
     bundle_reset();
@@ -261,7 +269,7 @@ void gsworld_set(enum map_e map, s32 exit, bool reload) {
         print_resetBoldFontTexture();
     }
     if (map != MAP_1F_CS_START_RAREWARE) {
-        func_8024F150();
+        joy_spawnNoControllerOverlay();
     }
 }
 
@@ -275,7 +283,7 @@ void gsworld_stub2(void) {
 }
 
 void gsworld_setUnk0(s32 value) {
-    func_80254008();
+    core1_15B30_sendMesg3ToRenderThread();
     func_802BC21C(sGsWorldData.unk0, value);
     func_8028F7F4(sGsWorldData.unk0, value);
     func_8030D8A8(sGsWorldData.unk0, value);
@@ -283,7 +291,7 @@ void gsworld_setUnk0(s32 value) {
     func_80323140(sGsWorldData.unk0, value);
     func_80351A1C(sGsWorldData.unk0, value);
     func_803225B0(sGsWorldData.unk0, value);
-    func_80323098(sGsWorldData.unk0, value);
+    leveloverlay_unk14Callback(sGsWorldData.unk0, value);
     func_802F0E80(sGsWorldData.unk0, value);
     commonParticle_setActive(sGsWorldData.unk0, value);
     sGsWorldData.unk0 = value;
@@ -292,7 +300,7 @@ void gsworld_setUnk0(s32 value) {
 s32 gsworld_update(void) {
     u32 time_mask, time, delay;
 
-    codeCF5F0_forgetAllAbilitiesExceptClawSwipeIfChecksumsFail();
+    codeCF5F0_triggerAntiTamperMeasurement();
     func_802D5628();
     itemPrint_update();
     if (getGameMode() != GAME_MODE_4_PAUSED) {
@@ -311,7 +319,7 @@ s32 gsworld_update(void) {
         time = globalTimer_getTime();
         time_mask = sHackDetected ? 0x0F : 0x1F;
         if (((time_mask & time) == 3) &&
-            (overlayManagergetLoadedId() == OVERLAY_5_BEACH) &&
+            (overlayManager_getLoadedID() == OVERLAY_5_BEACH) &&
             (!maCastle_isSecretCheatCodeRelatedValueEqualToScrambledAddressValue() || sHackDetected))
         {
             sHackDetected = TRUE;
@@ -321,7 +329,7 @@ s32 gsworld_update(void) {
         commonParticle_update();
         pem_updateAll();
         animCache_update();
-        animBinCache_update();
+        animcommoncache_update();
         ncCamera_update();
         func_803045D8();
         func_80332E08();
@@ -333,15 +341,17 @@ s32 gsworld_update(void) {
         partEmitMgr_update();
         func_8034F918();
         func_80350250();
+        #if ANTI_TAMPER
         if (!mapSpecificFlags_validateCRC1()) {
             func_8028FCBC();
         }
+        #endif
         AnimTextureListCache_update();
-        func_80350CA4();
+        lensflare_update();
         dialogBin_update();
         func_80310D2C();
         gcparade_update();
-        overlay_update();
+        leveloverlay_updateCallback();
         func_80321924();
         func_80334428();
         cutscenetrigger_update();
@@ -374,21 +384,41 @@ bool gsworld_getEnableDraw() {
     return sEnableDraw;
 }
 
+/*
+Opens the setup file and reads the contents.
+
+0x01 (GS_WORLD_START_INDICATOR_1_CUBES)
+ - This section contains the cube dimensions and list.
+ - Cubes are 1000 by 1000 sections of space that may have props inside.
+
+0x02 (GS_WORLD_START_INDICATOR_2_UNUSED)
+ - Unused
+
+0x03 (GS_WORLD_START_INDICATOR_3_CAMERAS)
+ - This section contains the cameras list.
+
+0x04 (GS_WORLD_START_INDICATOR_4_LIGHTING)
+ - This section contains environment lighting.
+ - It's only used in a handful of maps.
+
+0x00 (GS_WORLD_START_INDICATOR_0_END)
+ - Indicates the end of the file.
+*/
 void gsworld_load(enum map_e map_id) {
     File *f;
 
-    func_80254008();
+    core1_15B30_sendMesg3ToRenderThread();
 
     f = file_openMap(map_id);
 
-    while (!file_isNextByteExpected(f, 0)) {
-        if (file_isNextByteExpected(f, 2)) {
+    while (!file_isNextByteExpected(f, GS_WORLD_START_INDICATOR_0_END)) {
+        if (file_isNextByteExpected(f, GS_WORLD_START_INDICATOR_2_UNUSED)) {
             /* NO OP */
-        } else if (file_isNextByteExpected(f, 1)) {
+        } else if (file_isNextByteExpected(f, GS_WORLD_START_INDICATOR_1_CUBES)) {
             cubeList_fromFile(f);
-        } else if (file_isNextByteExpected(f, 3)) {
+        } else if (file_isNextByteExpected(f, GS_WORLD_START_INDICATOR_3_CAMERAS)) {
             ncCameraNodeList_fromFile(f);
-        } else if (file_isNextByteExpected(f, 4)) {
+        } else if (file_isNextByteExpected(f, GS_WORLD_START_INDICATOR_4_LIGHTING)) {
             lightingVectorList_fromFile(f);
         }
     }

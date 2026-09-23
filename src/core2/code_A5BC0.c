@@ -14,16 +14,11 @@ extern Cube *cubeList_GetCubeAtPosition_s32(s32 position[3]);
 extern Cube *func_8030364C(void);
 extern NodeProp *func_803080C8(s32);
 extern Cube *func_80308224(void);
-extern int func_802E74A0(f32[3], f32, s32, s32);
-extern s32 func_802E9118(BKCollisionList * collision_list, BKVertexList *vtx_list, f32 arg2[3], s32 arg3, f32 arg4, f32 arg5[3], f32 arg6[3], f32 arg7, f32 arg8[3], s32 arg9, s32 argA);
-extern f32 vtxList_getGlobalNorm(BKVertexList *);
+
 extern void spawnQueue_func_802C39D4(void);
 extern bool func_80340020(s32, f32[3], f32[3], f32, s32, BKVertexList *, f32[3], f32[3]);
 extern void func_80340200(s32, f32[3], f32[3], f32, s32, s32, BKVertexList *, s32);
-extern s32 func_802E9DD8(BKCollisionList *collisionList, BKVertexList *vtxList, f32 arg2[3], f32 *arg3, f32 arg4, f32 arg5[3], f32 arg6, f32 arg7[3], s32 arg8);
-extern void *func_802EBAE0(UNK_TYPE(s32), f32 position[3], f32 rotation[3], f32 scale, UNK_TYPE(s32), UNK_TYPE(s32), UNK_TYPE(s32), f32, UNK_TYPE(s32));
-extern BKCollisionTri *func_802E805C(BKCollisionList *, BKVertexList *, f32[3], f32[3], f32, f32[3], f32[3], f32[3], u32);
-extern BKCollisionList *model_getCollisionList(BKModelBin *);
+extern void *bkmodelunk14list_func_802EBAE0(UNK_TYPE(s32), f32 position[3], f32 rotation[3], f32 scale, UNK_TYPE(s32), UNK_TYPE(s32), UNK_TYPE(s32), f32, UNK_TYPE(s32));
 
 
 extern f32 propModelList_getScale(Prop *);
@@ -65,7 +60,7 @@ extern void func_80320ED8(ActorMarker *, f32, s32);
 f32 func_8033229C(ActorMarker *marker);
 s32 func_803327A8(s32 arg0);
 void func_8032CD60(Prop *);
-f32 func_8033A244(f32);
+
 void func_8032F64C(f32 *pos, ActorMarker * marker);
 BKSprite *func_80330F50(ActorMarker * marker);
 
@@ -76,6 +71,28 @@ u8 pad_8036E7B4[0xC] = {0}; //PROBABLY INDICATES FILE BREAK
 ModelCache *modelCache = NULL; //D_8036E7C0 //model pointer array pointer
 u8 *D_8036E7C4 = NULL;
 ActorMarker *D_8036E7C8 = NULL;
+
+enum Prop1Category {
+    PROP_1_CATEGORY_0_UNK,
+    PROP_1_CATEGORY_1_UNK,
+    PROP_1_CATEGORY_2_WARP_OR_TRIGGER,
+    PROP_1_CATEGORY_3_CAMERA_CONTROLLER,
+    PROP_1_CATEGORY_4_UNK,
+    PROP_1_CATEGORY_5_UNK,
+    PROP_1_CATEGORY_6_ACTOR,
+    PROP_1_CATEGORY_7_ENEMY_BOUNDARY,
+    PROP_1_CATEGORY_8_PATH,
+    PROP_1_CATEGORY_9_CAMERA_TRIGGER,
+    PROP_1_CATEGORY_A_FLAG
+};
+
+#define CUBE_PROP_1_INDICATOR                     0x0A
+#define CUBE_PROP_1_OTHER_INDICATOR               0x06
+#define CUBE_DIVIDER_INDICATOR                    0x01
+#define CUBE_PROP_1_LIST_START_INDICATOR          0x0B
+#define CUBE_PROP_1_OTHER_LIST_START_INDICATOR    0x07
+#define CUBE_PROP_1_LIST_END_INDICATOR            0x08
+#define CUBE_PROP_2_LIST_START_INDICATOR          0x09
 
 /* .bss */
 s32 D_803833F0[3];
@@ -90,7 +107,7 @@ f32 D_80383410[3];
 ActorMarker *D_8038341C;
 s32 D_80383420;
 u8  D_80383428[0x1C];
-s32 D_80383444;
+s32 D_80383444; // model cache index
 int D_80383448;
 s32 D_80383450[0x40];
 vector(ActorMarker *) *D_80383550;
@@ -129,9 +146,10 @@ static void __cube_sort(Cube *cube, bool global) {
         //calculate prop distances
         new_var = var_v1 = cube->prop2Ptr;
         for(i = 0; i < cube->prop2Cnt; var_v1++, i++){
-            D_80383450[i] =  (var_v1->actorProp.position_x - ref_position[0])*(var_v1->actorProp.position_x - ref_position[0]) 
-                               +  (var_v1->actorProp.position_y - ref_position[1])* (var_v1->actorProp.position_y - ref_position[1])
-                               +  (var_v1->actorProp.position_z - ref_position[2])* (var_v1->actorProp.position_z - ref_position[2]);
+            D_80383450[i] =
+                (var_v1->actorProp.position_x - ref_position[0]) * (var_v1->actorProp.position_x - ref_position[0]) 
+                + (var_v1->actorProp.position_y - ref_position[1]) * (var_v1->actorProp.position_y - ref_position[1])
+                + (var_v1->actorProp.position_z - ref_position[2]) * (var_v1->actorProp.position_z - ref_position[2]);
         }
 
         //sort prop list
@@ -185,9 +203,9 @@ void func_8032CD60(Prop *prop) {
     s32 sp44;
     s32 sp40;
     bool sp3C;
-    s32 sp38;
+    s32 frame_count;
     bool sp34;
-    bool sp30;
+    s32 sp30;
     s32 sp2C;
     bool var_t5;
     s32 var_v1;
@@ -195,16 +213,16 @@ void func_8032CD60(Prop *prop) {
     var_v0 = ((u32)(((u16*)prop)[5]) & 1) ? func_80330F50(prop->actorProp.marker)
            : propModelList_getSprite((u32)(((u16*)prop)[0]) >> 4);
     if ((var_v0 != NULL) && ((var_v0->unkC.bit27 != 0))) {
-       sp48 = var_v0->unkC.bit31;
-       sp44 = var_v0->unkC.bit27;
-       sp40 = var_v0->unkC.bit24;
-       sp3C = var_v0->unkC.bit22;
-        sp38 =  var_v0->frameCnt;
+        sp48 = var_v0->unkC.bit31;
+        sp44 = var_v0->unkC.bit27;
+        sp40 = var_v0->unkC.bit24;
+        sp3C = var_v0->unkC.bit22;
+        frame_count =  var_v0->frameCnt;
         sp34 = (sp44 == 1) || (sp44 == 2U);
-        sp30 = (sp44 == 3) ? sp38 : (sp38 - sp34)*2;
+        sp30 = (sp44 == 3) ? frame_count : (frame_count - sp34) * 2;
 
         sp2C = (s32)((((u32)(((u16*)prop)[5]) << 0x15) >> 0x1B) * sp30) / 32;
-        var_v1 = (((globalTimer_getTime(sp34, sp30, prop, sp40) % (sp30 * sp48)) / sp48) + sp2C) % sp30; // TODO: globalTimer_getTime has no parameters, but if we remove them here (to forward declare them in include/core1/main.h, it doesn't match anymore)
+        var_v1 = (((globalTimer_getTime() % (sp30 * sp48)) / sp48) + sp2C) % sp30;
         var_t5 = 0;
         switch (sp40) {                          /* irregular */
             default:
@@ -223,13 +241,13 @@ void func_8032CD60(Prop *prop) {
 
         switch(sp44){
             case 4:
-                var_t5 = sp38 <= var_v1;
+                var_t5 = frame_count <= var_v1;
             case 1:
-                sp3C = sp38 <= var_v1;
+                sp3C = frame_count <= var_v1;
                 break;
             case 2:
                 
-                var_t5 = sp38 <= var_v1;
+                var_t5 = frame_count <= var_v1;
             
             default:
                 
@@ -246,8 +264,7 @@ void func_8032CD60(Prop *prop) {
                         } else {
                             sp3C = (((u32)(((u16*)prop)[1]) << 0x1e) >> 0x1f);
                         }
-                      if (1);
-                        break;
+                      if (1) break;
                 }
                 break;
 
@@ -258,7 +275,7 @@ void func_8032CD60(Prop *prop) {
         }
         
         var_v1 += (sp34) ? sp40 : -sp40;
-        var_v1 = (var_v1 < 0) ? var_v1 +sp38 : var_v1 % sp38;
+        var_v1 = (var_v1 < 0) ? var_v1 + frame_count : var_v1 % frame_count;
         prop->spriteProp.frame = var_v1;
         if (((u32)(((u16*)prop)[5]) & 1)) {
             prop->spriteProp.unk8_5 = sp3C;
@@ -289,9 +306,9 @@ static void __marker_draw(ActorMarker *this, Gfx **gfx, Mtx **mtx, Vtx **vtx){
         return;
     }
     actor =  marker_getActor(this);
-    func_8033A28C(actor->unk58_2);
+    modelRender_func_8033A28C(actor->unk58_2);
     if( actor->unk58_2 && !this->unk40_23 && !this->unk40_21 && !D_8036E7B0){
-        func_8033A244(3700.0f);
+        modelRender_func_8033A244(3700.0f);
     }
     
     if(actor->unk124_7 && !actor->despawn_flag && actor->unk58_0){
@@ -305,11 +322,11 @@ static void __marker_draw(ActorMarker *this, Gfx **gfx, Mtx **mtx, Vtx **vtx){
         else{
             percentage = 1.0f;
         }
-        func_8033A280(percentage);
+        modelRender_func_8033A280(percentage);
         this->drawFunc(this, gfx, mtx, vtx);
     }//L8032D300
-    func_8033A244(30000.0f);
-    func_8033A280(1.0f);
+    modelRender_func_8033A244(30000.0f);
+    modelRender_func_8033A280(1.0f);
 }
 
 void func_8032D330(){
@@ -329,17 +346,19 @@ void func_8032D3A8(void){
     vector_clear(D_80383554);
 }
 
-void func_8032D3D8(Gfx **gdl, Mtx **mptr, Vtx **vptr){
+void core2_A5BC0_drawUnknownMarkers(Gfx **gfx, Mtx **mtx, Vtx **vtx) { // further investigation needed what's drawn here
     int i;
-    for(i = 0; i < vector_size(D_80383550); i++){
-       __marker_draw(*(ActorMarker **) vector_at(D_80383550, i), gdl, mptr, vptr);
+
+    for (i = 0; i < vector_size(D_80383550); i++) {
+       __marker_draw(*(ActorMarker **) vector_at(D_80383550, i), gfx, mtx, vtx);
     }
 }
 
-void func_8032D474(Gfx **gdl, Mtx **mptr, Vtx **vptr){
+void core2_A5BC0_drawScreenOverlayMarkers(Gfx **gfx, Mtx **mtx, Vtx **vtx) {
     int i;
-    for(i = 0; i < vector_size(D_80383554); i++){
-       __marker_draw(*(ActorMarker **) vector_at(D_80383554, i), gdl, mptr, vptr);
+
+    for (i = 0; i < vector_size(D_80383554); i++) {
+       __marker_draw(*(ActorMarker **) vector_at(D_80383554, i), gfx, mtx, vtx);
     }
 }
 
@@ -411,10 +430,10 @@ Prop *__codeA5BC0_initProp2Ptr(Cube *cube) {
 
     if (cube->prop2Ptr != NULL) {
         cube->prop2Cnt++;
-        cube->prop2Ptr = realloc(cube->prop2Ptr, cube->prop2Cnt * sizeof(Prop));
+        cube->prop2Ptr = bk_realloc(cube->prop2Ptr, cube->prop2Cnt * sizeof(Prop));
     } else {
         cube->prop2Cnt = 1;
-        cube->prop2Ptr = malloc(sizeof(Prop));
+        cube->prop2Ptr = bk_malloc(sizeof(Prop));
     }
     sp1C = &cube->prop2Ptr[cube->prop2Cnt-1];
     sp1C->isActorProp = FALSE;
@@ -425,10 +444,10 @@ Prop *__codeA5BC0_initProp2Ptr(Cube *cube) {
 NodeProp *__codeA5BC0_pad_func_8032D8F0(Cube *cube) {
     if (cube->prop1Ptr != 0) {
         cube->prop1Cnt++;
-        cube->prop1Ptr = realloc(cube->prop1Ptr, cube->prop1Cnt * sizeof(NodeProp));
+        cube->prop1Ptr = bk_realloc(cube->prop1Ptr, cube->prop1Cnt * sizeof(NodeProp));
     } else {
         cube->prop1Cnt = 1;
-        cube->prop1Ptr = malloc(sizeof(NodeProp));
+        cube->prop1Ptr = bk_malloc(sizeof(NodeProp));
     }
     return &cube->prop1Ptr[cube->prop1Cnt - 1];
 }
@@ -445,14 +464,14 @@ s32 func_8032D9C0(Cube *cube, Prop* prop){
             func_80305CD8(func_803058C0(prop->position_y), -1);
         }
         if((prop - cube->prop2Ptr) < (cube->prop2Cnt - 1)){
-            memcpy(prop, prop + 1, (s32)(&cube->prop2Ptr[cube->prop2Cnt-1]) - (s32)(prop));
+            bk_memcpy(prop, prop + 1, (s32)(&cube->prop2Ptr[cube->prop2Cnt-1]) - (s32)(prop));
         }
         cube->prop2Cnt--;
         if(cube->prop2Cnt){
-            cube->prop2Ptr = realloc(cube->prop2Ptr, cube->prop2Cnt*sizeof(Prop));
+            cube->prop2Ptr = bk_realloc(cube->prop2Ptr, cube->prop2Cnt*sizeof(Prop));
             code_A5BC0_initCubePropActorProp(cube);
         }else{
-            free(cube->prop2Ptr);
+            bk_free(cube->prop2Ptr);
             cube->prop2Ptr = NULL;
         }
         return sp24;
@@ -468,7 +487,7 @@ void func_8032DB2C(Cube *cube, NodeProp *arg1) {
 
     sp24 = arg1 - cube->prop1Ptr;
     if (sp24 < cube->prop1Cnt - 1) {
-        memcpy(arg1, arg1 + 1, (s32)&cube->prop1Ptr[cube->prop1Cnt] - (s32)arg1 - sizeof(NodeProp));
+        bk_memcpy(arg1, arg1 + 1, (s32)&cube->prop1Ptr[cube->prop1Cnt] - (s32)arg1 - sizeof(NodeProp));
     }
     if (sp24 < cube->unk0_4) {
         cube->unk0_4--;
@@ -476,10 +495,10 @@ void func_8032DB2C(Cube *cube, NodeProp *arg1) {
 
     cube->prop1Cnt--;
     if (cube->prop1Cnt != 0) {
-        cube->prop1Ptr = realloc(cube->prop1Ptr, cube->prop1Cnt * sizeof(NodeProp));
+        cube->prop1Ptr = bk_realloc(cube->prop1Ptr, cube->prop1Cnt * sizeof(NodeProp));
     }
     else{
-        free(cube->prop1Ptr);
+        bk_free(cube->prop1Ptr);
         cube->prop1Ptr = NULL;
         cube->unk0_4 = 0;
     }
@@ -644,11 +663,11 @@ void cube_free(Cube *cube){
                 func_80332B2C(iProp->actorProp.marker);
             }
         }
-        free(cube->prop2Ptr);
+        bk_free(cube->prop2Ptr);
         cube->prop2Ptr = NULL;
     }
     if(cube->prop1Ptr){
-        free(cube->prop1Ptr);
+        bk_free(cube->prop1Ptr);
         cube->prop1Ptr = NULL;
     }
     cube->prop2Cnt = 0;
@@ -667,7 +686,7 @@ bool __codeA5BC0_pad_func_8032E178(Cube *arg0, s32 *arg1, s32 arg2) {
             if( ((node_ptr->bit0 == TRUE)
                     || ((node_ptr->bit0 == FALSE) && (node_ptr->unk10_6 == TRUE))
                 ) 
-                && (node_ptr->category == 6) 
+                && (node_ptr->category == PROP_1_CATEGORY_6_ACTOR) 
                 && (arg2 == node_ptr->actorId)
             ) {
                 *arg1 = node_ptr->selector_or_radius;
@@ -687,7 +706,7 @@ NodeProp *cube_findNodePropByActorId(Cube *cube, enum actor_e actor_id) {
             if( ( (i_ptr->bit0 == TRUE) 
                   || ( (i_ptr->bit0 == FALSE) && (i_ptr->unk10_6 == TRUE))
                 )
-                && (i_ptr->category == 6) 
+                && (i_ptr->category == PROP_1_CATEGORY_6_ACTOR) 
                 && (actor_id == i_ptr->actorId)
             ) {
                 return i_ptr;
@@ -708,7 +727,7 @@ bool func_8032E2D4(Cube *arg0, s32 arg1[3], s32 arg2) {
             if( ((var_v1->bit0 == TRUE)
                     || ((var_v1->bit0 == FALSE) && (var_v1->unk10_6 == TRUE))
                 ) 
-                && (var_v1->category == 6) 
+                && (var_v1->category == PROP_1_CATEGORY_6_ACTOR) 
                 && (arg2 == var_v1->actorId)
             ) {
                 arg1[0] = var_v1->position_x;
@@ -767,7 +786,13 @@ s32 func_8032E49C(Cube *cube, enum actor_e *actor_id_list, NodeProp **node_list,
             i_node = cube->prop1Ptr;
             end_node = cube->prop1Ptr + cube->prop1Cnt;
             while((i_node < end_node) && (found_cnt < node_list_capacity)) {
-                if (((i_node->bit0 == TRUE) || ((i_node->bit0 == FALSE) && (i_node->unk10_6 == TRUE))) && (i_node->category == 6)) {
+                if ((
+                        (i_node->bit0 == TRUE)
+                        || ((i_node->bit0 == FALSE)
+                        && (i_node->unk10_6 == TRUE))
+                    )
+                    && (i_node->category == PROP_1_CATEGORY_6_ACTOR))
+                {
                     i_actor = actor_id_list;
                     for(i_actor = actor_id_list; *i_actor != -1; i_actor++){
                         if (i_node->actorId == *i_actor) {
@@ -794,10 +819,12 @@ s32 func_8032E5A8(Cube *cube, s32 arg1, f32 (*arg2)[3], s32 capacity) {
             i_node = cube->prop1Ptr;
             end_node = cube->prop1Ptr + cube->prop1Cnt;
             while((i_node < end_node) && (count < capacity)){
-                if( ( (i_node->bit0 == TRUE) 
-                      || ((i_node->bit0 == FALSE) && (i_node->unk10_6 == TRUE))
+                if( ((i_node->bit0 == TRUE) 
+                    || ((i_node->bit0 == FALSE)
+                        && (i_node->unk10_6 == TRUE))
                     ) 
-                    && (i_node->category == 6) && (arg1 == i_node->actorId)
+                    && (i_node->category == PROP_1_CATEGORY_6_ACTOR)
+                    && (arg1 == i_node->actorId)
                 ) {
                     arg2[count][0] = (f32) i_node->position_x;
                     arg2[count][1] = (f32) i_node->position_y;
@@ -820,10 +847,9 @@ bool func_8032E6CC(Cube *cube, s32 *arg1, s32 arg2) {
             i_node = cube->prop1Ptr;
             end_node = cube->prop1Ptr + cube->prop1Cnt;
             while (i_node < end_node) {
-                if( ( (i_node->bit0 == TRUE) 
-                      || ((i_node->bit0 == FALSE) && (i_node->unk10_6 == TRUE))
-                    ) 
-                    && (i_node->category == 6) && (arg2 == i_node->actorId)
+                if( ((i_node->bit0 == TRUE) || ((i_node->bit0 == FALSE) && (i_node->unk10_6 == TRUE)))
+                    && (i_node->category == PROP_1_CATEGORY_6_ACTOR)
+                    && (arg2 == i_node->actorId)
                 ) {
                     *arg1 = i_node->yaw;
                     return TRUE;
@@ -837,7 +863,7 @@ bool func_8032E6CC(Cube *cube, s32 *arg1, s32 arg2) {
 
 static void __codeA5BC0_freeCube1Pointer(Cube *cube, s32 cnt){
     if(cube->prop1Ptr != NULL){
-        free(cube->prop1Ptr);
+        bk_free(cube->prop1Ptr);
     }
 
     cube->prop1Cnt = cnt;
@@ -853,22 +879,22 @@ static void __codeA5BC0_initPropPointerForCube(NodeProp *node, Cube *cube, s32 c
     cube_ptr_idx = cnt - 1;
     for(i = 0; i < cnt; i++){
         iPtr = node + i;
-        if( (iPtr->category == 6) 
-            || (iPtr->category == 8)
-            || (iPtr->category == 7) 
-            || (iPtr->category == 9) 
-            || (iPtr->category == 0xA) 
+        if( (iPtr->category == PROP_1_CATEGORY_6_ACTOR) 
+            || (iPtr->category == PROP_1_CATEGORY_8_PATH)
+            || (iPtr->category == PROP_1_CATEGORY_7_ENEMY_BOUNDARY) 
+            || (iPtr->category == PROP_1_CATEGORY_9_CAMERA_TRIGGER) 
+            || (iPtr->category == PROP_1_CATEGORY_A_FLAG) 
             || (iPtr->bit0 == 1)
         ){
-            memcpy(&cube->prop1Ptr[cube_ptr_idx], &node[i], sizeof(NodeProp));
+            bk_memcpy(&cube->prop1Ptr[cube_ptr_idx], &node[i], sizeof(NodeProp));
             cube_ptr_idx--;
         } else {
-            memcpy(&cube->prop1Ptr[cube->unk0_4], &node[i], sizeof(NodeProp));
+            bk_memcpy(&cube->prop1Ptr[cube->unk0_4], &node[i], sizeof(NodeProp));
             cube->unk0_4++;
         }
     }
 
-    free(node);
+    bk_free(node);
     
     for(i = 0; i < cnt; i++){
         iPtr = &cube->prop1Ptr[i];
@@ -878,28 +904,38 @@ static void __codeA5BC0_initPropPointerForCube(NodeProp *node, Cube *cube, s32 c
     }
 }
 
+/*
+After seeing 0x03 (CUBE_START_INDICATOR), we check which kind of cube it is.
+After we determine what kind of cube it is, 
+
+0x0A (CUBE_PROP_1_INDICATOR)
+ - Prop1
+
+0x06 (CUBE_PROP_1_OTHER_INDICATOR)
+ - Prop1
+*/
 void code7AF80_initCubeFromFile(File *file_ptr, Cube *cube) {
-    u8 sp47;
+    u8 prop2_count;
     u8 cube1_count;
     NodeProp *node_prop_ptr;
     OtherNode *other_prop_ptr;
-    Prop *var_v1_2;
-    s32 sp34;
-    s32 temp_v0_5;
+    Prop *this_prop2;
+    s32 is_in_furnace_fun;
+    s32 sprite_id;
 
     cube_free(cube);
-    if (file_getByte_ifExpected(file_ptr, 0xA, &cube1_count)) {
+    if (file_getByte_ifExpected(file_ptr, CUBE_PROP_1_INDICATOR, &cube1_count)) {
         __codeA5BC0_freeCube1Pointer(cube, cube1_count);
-        cube->prop1Ptr = (NodeProp*) malloc(cube1_count * sizeof(NodeProp));
-        node_prop_ptr = (NodeProp*) malloc(cube1_count * sizeof(NodeProp));
-        file_getNBytes_ifExpected(file_ptr, 0xB, node_prop_ptr, cube->prop1Cnt * sizeof(NodeProp));
+        cube->prop1Ptr = (NodeProp*) bk_malloc(cube1_count * sizeof(NodeProp));
+        node_prop_ptr = (NodeProp*) bk_malloc(cube1_count * sizeof(NodeProp));
+        file_getNBytes_ifExpected(file_ptr, CUBE_PROP_1_LIST_START_INDICATOR, node_prop_ptr, cube->prop1Cnt * sizeof(NodeProp));
         __codeA5BC0_initPropPointerForCube(node_prop_ptr, cube, cube1_count);
         
-    } else if (file_getByte_ifExpected(file_ptr, 6, &cube1_count)) {
+    } else if (file_getByte_ifExpected(file_ptr, CUBE_PROP_1_OTHER_INDICATOR, &cube1_count)) {
         __codeA5BC0_freeCube1Pointer(cube, cube1_count);
-        cube->prop1Ptr = (NodeProp*) malloc(cube1_count * sizeof(OtherNode));
-        node_prop_ptr = (NodeProp*) malloc(cube1_count * sizeof(OtherNode));
-        file_getNBytes_ifExpected(file_ptr, 7, node_prop_ptr, cube->prop1Cnt * sizeof(OtherNode));
+        cube->prop1Ptr = (NodeProp*) bk_malloc(cube1_count * sizeof(OtherNode));
+        node_prop_ptr = (NodeProp*) bk_malloc(cube1_count * sizeof(OtherNode));
+        file_getNBytes_ifExpected(file_ptr, CUBE_PROP_1_OTHER_LIST_START_INDICATOR, node_prop_ptr, cube->prop1Cnt * sizeof(OtherNode));
         for(other_prop_ptr = (OtherNode *)node_prop_ptr; other_prop_ptr < (OtherNode*)&node_prop_ptr[cube1_count]; other_prop_ptr++){
             if(other_prop_ptr->unk4_0 && !other_prop_ptr->unkC_0){
                 other_prop_ptr->unk4_17 = 0;
@@ -909,28 +945,34 @@ void code7AF80_initCubeFromFile(File *file_ptr, Cube *cube) {
         __codeA5BC0_initPropPointerForCube(node_prop_ptr, cube, cube1_count);
     }
 
-    if (file_getByte_ifExpected(file_ptr, 8, &sp47)) {
-        sp34 = volatileFlag_get(VOLATILE_FLAG_1) +  volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME) + volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE);
+    if (file_getByte_ifExpected(file_ptr, CUBE_PROP_1_LIST_END_INDICATOR, &prop2_count)) {
+        is_in_furnace_fun = volatileFlag_get(VOLATILE_FLAG_1)
+                + volatileFlag_get(VOLATILE_FLAG_2_FF_IN_MINIGAME)
+                + volatileFlag_get(VOLATILE_FLAG_1F_IN_CHARACTER_PARADE);
         
-        if ((sp34) && gcparade_8031B4CC()) {
-            sp34 = 0;
+        if ((is_in_furnace_fun) && gcparade_8031B4CC()) {
+            is_in_furnace_fun = 0;
         }
         if (cube->prop2Ptr != NULL) {
-            free(cube->prop2Ptr);
+            bk_free(cube->prop2Ptr);
         }
-        cube->prop2Cnt = sp47;
-        cube->prop2Ptr = (Prop *) malloc(sp47 * sizeof(Prop));
-        file_getNBytes_ifExpected(file_ptr, 9, cube->prop2Ptr, cube->prop2Cnt * sizeof(Prop));
-        for(var_v1_2 = cube->prop2Ptr; var_v1_2 < cube->prop2Ptr + sp47; var_v1_2++){
-                var_v1_2->isNotFeatherEggOrNote = TRUE;
-                if (var_v1_2->isModelProp) {
-                    var_v1_2->isMirrored = FALSE;
+        cube->prop2Cnt = prop2_count;
+        cube->prop2Ptr = (Prop *) bk_malloc(prop2_count * sizeof(Prop));
+        file_getNBytes_ifExpected(file_ptr, CUBE_PROP_2_LIST_START_INDICATOR, cube->prop2Ptr, cube->prop2Cnt * sizeof(Prop));
+        for(this_prop2 = cube->prop2Ptr; this_prop2 < cube->prop2Ptr + prop2_count; this_prop2++){
+                this_prop2->isNotFeatherEggOrNote = TRUE;
+                if (this_prop2->isModelProp) {
+                    this_prop2->isMirrored = FALSE;
                 }
-                if (sp34) {
-                    if (!(var_v1_2->isActorProp) && !(var_v1_2->isModelProp)){
-                        temp_v0_5 = var_v1_2->spriteProp.spriteId + SPRITE_ASSET_OFFSET;
-                        if((temp_v0_5 == 0x580) || (temp_v0_5 == 0x6D1) || (temp_v0_5 == 0x6D6) || (temp_v0_5 == 0x6D7)){
-                            var_v1_2->isNotFeatherEggOrNote = FALSE;
+                if (is_in_furnace_fun) {
+                    if (!(this_prop2->isActorProp) && !(this_prop2->isModelProp)){
+                        sprite_id = this_prop2->spriteProp.spriteId + SPRITE_ASSET_OFFSET;
+                        if((sprite_id == ASSET_580_SPRITE_RED_FEATHER)
+                            || (sprite_id == ASSET_6D1_SPRITE_GOLDFEATHER)
+                            || (sprite_id == ASSET_6D6_SPRITE_MUSIC_NOTE)
+                            || (sprite_id == ASSET_6D7_SPRITE_BLUE_EGGS))
+                        {
+                            this_prop2->isNotFeatherEggOrNote = FALSE;
                         }
                     }
                 }
@@ -938,12 +980,12 @@ void code7AF80_initCubeFromFile(File *file_ptr, Cube *cube) {
             
     }
     if ((cube->prop2Ptr != NULL) && ((cube->prop2Cnt) == 0)) {
-        free(cube->prop2Ptr);
+        bk_free(cube->prop2Ptr);
         cube->prop2Ptr = NULL;
     }
     
     if ((cube->prop1Ptr != NULL) && (cube->prop1Cnt == 0)) {
-        free(cube->prop1Ptr);
+        bk_free(cube->prop1Ptr);
         cube->prop1Ptr = NULL;
         cube->unk0_4 = 0;
     }
@@ -1460,7 +1502,7 @@ void func_80330208(Cube *cube) {
         end_prop = cube->prop1Ptr + cube->prop1Cnt;
         func_80326C24(1);
         while(i_prop < end_prop){
-            if (i_prop->category == 6) {
+            if (i_prop->category == PROP_1_CATEGORY_6_ACTOR) {
                 position[0] = (s32) i_prop->position_x;
                 position[1] = (s32) i_prop->position_y;
                 position[2] = (s32) i_prop->position_z;
@@ -1492,7 +1534,7 @@ void func_803303B8(Cube *cube) {
         current_node_ptr = cube->prop1Ptr;
         last_node_prop_ptr = cube->prop1Ptr + cube->prop1Cnt;
         while (current_node_ptr < last_node_prop_ptr) {
-            if (current_node_ptr->category == 7) {
+            if (current_node_ptr->category == PROP_1_CATEGORY_7_ENEMY_BOUNDARY) {
                 position[0] = (s32) current_node_ptr->position_x;
                 position[1] = (s32) current_node_ptr->position_y;
                 position[2] = (s32) current_node_ptr->position_z;
@@ -1502,7 +1544,7 @@ void func_803303B8(Cube *cube) {
                     current_node_ptr->selector_or_radius,
                     current_node_ptr->unk10_31,
                     current_node_ptr->pad10_7);
-            } else if (current_node_ptr->category == 9) {
+            } else if (current_node_ptr->category == PROP_1_CATEGORY_9_CAMERA_TRIGGER) {
                 position[0] = (s32) current_node_ptr->position_x;
                 position[1] = (s32) current_node_ptr->position_y;
                 position[2] = (s32) current_node_ptr->position_z;
@@ -1511,7 +1553,7 @@ void func_803303B8(Cube *cube) {
                     position,
                     current_node_ptr->selector_or_radius,
                     current_node_ptr->unk10_0);
-            } else if (current_node_ptr->category == 0xA) {
+            } else if (current_node_ptr->category == PROP_1_CATEGORY_A_FLAG) {
                 position[0] = (s32) current_node_ptr->position_x;
                 position[1] = (s32) current_node_ptr->position_y;
                 position[2] = (s32) current_node_ptr->position_z;
@@ -1546,7 +1588,7 @@ bool func_8033056C(Actor *actor){
 void func_803305AC(void){
     s32 i;
 
-    modelCache = (ModelCache *)malloc(AssetCacheSize * sizeof(ModelCache));
+    modelCache = (ModelCache *)bk_malloc(AssetCacheSize * sizeof(ModelCache));
     for(i = 0; i<AssetCacheSize; i++){
         modelCache[i].modelPtr = NULL;
         modelCache[i].unk4 = 0;
@@ -1557,7 +1599,7 @@ void func_803305AC(void){
 }
 
 void func_803306C8(s32 arg0) {
-    static  s32 D_8036E7CC = 0;
+    static  s32 D_8036E7CC = 0; // Model Id?
     ModelCache *var_a2;
     s32 temp_a0;
     s32 sp54;
@@ -1568,7 +1610,7 @@ void func_803306C8(s32 arg0) {
     temp_fp = globalTimer_getTime() - func_80255B08(arg0);
     func_80254BD0(&sp54, 1);
     if(sp54 > 256000) return;
-    
+
     for(var_s1 = 0; var_s1 < ((arg0 == 1) ? 0x28 : 0x3D4); var_s1++, D_8036E7CC = (D_8036E7CC >= 0x3D4) ? 0 : D_8036E7CC + 1) {
         var_a2 = modelCache + D_8036E7CC;
         
@@ -1621,7 +1663,7 @@ void func_803308A0(void) {
         }
     }
     
-    free(modelCache);
+    bk_free(modelCache);
     modelCache = 0;
 }
 
@@ -1637,7 +1679,7 @@ s32 func_80330974(ActorMarker *marker, s32 arg1, f32 arg2, s32 arg3) {
     if (model == NULL) {
        return 0;
     }
-    sp58 = func_8033A12C(model);
+    sp58 = modelbin_getUnk14List(model);
     position[0] = (f32) marker->propPtr->position_x;
     position[1] = (f32) marker->propPtr->position_y;
     position[2] = (f32) marker->propPtr->position_z;
@@ -1647,8 +1689,8 @@ s32 func_80330974(ActorMarker *marker, s32 arg1, f32 arg2, s32 arg3) {
     rotation[2] = (f32)marker->roll;
 
     scale = (marker->unk3E_0) ? marker_getActor(marker)->scale : 1.0f;
-    if (animMtxList_len(marker->unk20)) {
-        return func_802EBAE0(sp58, position, rotation, scale, 0, marker->unk20, arg1, arg2, arg3);
+    if (animMtxList_getLength(marker->unk20)) {
+        return bkmodelunk14list_func_802EBAE0(sp58, position, rotation, scale, 0, marker->unk20, arg1, arg2, arg3);
     }
     return 0;
 }
@@ -1670,14 +1712,14 @@ BKModelBin *marker_loadModelBin(ActorMarker *this){
     if((modelInfo = &modelCache[thisActor->modelCacheIndex])->modelPtr == NULL){
         model = assetcache_get(this->modelId);
         modelInfo->modelPtr = model;
-        if(model_getAnimTextureList(model)){
+        if(modelbin_getAnimTextureList(model)){
             modelInfo->animated_texture_cache_id = AnimTextureListCache_newList();
-            AnimTextureListCache_at(modelInfo->animated_texture_cache_id, model_getAnimTextureList(modelInfo->modelPtr));
+            AnimTextureListCache_setAnimTextureList(modelInfo->animated_texture_cache_id, modelbin_getAnimTextureList(modelInfo->modelPtr));
         }
         func_8032ACA8(thisActor);
     }
     func_8032AB84(thisActor);
-    if(!this->unk18 && this->propPtr->isModelProp && modelInfo->modelPtr && func_8033A12C(modelInfo->modelPtr)){
+    if(!this->unk18 && this->propPtr->isModelProp && modelInfo->modelPtr && modelbin_getUnk14List(modelInfo->modelPtr)){
         this->unk18 = func_80330B10();
     }
     modelInfo->unk10 = globalTimer_getTime();
@@ -1698,7 +1740,7 @@ BKVertexList *func_80330C74(Actor *actor){
     if(actor->unkF4_30 && actor->unk14C[actor->unkF4_29]){
         return actor->unk14C[actor->unkF4_29];
     }else{
-        return model_getVtxList(model_cache_ptr->modelPtr);
+        return modelbin_getVtxList(model_cache_ptr->modelPtr);
     }
 }
 
@@ -1710,7 +1752,7 @@ BKVertexList *func_80330CFC(Actor *this, s32 arg1){
     }
     if(this->unkF4_30 && this->unk14C[this->unkF4_29 ^ arg1] != NULL)
         return this->unk14C[this->unkF4_29 ^ arg1];
-    return model_getVtxList(model_cache_ptr->modelPtr);
+    return modelbin_getVtxList(model_cache_ptr->modelPtr);
 }
 
 BKVertexList * func_80330DA4(Actor *this){
@@ -1838,12 +1880,12 @@ bool func_80331158(ActorMarker *arg0, s32 arg1, s32 arg2) {
 
     actor = marker_getActor(arg0);
     if ((actor->unk3C & 0x400) && ((s32)actor->unk3C << 4) >= 0){
-        return func_802E74A0(actor->position, actor->unk178 * 1.1, arg1, arg2) == 0;
+        return collisionList_pointOnLine(actor->position, actor->unk178 * 1.1, arg1, arg2) == 0;
     }
     return FALSE;
 }
 
-BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 arg4) {
+BKCollisionTriangle *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 arg4) {
    Actor *temp_s2_2;
     ActorMarker *temp_a0;
     BKModelBin *var_a0;
@@ -1853,14 +1895,14 @@ BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 a
     f32 model_position[3];
     f32 model_rotation[3];
     BKCollisionList *temp_s0;
-    BKCollisionTri *temp_s0_2;
+    BKCollisionTriangle *temp_s0_2;
     BKCollisionList *temp_s2;
     
     f32 actor_position[3];
     f32 actor_rotation[3];
 
-    BKCollisionTri *var_s6;
-    BKCollisionTri *var_v0;
+    BKCollisionTriangle *var_s6;
+    BKCollisionTriangle *var_v0;
     u32 var_s5;
 
     var_s6 = NULL;
@@ -1870,7 +1912,7 @@ BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 a
         if (!var_s1->isActorProp && var_s1->isModelProp && var_s1->isNotFeatherEggOrNote) { //ModelProp
             var_s0 = propModelList_getModelIfActive(((u32)var_s1->modelProp.unk0 >> 0x4));
             if ((var_s0 != NULL) || (func_8028F280() && ((var_s0 = propModelList_getModel(((u32)var_s1->modelProp.unk0 >> 0x4))) != NULL))) {
-                temp_s2 = model_getCollisionList(var_s0);
+                temp_s2 = modelbin_getCollisionList(var_s0);
                 if (temp_s2 != 0) {
                     model_position[0] = (f32) var_s1->modelProp.position[0];
                     model_position[1] = (f32) var_s1->modelProp.position[1];
@@ -1878,7 +1920,7 @@ BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 a
                     model_rotation[0] = 0.0f;
                     model_rotation[1] = (f32) (var_s1->modelProp.yaw * 2);
                     model_rotation[2] = (f32) (var_s1->modelProp.roll * 2);
-                    var_v0 = func_802E805C(temp_s2, model_getVtxList(var_s0), model_position, model_rotation, (f32)var_s1->modelProp.scale / 100.0, arg1, arg2, arg3, arg4);
+                    var_v0 = collisionList_intersectLineGlobal(temp_s2, modelbin_getVtxList(var_s0), model_position, model_rotation, (f32)var_s1->modelProp.scale / 100.0, arg1, arg2, arg3, arg4);
                     if (var_v0 != NULL) {
                         var_s6 = var_v0;
                     }
@@ -1892,7 +1934,7 @@ BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 a
             }
 
             if(var_a0 != NULL || (func_8028F280() && (var_a0 = marker_loadModelBin(var_s1->actorProp.marker), TRUE))){
-                temp_s0 = model_getCollisionList(var_a0);
+                temp_s0 = modelbin_getCollisionList(var_a0);
                 if (temp_s0 != 0) {
                     temp_s2_2 = marker_getActor(var_s1->actorProp.marker);
                     temp_a1 = func_80330C74(temp_s2_2);
@@ -1902,7 +1944,7 @@ BKCollisionTri *func_803311D4(Cube *cube, f32 *arg1, f32 *arg2, f32 *arg3, u32 a
                     actor_rotation[0] = (f32) var_s1->actorProp.marker->pitch;
                     actor_rotation[1] = (f32) var_s1->actorProp.marker->yaw;
                     actor_rotation[2] = (f32) var_s1->actorProp.marker->roll;
-                    temp_s0_2 = func_802E805C(temp_s0, temp_a1, actor_position, actor_rotation, temp_s2_2->scale, arg1, arg2, arg3, arg4);
+                    temp_s0_2 = collisionList_intersectLineGlobal(temp_s0, temp_a1, actor_position, actor_rotation, temp_s2_2->scale, arg1, arg2, arg3, arg4);
                     if ((temp_s0_2 != NULL) && (func_8029453C())) {
                         marker_loadModelBin(var_s1->actorProp.marker);
                         if (var_s1->actorProp.marker->unk50 != 0) {
@@ -1968,7 +2010,7 @@ s32 func_80331638(Cube *cube, f32 arg1[3], f32 arg2[3], f32 arg3, f32 arg4[3], s
       {
         continue;
       }
-      model_collision_list = model_getCollisionList(model_bin);
+      model_collision_list = modelbin_getCollisionList(model_bin);
       if (model_collision_list == 0)
       {
         continue;
@@ -1980,7 +2022,7 @@ s32 func_80331638(Cube *cube, f32 arg1[3], f32 arg2[3], f32 arg3, f32 arg4[3], s
       spB0[1] = (f32) (var_s0->modelProp.yaw * 2);
       new_var = spB0;
       spB0[2] = (f32) (var_s0->modelProp.roll * 2);
-      var_v0 = func_802E9118(model_collision_list, model_getVtxList(model_bin), 
+      var_v0 = collisionList_intersectMovingSphereGlobal(model_collision_list, modelbin_getVtxList(model_bin), 
         spBC, new_var, (f32) (((f32) var_s0->modelProp.scale) / 100.0), 
         arg1, arg2, arg3, arg4, arg5, flags
     );
@@ -1998,7 +2040,7 @@ s32 func_80331638(Cube *cube, f32 arg1[3], f32 arg2[3], f32 arg3, f32 arg4[3], s
       {
         continue;
       }
-      model_bin = model_getCollisionList(pad9C);
+      model_bin = modelbin_getCollisionList(pad9C);
       if (model_bin == 0)
       {
         continue;
@@ -2012,7 +2054,7 @@ s32 func_80331638(Cube *cube, f32 arg1[3], f32 arg2[3], f32 arg3, f32 arg4[3], s
         sp8C[0] = (f32) var_s0->actorProp.marker->pitch;
         sp8C[1] = (f32) var_s0->actorProp.marker->yaw;
         sp8C[2] = (f32) var_s0->actorProp.marker->roll;
-        var_v0 = func_802E9118(model_bin, temp_a1, sp98, new_var2, temp_v0_6->scale, arg1, arg2, arg3, arg4, arg5, flags);
+        var_v0 = collisionList_intersectMovingSphereGlobal(model_bin, temp_a1, sp98, new_var2, temp_v0_6->scale, arg1, arg2, arg3, arg4, arg5, flags);
       }
       if (var_v0 != 0)
       {
@@ -2042,9 +2084,9 @@ s32 func_80331638(Cube *cube, f32 arg1[3], f32 arg2[3], f32 arg3, f32 arg4[3], s
   return spD8;
 }
 
-BKCollisionTri *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3, f32 arg4[3], u32 arg5){
-    BKCollisionTri *var_s7;
-    BKCollisionTri *var_v0;
+BKCollisionTriangle *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3, f32 arg4[3], u32 arg5){
+    BKCollisionTriangle *var_s7;
+    BKCollisionTriangle *var_v0;
     s32 i;
     Prop *prop_ptr;
     BKCollisionList *model_collision_list;
@@ -2068,7 +2110,7 @@ BKCollisionTri *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3,
             if (1) { } if (1) { } if (1) { }
             model_bin = new_var;
             if (model_bin != NULL){
-                model_collision_list = model_getCollisionList(model_bin);
+                model_collision_list = modelbin_getCollisionList(model_bin);
                 if (model_collision_list != 0){
                     model_position[0] = (f32) mProp->position[0];
                     model_position[1] = (f32) mProp->position[1];
@@ -2077,7 +2119,7 @@ BKCollisionTri *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3,
                     model_rotation[1] = (f32) (mProp->yaw * 2);
                     model_bin = model_bin;
                     model_rotation[2] = (f32) (mProp->roll * 2);
-                    var_v0 = func_802E9DD8(model_collision_list, model_getVtxList(model_bin), model_position, model_rotation, ((f32) mProp->scale) / 100.0, position, radius, arg3, arg4);
+                    var_v0 = collisionList_intersectSphereGlobal(model_collision_list, modelbin_getVtxList(model_bin), model_position, model_rotation, ((f32) mProp->scale) / 100.0, position, radius, arg3, arg4);
                     if (var_v0 != NULL)
                         var_s7 = var_v0;
                 }
@@ -2087,7 +2129,7 @@ BKCollisionTri *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3,
             if ((prop_ptr->isActorProp && prop_ptr->unk8_3) && prop_ptr->isNotFeatherEggOrNote) {
                 model_bin = func_80330DE4(aProp->marker);
                 if (model_bin != 0) {
-                    new_var = model_getCollisionList(model_bin);
+                    new_var = modelbin_getCollisionList(model_bin);
                     if (new_var != 0)
                         {
                     
@@ -2099,7 +2141,7 @@ BKCollisionTri *func_803319C0(Cube *cube, f32 position[3], f32 radius, s32 arg3,
                         actor_rotation[0] = aProp->marker->pitch;
                         actor_rotation[1] = aProp->marker->yaw;
                         actor_rotation[2] = aProp->marker->roll;
-                        var_v0 = func_802E9DD8(new_var, temp_a1, actor_position, actor_rotation, temp_v0_6->scale, position, radius, arg3, arg4);
+                        var_v0 = collisionList_intersectSphereGlobal(new_var, temp_a1, actor_position, actor_rotation, temp_v0_6->scale, position, radius, arg3, arg4);
                         if (var_v0 != 0)
                         {
                         var_s7 = var_v0;
@@ -2161,7 +2203,7 @@ f32 func_80331E64(ActorMarker *marker) {
 
 
 f32 func_80331F1C(Prop *arg0){
-    return vtxList_getGlobalNorm(model_getVtxList(propModelList_getModel(arg0->modelProp.modelId)));
+    return vtxList_getGlobalNorm(modelbin_getVtxList(propModelList_getModel(arg0->modelProp.modelId)));
 }
 
 f32 func_80331F54(ActorMarker *marker) {
@@ -2173,7 +2215,7 @@ f32 func_80331F54(ActorMarker *marker) {
     if (model == NULL) {
         return 1.0f;
     }
-    vtxList_getCenterAndNorm(model_getVtxList(model), model_center, &sp34);
+    vtxList_getCenterAndNorm(modelbin_getVtxList(model), model_center, &sp34);
     if (marker->unk3E_0) {
         model_center[0] = model_center[0] * marker_getActor(marker)->scale;\
         model_center[1] = model_center[1] * marker_getActor(marker)->scale;\
@@ -2355,8 +2397,8 @@ void func_80332894(void) {
     s32 size;
     s32 i;
 
-    size = 0x579;
-    D_8036E7C4 = malloc(size);
+    size = VER_SELECT(0x579, 0x391, 0, 0);
+    D_8036E7C4 = bk_malloc(size);
     i = 0;
     do{
         D_8036E7C4[i] = 0;
@@ -2370,7 +2412,7 @@ void func_80332894(void) {
 }
 
 void func_8033297C(void){
-    free(D_8036E7C4);
+    bk_free(D_8036E7C4);
     D_8036E7C4 = NULL;
     func_8032D36C();
 }
@@ -2379,7 +2421,7 @@ void func_8033297C(void){
 void func_803329AC(void){
     s32 i;
     
-    D_8036E7C8 = (ActorMarker *)malloc(0xE0*sizeof(ActorMarker));
+    D_8036E7C8 = (ActorMarker *)bk_malloc(0xE0*sizeof(ActorMarker));
 
     for( i = 0; i < 0x1C; i++){
         D_80383428[i] = 0;
@@ -2391,7 +2433,7 @@ void func_803329AC(void){
 }
 
 void func_80332A38(void){
-    free(D_8036E7C8);
+    bk_free(D_8036E7C8);
     D_8036E7C8 = NULL;
 }
 

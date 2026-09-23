@@ -11,10 +11,10 @@ void chTwinklyBox_update(Actor *this);
 /* .data */
 ActorAnimationInfo D_803920C0[] ={
     {0x000, 0.0f},
-    {0x16D, 10000000.0f},
-    {0x237, 2.0f},
-    {0x16D, 0.8f},
-    {0x16D, 0.8f}
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 10000000.0f},
+    {ASSET_237_ANIM_TWINKLYBOX_SHAKING, 2.0f},
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 0.8f},
+    {ASSET_16D_ANIM_TWINKLYBOX_OPENING, 0.8f}
 };
 
 ActorInfo gChTwinklyBox = { MARKER_204_TWINKLY_BOX, ACTOR_336_TWINKLY_BOX, ASSET_442_MODEL_TWINKLY_BOX,
@@ -177,7 +177,7 @@ void chTwinklyBox_destroyBox(ActorMarker *marker){
     chTwinklyBox_destroyBoxDust(this->position, 12, ASSET_700_SPRITE_DUST);
     this->velocity[1] = 0.0f;
     sfx_playFadeShorthandDefault(SFX_30_MAGIC_POOF, 1.0f, 32000, this->position, 1000, 3500);
-    gcdialog_showDialog(ASSET_C13_DIALOG_TWINKLIE_MINIGAME_COMPLETE, 0, NULL, NULL, NULL, NULL);
+    gcdialog_showDialog(VER_SELECT(ASSET_C13_DIALOG_TWINKLIE_MINIGAME_COMPLETE, 0x98D, 0, 0), 0, NULL, NULL, NULL, NULL);
 }
 
 void chTwinklyBox_openBox(Actor *this){
@@ -199,7 +199,7 @@ void func_8038D3D8(void){
     comusic_8025AB44(COMUSIC_68_TWINKLY_MINIGAME, 0, 4000);
     func_8025AABC(COMUSIC_68_TWINKLY_MINIGAME);
     func_8025A58C(-1, 4000);
-    core1_ce60_incOrDecCounter(TRUE);
+    midichannel_incOrDecCounter(TRUE);
 }
 
 void chTwinklyBox_spawnSecondAndThirdMuncher(ActorMarker *marker){
@@ -265,7 +265,7 @@ void chTwinklyBox_activateBox(ActorMarker *this_marker, ActorMarker *other_marke
         this->unk1C[1] = 0.0f;
         coMusicPlayer_playMusic(COMUSIC_68_TWINKLY_MINIGAME, 25000);
         func_8025A58C(0, 4000);
-        core1_ce60_incOrDecCounter(FALSE);
+        midichannel_incOrDecCounter(FALSE);
         this->unk1C[2] = 428571.0f;
         func_8025AEA0(0x68, (s32)this->unk1C[2]);
         subaddie_set_state_with_direction(this, 3, 0.001f, 1);
@@ -364,7 +364,7 @@ void chTwinklyBox_update(Actor *this){
         func_8028F784(0);
         subaddie_set_state_with_direction(this, 4, 0.999f, 1);
         actor_playAnimationOnce(this);
-        item_set(ITEM_0_HOURGLASS_TIMER, 80*60 - 1);
+        item_set(ITEM_0_HOURGLASS_TIMER, 80*FRAMERATE - 1);
         item_set(ITEM_6_HOURGLASS, TRUE);
         this->unk38_31 = 0xA;
         item_set(ITEM_24_TWINKLY_SCORE, this->unk38_31);

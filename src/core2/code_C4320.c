@@ -46,9 +46,9 @@ extern Struct_core2_C4320_0 D_80371F44[] = {
 extern Struct_core2_C4320_0 D_80371F70 = {MAP_41_FP_BOGGYS_IGLOO, 6, 0x5D, 7, 8, 3};
 
 extern Struct_core2_C4320_0 D_80371F78[] ={
-    {MAP_7_TTC_TREASURE_TROVE_COVE, 0, 0x5F, 6, 9, 9},
-    {MAP_27_FP_FREEZEEZY_PEAK,      0, 0x5F, 9, 9, 9},
-    {MAP_12_GV_GOBIS_VALLEY,        0, 0x5F, 9, 5, 9}
+    {MAP_7_TTC_TREASURE_TROVE_COVE, 0, VER_SELECT(0x5F, 0x5E, 0, 0), 6, 9, 9},
+    {MAP_27_FP_FREEZEEZY_PEAK,      0, VER_SELECT(0x5F, 0x5E, 0, 0), 9, 9, 9},
+    {MAP_12_GV_GOBIS_VALLEY,        0, VER_SELECT(0x5F, 0x5E, 0, 0), 9, 5, 9}
 };
 
 extern s32 D_80371F8C = 0xA; //attract demo count
@@ -175,7 +175,7 @@ void func_8034B580(s32 arg0) {
             if ((D_80386128 >= 2.5) && (sp1C < 2.5) && (D_80371F9C == 0)) {
                 func_802DC9DC(0, 0);
             }
-            if ((D_80386128 >= 4.0) && (sp1C < 4.0) && !pfsManager_contErr()) {
+            if ((D_80386128 >= 4.0) && (sp1C < 4.0) && !joy_contHasErr()) {
                 chOverlayPressStart_spawn(0, 0);
                 if (D_80371F9C != 0) {
                     chOverlayPressStart_func_802DCDB0();
@@ -187,7 +187,7 @@ void func_8034B580(s32 arg0) {
             if ((D_80386128 >= 2.5) && (sp1C < 2.5)) {
                 chOverlayCopyright_func_802DCB0C(0, 0);
             }
-            if ((D_80386128 >= 4.0) && (sp1C < 4.0) && !pfsManager_contErr()) {
+            if ((D_80386128 >= 4.0) && (sp1C < 4.0) && !joy_contHasErr()) {
                 chOverlayPressStart_spawn(0, 0);
             }
             break;
@@ -259,7 +259,7 @@ void func_8034BA20(void) {
     func_802E412C(1, 5);
     func_802E40A8(MAP_97_CS_END_BEACH_2, 0);
     func_802E40C4(1);
-    if (func_8025AD7C(5)) {
+    if (comusic_isTrackQueued(5)) {
         func_8025A7DC(5);
     }
     D_80386110 = 0;
@@ -286,7 +286,7 @@ s32 func_8034BAFC(void){
 void func_8034BB08(bool arg0) {
     D_80386120 = arg0;
     func_802E412C(1, 3);
-    func_802E40A8(MAP_8C_SM_BANJOS_HOUSE, 2);
+    func_802E40A8(MAP_8C_SM_BANJOS_HOUSE, WARP_SM_BANJOS_HOUSE_2_BOTTLES);
     func_802E40C4(1);
 }
 
@@ -328,8 +328,8 @@ void func_8034BB90(void) {
         && sp18 
         && !D_8038611C 
         && (getGameMode() != GAME_MODE_8_BOTTLES_BONUS) 
-        && ((volatileFlag_get(VOLATILE_FLAG_64) && (getGameMode() != GAME_MODE_A_SNS_PICTURE)) 
-        || volatileFlag_get(VOLATILE_FLAG_63))
+        && ((volatileFlag_get(VOLATILE_FLAG_64_DEMO_FINISHED_VIA_START_BTN) && (getGameMode() != GAME_MODE_A_SNS_PICTURE)) 
+        || volatileFlag_get(VOLATILE_FLAG_63_DEMO_FINISHED_VIA_DEMO_DONE))
     ) {
         func_8034B7F0(D_80386114->unk1);
         if (getGameMode() == GAME_MODE_9_BANJO_AND_KAZOOIE) {
@@ -340,7 +340,7 @@ void func_8034BB90(void) {
             } else {
                 func_802DF0C8();
             }
-        } else if (volatileFlag_get(VOLATILE_FLAG_64)) {
+        } else if (volatileFlag_get(VOLATILE_FLAG_64_DEMO_FINISHED_VIA_START_BTN)) {
             func_802E412C(1, D_80386114->unk5);
             func_8034B994();
         } else {
@@ -352,8 +352,8 @@ void func_8034BB90(void) {
             func_8025A58C(0, 800);
             func_8025AB00();
         }
-        volatileFlag_set(VOLATILE_FLAG_64, 0);
-        volatileFlag_set(VOLATILE_FLAG_63, 0);
+        volatileFlag_set(VOLATILE_FLAG_64_DEMO_FINISHED_VIA_START_BTN, 0);
+        volatileFlag_set(VOLATILE_FLAG_63_DEMO_FINISHED_VIA_DEMO_DONE, 0);
         D_8038611C = 1;
     }
 }

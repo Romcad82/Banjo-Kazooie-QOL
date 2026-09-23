@@ -3,7 +3,7 @@
 #include "core1/core1.h"
 #include "functions.h"
 #include "variables.h"
-#include "zoombox.h"
+#include "core2/gc/zoombox.h"
 
 #include "time.h"
 
@@ -417,9 +417,9 @@ gczoomboxPortraitInfo D_8036C6C0[] = {
           {SFX_FA_GRUNTLING_NOISE_2, 20000, 1.3f},
           {SFX_FB_GRUNTLING_NOISE_3, 20000, 1.3f}
      }},
-     {0x084A, 0xF2, 0x0A, {{SFX_6E_VILE_EGH, 20000, 1.0f}}},
-     {0x084B, 0xF2, 0x0A, {{SFX_6E_VILE_EGH, 20000, 1.0f}}},
-     {0x084C, 0xF2, 0x0A, {{SFX_6E_VILE_EGH, 20000, 1.0f}}},
+     {0x084A, VER_SELECT(0xF2, 0xF0, 0, 0), VER_SELECT(0x0A, 0x05, 0, 0), {{VER_SELECT(SFX_6E_VILE_EGH, SFX_C3_HEGH, 0, 0), 20000, 1.0f}}},
+     {0x084B, VER_SELECT(0xF2, 0xF0, 0, 0), VER_SELECT(0x0A, 0x05, 0, 0), {{VER_SELECT(SFX_6E_VILE_EGH, SFX_C3_HEGH, 0, 0), 20000, VER_SELECT(1.0f, 1.1f, 0.0f, 0.0f)}}},
+     {0x084C, VER_SELECT(0xF2, 0xF0, 0, 0), VER_SELECT(0x0A, 0x05, 0, 0), {{VER_SELECT(SFX_6E_VILE_EGH, SFX_C3_HEGH, 0, 0), 20000, VER_SELECT(1.0f, 0.9f, 0.0f, 0.0f)}}},
 };
 
 s32 D_8036D924[] = { 70, 35, 18, 9, 4, 2, 1};
@@ -439,7 +439,7 @@ void func_803382FC(u8);
 void func_80315200(GcZoombox *this){
      s32 s1 = 0;
      if(-1.0f == this->unk110[0]){
-          if(func_8025AD7C(this->unk108[0])){
+          if(comusic_isTrackQueued(this->unk108[0])){
                func_8025A7DC(this->unk108[0]);
           }
      }else{
@@ -482,7 +482,7 @@ void gczoombox_free(GcZoombox *this){
     if(this){
         func_80315200(this);
         func_80315300(this);
-        free(this);
+        bk_free(this);
     }
 }
 
@@ -548,7 +548,7 @@ void func_803155C8(GcZoombox *this){
     this->unk1A4_26 = 0;
     this->unk1A4_31 = 0;
     if(-1.0f ==  this->unk110[0]){
-        if(func_8025AD7C(this->unk108[0])){
+        if(comusic_isTrackQueued(this->unk108[0])){
             func_8025A7DC(this->unk108[0]);
         }
     }else{
@@ -711,7 +711,7 @@ void func_80315C90(GcZoombox *this, s32 arg1) {
         }
 
         if (this->unk110[0] == -1.0f) {
-            if (func_8025AD7C(this->unk108[0]) == 0) {
+            if (comusic_isTrackQueued(this->unk108[0]) == 0) {
                 comusic_playTrack(this->unk108[0]);
             }
         } else {
@@ -866,7 +866,7 @@ void func_803163A8(GcZoombox *this, Gfx **gfx, Mtx **mtx) {
     }
     sp38[0] = 0.0f; sp38[1] = 0.0f; sp38[2] = 0.0f;
     sp44[0] = 0.0f; sp44[1] = 0.0f; sp44[2] = 0.0f;
-    func_8033A308(sp44);
+    modelRender_func_8033A308(sp44);
     modelRender_setDepthMode(MODEL_RENDER_DEPTH_NONE);
     if (this->anim_ctrl != NULL) {
         anctrl_drawSetup(this->anim_ctrl, sp50, 1);
@@ -928,8 +928,8 @@ void func_80316764(GcZoombox *this, s32 arg1) {
         controller_copySideButtons(0, sp2C);
         phi_f0 = time_getDelta();
     } else {
-        pfsManager_getFirstControllerFaceButtonState(0, sp38);
-        func_8024E640(0, sp2C);
+        controller_copyFaceButtonsPrimary(0, sp38);
+        controller_copySideButtonsPrimary(0, sp2C);
         phi_f0 = time_func_8033DDB8();
     }
 
@@ -1095,7 +1095,7 @@ void func_80316E84(GcZoombox *this, s32 state){
 }
 
 s32 gczoombox_strlen(u8 *arg0){
-    return strlen(arg0);
+    return bk_strlen(arg0);
 }
 
 void gczoombox_update(GcZoombox *this){
@@ -1114,8 +1114,8 @@ void gczoombox_update(GcZoombox *this){
           tmp_f0 = time_getDelta();
      }
      else{
-          pfsManager_getFirstControllerFaceButtonState(0, sp58);
-          func_8024E640(0, sp4C);
+          controller_copyFaceButtonsPrimary(0, sp58);
+          controller_copySideButtonsPrimary(0, sp4C);
           tmp_f0 = time_func_8033DDB8();
      }
 
@@ -1425,7 +1425,7 @@ GcZoombox *gczoombox_new(s32 y, GcZoomboxSprite portrait_id, s32 arg2, s32 arg3,
     s32 i;
     s32 temp_v1;
 
-    this = (GcZoombox *)malloc(sizeof(GcZoombox));
+    this = (GcZoombox *)bk_malloc(sizeof(GcZoombox));
     this->callback = callback;
     this->state = 0xB;
     this->portrait_id = portrait_id;

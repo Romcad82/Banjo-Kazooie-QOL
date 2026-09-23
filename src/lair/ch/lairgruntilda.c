@@ -12,11 +12,11 @@ void func_80392918(Actor *this);
 /* .data */
 ActorAnimationInfo D_80394CC0[] = {
     {0x000, 0.0f},
-    {0x28B, 8.0f},
-    {0x28D, 0.5f},
-    {0x2AC, 3.0f},
-    {0x2AD, 14.0f},
-    {0x28D, 0.5f},
+    {ASSET_28B_ANIM_unk, 8.0f},
+    {ASSET_28D_ANIM_unk, 0.5f},
+    {ASSET_2AC_ANIM_unk, 3.0f},
+    {ASSET_2AD_ANIM_unk, 14.0f},
+    {ASSET_28D_ANIM_unk, 0.5f},
 };
 
 // Gruntilda On Broomstick
@@ -29,9 +29,9 @@ ActorInfo D_80394CF0 = {
 
 /* .code */
 Actor *func_803925B0(ActorMarker *marker, Gfx **gfx, Mtx **mtx, Vtx **vtx){
-    func_8033A45C(3, 0);
-    func_8033A45C(4, 0);
-    func_8033A45C(5, 0);
+    modelRender_setAppendageVisibility(3, 0);
+    modelRender_setAppendageVisibility(4, 0);
+    modelRender_setAppendageVisibility(5, 0);
     return actor_draw(marker, gfx, mtx, vtx);
 }
 

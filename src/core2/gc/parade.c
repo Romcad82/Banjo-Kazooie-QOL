@@ -2,7 +2,7 @@
 #include "functions.h"
 #include "variables.h"
 
-#include "../snackerctl.h"
+#include "core2/snackerctl.h"
 
 #include "config.h"
 
@@ -162,7 +162,7 @@ void gcparade_8031ABA0(void) {
 void gcparade_8031ABF8(void) {
     D_803830F0.unk8 = gameSelect_getGameNumber();
     func_8030AFD8(1);
-    mapSavestate_free_all();
+    mapSavestate_clearAll();
     levelSpecificFlags_clear();
     func_80347A7C();
     debugScoreStates();
@@ -286,7 +286,7 @@ void cutscene_skipParadeCutsceneCheck(void) {
         return;
     } else
  #endif
-    if (func_8024E698(0) == 1) {
+    if (controller_getStartButtonSafe(0) == 1) {
         gcparade_setState(PARADE_STATE_8_END);
     }
 }
@@ -297,7 +297,7 @@ bool cutscene_skipEndBeach1CutsceneCheck(void) {
         return FALSE;
     } else
  #endif
-    if (func_8024E698(0) == 1) {
+    if (controller_getStartButtonSafe(0) == 1) {
         return TRUE;
     }
     return FALSE;

@@ -2,12 +2,11 @@
 #include "core1/core1.h"
 #include "functions.h"
 #include "variables.h"
-#include "dialog.h"
-
-#include "zoombox.h"
+#include "core2/gc/dialog.h"
+#include "core2/gc/zoombox.h"
 
 #include "config.h"
-#include "src/core2/gc/dialogReplacements.h"
+#include "include/core2/gc/dialogReplacements.h"
 
 extern void func_803114D0(void );
 extern int gcdialog_hasCurrentTextId(void);
@@ -156,7 +155,7 @@ void clearDialogStrings(void) {
             g_Dialog.dialog[i][j].str = NULL;
         }
         g_Dialog.string_count[i] = 0;
-        free(g_Dialog.dialog[i]);
+        bk_free(g_Dialog.dialog[i]);
         g_Dialog.dialog[i] = NULL;
     }
 
@@ -398,8 +397,8 @@ void dialog_update(void) {
     ret = -1;
 
     if (g_Dialog.u8.unk128_31 & 0x80) {
-        pfsManager_getFirstControllerFaceButtonState(0, controller_face_buttons);
-        func_8024E640(0, controller_side_buttons);
+        controller_copyFaceButtonsPrimary(0, controller_face_buttons);
+        controller_copySideButtonsPrimary(0, controller_side_buttons);
     } else {
         controller_copyFaceButtons(0, controller_face_buttons);
         controller_copySideButtons(0, controller_side_buttons);
@@ -528,8 +527,8 @@ void dialog_update(void) {
                                     }
         
                                     if (ret >= 0 && CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox] + ret + 1)->cmd == -8) {
-                                        strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox] + ret + 1)->str);
-                                        strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox])->str);
+                                        bk_strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox] + ret + 1)->str);
+                                        bk_strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox])->str);
         
                                         replaceText(
                                                 g_Dialog.output,
@@ -556,9 +555,9 @@ void dialog_update(void) {
                                         ret = g_Dialog.conditionalCallback(g_Dialog.caller, g_Dialog.currentTextId, g_Dialog.string_index[g_Dialog.u8.active_zoombox]);
                                     }
         
-                                    strIToA(D_80382FF8, ret);
-                                    strlen(D_80382FF8);
-                                    strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox])->str);
+                                    bk_strIToA(D_80382FF8, ret);
+                                    bk_strlen(D_80382FF8);
+                                    bk_strlen(CMD(g_Dialog.string_index[g_Dialog.u8.active_zoombox])->str);
         
                                     replaceText(
                                             g_Dialog.output,
@@ -615,18 +614,18 @@ void dialog_update(void) {
             if (is_qol_feature_enabled(QOL_ID_ONLY_B_BUTTON_SKIPS_DIALOG)) {
                 skipTextVariable = (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u);
             } else {
-                skipTextVariable = (NOT((g_Dialog.u8.unk128_31 & 0x80) ? func_8024E5E8(0, 4) : func_8024E5E8(0, 3)));
+                skipTextVariable = (NOT((g_Dialog.u8.unk128_31 & 0x80) ? controller_getHeldFramesForCombo(0, 4) : controller_getHeldFramesForCombo(0, 3)));
             }
 
-            if (skipTextVariable) {
+            if (skipTextVariable)
  #else
-            if (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u) {
+            if (controller_face_buttons[FACE_BUTTON(BUTTON_B)] != 1u)
  #endif
 #else
-            if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? func_8024E5E8(0, 4) : func_8024E5E8(0, 3))) {
+            // Breaks early if L+R+B combo NOT held (i.e. if text should continue)
+            if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? controller_getHeldFramesForCombo(0, 4) : controller_getHeldFramesForCombo(0, 3))) {
 #endif
                 break;
-            }
     
             dialog_setState(DIALOG_STATE_6);
             break;
@@ -665,7 +664,7 @@ void loadDialogStrings(s32 text_id) {
     
     for (i = 0; i < 2; i++) {
         g_Dialog.string_count[i] = *(txt++);
-        g_Dialog.dialog[i] = (BKDialog *) malloc(g_Dialog.string_count[i] * sizeof(BKDialog));
+        g_Dialog.dialog[i] = (BKDialog *) bk_malloc(g_Dialog.string_count[i] * sizeof(BKDialog));
         for (j = 0; j < g_Dialog.string_count[i]; j++) {
             // Step 1: Get the cmd / chat head from the dialog asset
             ch = *(txt++);
@@ -729,8 +728,8 @@ void replace_temp_tildes(char *finalOutput, char *originalString, char *replacem
  */
 void replace_dialog_string(u8 zoomboxIndex, u8 stringIndex, u8 *replacementString) {
     static u8 textString[2][6][0x100];
-    strcpy(textString[zoomboxIndex][stringIndex], "");
-    strcat(textString[zoomboxIndex][stringIndex], replacementString);
+    bk_strcpy(textString[zoomboxIndex][stringIndex], "");
+    bk_strcat(textString[zoomboxIndex][stringIndex], replacementString);
 
     g_Dialog.dialog[zoomboxIndex][stringIndex].str = textString[zoomboxIndex][stringIndex];
 }
