@@ -623,7 +623,7 @@ void dialog_update(void) {
  #endif
 #else
             // Breaks early if L+R+B combo NOT held (i.e. if text should continue)
-            if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? controller_getHeldFramesForCombo(0, 4) : controller_getHeldFramesForCombo(0, 3))) {
+            if (NOT((g_Dialog.u8.unk128_31 & 0x80) ? controller_getHeldFramesForCombo(0, 4) : controller_getHeldFramesForCombo(0, 3)))
 #endif
                 break;
     
