@@ -124,12 +124,6 @@ int func_80290E8C(void){
 
 #ifdef DPAD_FUNCTIONALITY
 bool dpad_should_change_camera_zoom(void) {
- #ifdef OPTIONS_MENU
-    if (!is_qol_feature_enabled(QOL_ID_DPAD_FUNCTIONALITY)) {
-        return FALSE;
-    }
- #endif
-
     if (bainput_dpad_should_zoom_in_camera()) {
         if (D_8037C061 == 1) {
             return FALSE;
@@ -150,12 +144,12 @@ bool dpad_should_change_camera_zoom(void) {
 }
 
 bool dpad_change_camera_zoom(void) {
-    if (bakey_pressed(BUTTON_D_UP)) {
+    if (check_camera_controls(BUTTON_D_UP, FALSE)) {
         D_8037C061--;
         return TRUE;
     }
 
-    if (bakey_pressed(BUTTON_D_DOWN)) {
+    if (check_camera_controls(BUTTON_D_DOWN, FALSE)) {
         D_8037C061++;
         return FALSE;
     }

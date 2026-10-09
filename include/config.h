@@ -87,6 +87,16 @@
 #define DPAD_FUNCTIONALITY
 
 /**
+ * Swaps the bindings between the vanilla C Button Camera and the D-Pad Camera:
+ * 1: Swaps Up and Down Buttons
+ * 2: Swaps Left and Right Buttons
+ * 3: Swaps all C Buttons and D-pad
+ * 
+ * NOTE: DPAD_FUNCTIONALITY must be on for this to work.
+ */
+// #define CHANGE_CAMERA_BINDINGS 1
+
+/**
  * Makes slight adjustment to improve the camera. It doesn't drastically change angles when rotating around level geometry.
  */
 #define CAMERA_IMPROVEMENTS

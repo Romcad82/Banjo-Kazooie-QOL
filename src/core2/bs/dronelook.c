@@ -57,9 +57,11 @@ void bsDroneLook_update(void) {
 
         exit_first_person = FALSE;
         // 1st person cancelled via input
-        if (bakey_pressed(BUTTON_B) || bakey_pressed(BUTTON_A) || bakey_pressed(BUTTON_C_UP)
+        if (bakey_pressed(BUTTON_B) || bakey_pressed(BUTTON_A)
 #ifdef DPAD_FUNCTIONALITY
-            || bainput_dpad_controls_valid(BUTTON_L)
+            || check_camera_controls(BUTTON_C_UP, FALSE) || check_l_button_camera(BUTTON_L)
+#else
+            || bakey_pressed(BUTTON_C_UP)
 #endif
             ) {
             exit_first_person = TRUE;

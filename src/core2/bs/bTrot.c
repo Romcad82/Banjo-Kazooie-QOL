@@ -233,7 +233,7 @@ void bsbtrot_enter_update(void){
     AnimCtrl *aCtrl = baanim_getAnimCtrlPtr();
 // Prevents D-Pad camera from rotating when entering Talon Trot.
 #ifdef DPAD_FUNCTIONALITY
-    if (!bainput_dpad_controls_valid(BUTTON_D_LEFT, TRUE))
+    if (!check_camera_controls(BUTTON_D_LEFT, TRUE))
 #endif
     bainput_enable(0,1);
     func_80299628(1);
